@@ -4,17 +4,23 @@
 
 package frc.robot.subsystems;
 
+import java.util.List;
+
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Trajectories;
 import frc.robot.Constants.CANIds;
 import frc.robot.Constants.DriveConstants;
 import frc.utils.SwerveUtils;
@@ -265,5 +271,21 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
    */
   public double getTurnRate() {
     return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+  }
+
+  public Trajectory ZeroZeroDynamicTrajectory() {
+    Trajectory trajectory = new Trajectory();
+    try {
+      trajectory = TrajectoryGenerator.generateTrajectory(
+          getPose(),
+          List.of(new Translation2d((0 - getPose().getX()) /2, (0 - getPose().getY()) /2)),
+          new Pose2d(0, 0, new Rotation2d(getAngle())),
+          Trajectories.defaultConfig
+        );
+      return trajectory;
+    } 
+    catch(Exception e){
+      return trajectory;
+    }
   }
 }

@@ -18,13 +18,13 @@ public class Trajectories {
        Configs
     ◇─◇──◇─◇*/
     
-    static TrajectoryConfig defaultConfig = new TrajectoryConfig(
+    public static TrajectoryConfig defaultConfig = new TrajectoryConfig(
         AutoConstants.kMaxSpeedMetersPerSecond,
         AutoConstants.kMaxAccelerationMetersPerSecondSquared)
         // Add kinematics to ensure max speed is actually obeyed
         .setKinematics(DriveConstants.kDriveKinematics);
 
-    static TrajectoryConfig slowConfig = new TrajectoryConfig(
+    public static TrajectoryConfig slowConfig = new TrajectoryConfig(
         AutoConstants.kMaxSpeedMetersPerSecond,
         AutoConstants.kMaxAccelerationMetersPerSecondSquaredSlow)
         // Add kinematics to ensure max speed is actually obeyed

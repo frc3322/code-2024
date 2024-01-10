@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.DynamicSwerveControllerCommand;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
@@ -113,6 +114,20 @@ public class RobotContainer {
             robotDrive));
 
     driverController.start().onTrue(new InstantCommand(()->robotDrive.zeroHeading()));
+
+    driverController.rightBumper().whileTrue(
+      new DynamicSwerveControllerCommand(
+          robotDrive::ZeroZeroDynamicTrajectory,
+          robotDrive::getPose, // Functional interface to feed supplier
+          DriveConstants.kDriveKinematics,
+
+          // Position controllers
+          new PIDController(AutoConstants.kPXController, 0, 0),
+          new PIDController(AutoConstants.kPYController, 0, 0),
+          Trajectories.getDefaultThetaController(),
+          robotDrive::setModuleStates,
+          robotDrive)
+    );
             
   
   }
