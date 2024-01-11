@@ -6,6 +6,8 @@ package frc.robot.subsystems.drive;
 
 import java.util.List;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -25,10 +27,10 @@ import frc.robot.subsystems.drive.IO.GyroIO;
 import frc.robot.subsystems.drive.IO.GyroIOInputsAutoLogged;
 import frc.robot.subsystems.drive.IO.ModuleIO;
 import frc.utils.SwerveUtils;
-import io.github.oblarg.oblog.Loggable;
+//import io.github.oblarg.oblog.Loggable;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class DriveSubsystem extends SubsystemBase implements Loggable{
+public class DriveSubsystem extends SubsystemBase{
   // Create MAXSwerveModules
   private final MAXSwerveModule m_frontLeft;
   private final MAXSwerveModule m_frontRight;
@@ -64,19 +66,23 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     // Create IO swerve modules
     m_frontLeft = new MAXSwerveModule(
       FLIO,
-      DriveConstants.kFrontLeftChassisAngularOffset);
+      DriveConstants.kFrontLeftChassisAngularOffset,
+      "FL");
 
     m_frontRight = new MAXSwerveModule(
         FRIO,
-        DriveConstants.kFrontRightChassisAngularOffset);
+        DriveConstants.kFrontRightChassisAngularOffset,
+        "FR");
 
     m_rearLeft = new MAXSwerveModule(
         BLIO,
-        DriveConstants.kBackLeftChassisAngularOffset);
+        DriveConstants.kBackLeftChassisAngularOffset,
+        "BL");
 
     m_rearRight = new MAXSwerveModule(
         BRIO,
-        DriveConstants.kBackRightChassisAngularOffset);
+        DriveConstants.kBackRightChassisAngularOffset,
+        "BR");
 
     this.gyroIO = gyroIO;
 
@@ -110,6 +116,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     m_rearRight.periodic();
 
     gyroIO.updateInputs(inputs);
+    Logger.processInputs("DriveSystem", inputs);
 
     SmartDashboard.updateValues();
   }

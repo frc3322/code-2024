@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.drive;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -22,13 +24,15 @@ public class MAXSwerveModule {
   // Inputs from IO
   private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
 
+  public final String name;
+
   /**
    * Constructs a MAXSwerveModule and configures the driving and turning motor,
    * encoder, and PID controller. This configuration is specific to the REV
    * MAXSwerve Module built with NEOs, SPARKS MAX, and a Through Bore
    * Encoder.
    */
-  public MAXSwerveModule(ModuleIO moduleIO, double chassisAngularOffset) {
+  public MAXSwerveModule(ModuleIO moduleIO, double chassisAngularOffset, String moduleID) {
 
     m_chassisAngularOffset = chassisAngularOffset;
     m_desiredState.angle = new Rotation2d(inputs.turnPosition);
@@ -36,10 +40,13 @@ public class MAXSwerveModule {
 
     // IO logging
     this.moduleIO = moduleIO;
+
+    name = moduleID;
   }
 
   public void periodic() {
     moduleIO.updateInputs(inputs);
+    Logger.processInputs(name, inputs);
   }
 
   /**

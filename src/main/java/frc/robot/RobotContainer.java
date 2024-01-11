@@ -4,9 +4,11 @@
 
 package frc.robot;
 
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.CANIds;
 import frc.robot.Constants.DriveConstants;
@@ -16,15 +18,19 @@ import frc.robot.Constants.ElevatorConstants;
 
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.drive.IO.GyroIO;
 import frc.robot.subsystems.drive.IO.GyroIONavX;
+import frc.robot.subsystems.drive.IO.ModuleIO;
+import frc.robot.subsystems.drive.IO.ModuleIOSim;
 import frc.robot.subsystems.drive.IO.ModuleIOSparkMax;
-import io.github.oblarg.oblog.Logger;
+//import io.github.oblarg.oblog.Logger;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -34,13 +40,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
  */
 public class RobotContainer {
   // The robot's subsystems
-  private final DriveSubsystem robotDrive = new DriveSubsystem(
-    new ModuleIOSparkMax(CANIds.kFrontLeftDrivingCanId, CANIds.kFrontLeftTurningCanId),
-    new ModuleIOSparkMax(CANIds.kFrontRightDrivingCanId, CANIds.kFrontRightTurningCanId),
-    new ModuleIOSparkMax(CANIds.kRearLeftDrivingCanId, CANIds.kRearLeftTurningCanId),
-    new ModuleIOSparkMax(CANIds.kRearRightDrivingCanId, CANIds.kRearRightTurningCanId),
-    new GyroIONavX(Constants.DriveConstants.kGyroReversed)
-  );
+  private final DriveSubsystem robotDrive;
+   
   private final Elevator elevator = new Elevator();
 
   // The driver's controller
@@ -49,20 +50,57 @@ public class RobotContainer {
   CommandXboxController secondaryController = new CommandXboxController(OIConstants.kSecondaryControllerPort);
 
   // Auton selector for dashboard
-  SendableChooser<SequentialCommandGroup> autoSelector = new SendableChooser<>();
+  LoggedDashboardChooser<SequentialCommandGroup> autoSelector = new LoggedDashboardChooser<>("Auto chooser");
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+
+    /*◇─◇──◇─◇
+     Subsystems
+    ◇─◇──◇─◇*/
+
+    switch (Constants.currentMode) {
+      case REAL:
+        // Real robot, instantiate hardware IO implementations
+        robotDrive = new DriveSubsystem(
+          new ModuleIOSparkMax(CANIds.kFrontLeftDrivingCanId, CANIds.kFrontLeftTurningCanId),
+          new ModuleIOSparkMax(CANIds.kFrontRightDrivingCanId, CANIds.kFrontRightTurningCanId),
+          new ModuleIOSparkMax(CANIds.kRearLeftDrivingCanId, CANIds.kRearLeftTurningCanId),
+          new ModuleIOSparkMax(CANIds.kRearRightDrivingCanId, CANIds.kRearRightTurningCanId),
+          new GyroIONavX(Constants.DriveConstants.kGyroReversed)
+        );
+        break;
+
+      case SIM:
+        // Sim robot, instantiate physics sim IO implementations
+        robotDrive = new DriveSubsystem(
+          new ModuleIOSim(),
+          new ModuleIOSim(),
+          new ModuleIOSim(),
+          new ModuleIOSim(),
+          new GyroIO() {}
+        );
+        break;
+
+      default:
+        // Replayed robot, disable IO implementations
+        robotDrive = new DriveSubsystem(
+          new ModuleIO() {},
+          new ModuleIO() {},
+          new ModuleIO() {},
+          new ModuleIO() {},
+          new GyroIO() {}
+        );
+        break;
+    }
+
     // Configure the button bindings
     configureButtonBindings();
-    
-    // Configure Oblog logger
-    Logger.configureLoggingAndConfig(this, true);
 
     // Auton selector config
-    autoSelector.setDefaultOption("Slow forward 5 meters", new SlowForward5Meters());
+    autoSelector.addDefaultOption("Slow forward 5 meters", new SlowForward5Meters());
 
     // Configure default commands
 
@@ -141,9 +179,10 @@ public class RobotContainer {
             
   
   }
-  public void updateLogger() {
-    Logger.updateEntries();
-  }
+  
+  // public void updateLogger() {
+  //   Logger.updateEntries();
+  // }
 
 
   /**
@@ -152,7 +191,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoSelector.getSelected();
+    return autoSelector.get();
   }
 
   /*◇─◇──◇─◇

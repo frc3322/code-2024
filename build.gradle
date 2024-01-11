@@ -71,7 +71,7 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    implementation "com.github.Oblarg:Oblog:5.1.0"
+    //implementation "com.github.Oblarg:Oblog:5.1.0"
 
     def akitJson = new groovy.json.JsonSlurper().parseText(new File(projectDir.getAbsolutePath() + "/vendordeps/AdvantageKit.json").text)
     annotationProcessor "org.littletonrobotics.akit.junction:junction-autolog:$akitJson.version"
@@ -107,7 +107,7 @@ tasks.withType(JavaCompile) {
 }
 
 repositories {
-  maven { url 'https://jitpack.io' }
+  //maven { url 'https://jitpack.io' }
 
   maven {
         url = uri("https://maven.pkg.github.com/Mechanical-Advantage/AdvantageKit")

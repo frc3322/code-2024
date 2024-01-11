@@ -14,22 +14,22 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.*;
-import io.github.oblarg.oblog.Loggable;
-import io.github.oblarg.oblog.annotations.Log;
+//import io.github.oblarg.oblog.Loggable;
+//import io.github.oblarg.oblog.annotations.Log;
 
-public class Elevator extends SubsystemBase implements Loggable{
+public class Elevator extends SubsystemBase{
   private final CANSparkMax elevatorLeft = new CANSparkMax(CANIds.kElevatorLeftId, MotorType.kBrushless);
   private final CANSparkMax elevatorRight = new CANSparkMax(CANIds.kElevatorRightId, MotorType.kBrushless);
   private final DigitalInput bottomLimit = new DigitalInput(1);
   private final RelativeEncoder elevatorLeftEncoder = elevatorLeft.getEncoder();
   private final RelativeEncoder elevatorRightEncoder = elevatorRight.getEncoder();
   
-  @Log public double elevatorLeftEncoderVal;
-  @Log public double elevatorRightEncoderVal;
+  public double elevatorLeftEncoderVal;
+  public double elevatorRightEncoderVal;
 
   private boolean slowModeOn = false;
 
-  @Log
+  
   private int currentSetpointIndex = 0;
 
   private double setpoint = 0;
@@ -64,12 +64,12 @@ public class Elevator extends SubsystemBase implements Loggable{
     return elevatorLeftEncoderVal;
   }
 
-  @Log
+  
   public boolean atBottom(){
     return bottomLimit.get();
   }
 
-  @Log
+  
   public double getCurrentCycleSetpoint() {
     return ElevatorConstants.elevatorSetpoints[currentSetpointIndex];
   }
@@ -139,7 +139,7 @@ public class Elevator extends SubsystemBase implements Loggable{
     return new InstantCommand( () -> setpointCycleDown(), this);
   }
 
-  @Log
+  
   public Command resetElevatorEncodersCommand(){
     return new InstantCommand( () -> resetElevatorEncoders());
 

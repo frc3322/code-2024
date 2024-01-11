@@ -26,7 +26,8 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
-      "/Shuffleboard/Elevator: Log/resetElevatorEncodersCommand": "Command"
+      "/Shuffleboard/Elevator: Log/resetElevatorEncodersCommand": "Command",
+      "/SmartDashboard/Auto chooser": "String Chooser"
     }
   },
   "NetworkTables Info": {

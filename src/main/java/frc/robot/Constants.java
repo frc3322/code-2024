@@ -25,6 +25,19 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
 
+  public static final Mode currentMode = Mode.SIM;
+
+  public static enum Mode {
+    /** Running on a real robot. */
+    REAL,
+
+    /** Running a physics simulator. */
+    SIM,
+
+    /** Replaying from a log file. */
+    REPLAY
+  }
+
   public static final class CANIds {
     // SPARK MAX CAN IDs
     public static final int kFrontLeftDrivingCanId = 13;
@@ -174,20 +187,5 @@ public final class Constants {
     public static final double kFreeSpeedRpm = 5676;
 
     public static final int neo550CurrentLimitAmps = 20;
-  }
-
-  public static final class AdvantageKitConstants{
-    public static final Mode currentMode = Mode.REAL;
-
-    public static enum Mode {
-      /** Running on a real robot. */
-      REAL,
-
-      /** Running a physics simulator. */
-      SIM,
-
-      /** Replaying from a log file. */
-      REPLAY
-    }
   }
 }

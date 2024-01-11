@@ -10,14 +10,12 @@ import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 
 import frc.robot.Constants.*;
 import frc.robot.subsystems.Elevator;
-import io.github.oblarg.oblog.Loggable;
-import io.github.oblarg.oblog.annotations.Config;
 
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class ElevatorPIDCommand extends ProfiledPIDCommand implements Loggable {
+public class ElevatorPIDCommand extends ProfiledPIDCommand {
   /** Creates a new ElevatorPIDCOmmand. */
 
   public ElevatorPIDCommand(Elevator elevator) {
@@ -42,21 +40,6 @@ public class ElevatorPIDCommand extends ProfiledPIDCommand implements Loggable {
     // Configure additional PID options by calling `getController` here.
     addRequirements(elevator);
   }
-
-  @Config
-  public void setP(double p) {
-    getController().setP(p);
-  }
-
-  @Config
-  public void setI(double i) {
-    getController().setI(i);
-  }
-
-  @Config
-  public void setD(double d) {
-    getController().setD(d);
-  } 
 
   // Returns true when the command should end.
   @Override
