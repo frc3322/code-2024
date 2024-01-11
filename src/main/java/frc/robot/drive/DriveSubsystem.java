@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.drive;
 
 import java.util.List;
 
@@ -23,31 +23,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Trajectories;
 import frc.robot.Constants.CANIds;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.drive.IO.GyroIO;
+import frc.robot.drive.IO.ModuleIO;
 import frc.utils.SwerveUtils;
 import io.github.oblarg.oblog.Loggable;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveSubsystem extends SubsystemBase implements Loggable{
   // Create MAXSwerveModules
-  private final MAXSwerveModule m_frontLeft = new MAXSwerveModule(
-      CANIds.kFrontLeftDrivingCanId,
-      CANIds.kFrontLeftTurningCanId,
-      DriveConstants.kFrontLeftChassisAngularOffset);
-
-  private final MAXSwerveModule m_frontRight = new MAXSwerveModule(
-      CANIds.kFrontRightDrivingCanId,
-      CANIds.kFrontRightTurningCanId,
-      DriveConstants.kFrontRightChassisAngularOffset);
-
-  private final MAXSwerveModule m_rearLeft = new MAXSwerveModule(
-      CANIds.kRearLeftDrivingCanId,
-      CANIds.kRearLeftTurningCanId,
-      DriveConstants.kBackLeftChassisAngularOffset);
-
-  private final MAXSwerveModule m_rearRight = new MAXSwerveModule(
-      CANIds.kRearRightDrivingCanId,
-      CANIds.kRearRightTurningCanId,
-      DriveConstants.kBackRightChassisAngularOffset);
+  private final MAXSwerveModule m_frontLeft;
+  private final MAXSwerveModule m_frontRight;
+  private final MAXSwerveModule m_rearLeft;
+  private final MAXSwerveModule m_rearRight;
 
   // The gyro sensor
   private final AHRS m_gyro = new AHRS();
@@ -66,7 +53,42 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
   private double m_prevTime = WPIUtilJNI.now() * 1e-6;
 
   // Odometry class for tracking robot pose
-  SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
+  SwerveDriveOdometry m_odometry;
+
+  // IO class for logging gyro
+  GyroIO gyroIO;
+
+  /** Creates a new DriveSubsystem. */
+  public DriveSubsystem(ModuleIO FLIO, ModuleIO FRIO, ModuleIO BLIO, ModuleIO BRIO, GyroIO gyroIO) {
+    // Create IO swerve modules
+    m_frontLeft = new MAXSwerveModule(
+      FLIO,
+      CANIds.kFrontLeftDrivingCanId,
+      CANIds.kFrontLeftTurningCanId,
+      DriveConstants.kFrontLeftChassisAngularOffset);
+
+    m_frontRight = new MAXSwerveModule(
+        FRIO,
+        CANIds.kFrontRightDrivingCanId,
+        CANIds.kFrontRightTurningCanId,
+        DriveConstants.kFrontRightChassisAngularOffset);
+
+    m_rearLeft = new MAXSwerveModule(
+        BLIO,
+        CANIds.kRearLeftDrivingCanId,
+        CANIds.kRearLeftTurningCanId,
+        DriveConstants.kBackLeftChassisAngularOffset);
+
+    m_rearRight = new MAXSwerveModule(
+        BRIO,
+        CANIds.kRearRightDrivingCanId,
+        CANIds.kRearRightTurningCanId,
+        DriveConstants.kBackRightChassisAngularOffset);
+
+    this.gyroIO = gyroIO;
+
+    // Odometry class for tracking robot pose
+    m_odometry = new SwerveDriveOdometry(
       DriveConstants.kDriveKinematics,
       Rotation2d.fromDegrees(getAngle()),
       new SwerveModulePosition[] {
@@ -75,11 +97,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
           m_rearLeft.getPosition(),
           m_rearRight.getPosition()
       });
-
-  /** Creates a new DriveSubsystem. */
-  public DriveSubsystem() {
-   
-  }
+    }
 
   @Override
   public void periodic() {
