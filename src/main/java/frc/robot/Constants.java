@@ -4,8 +4,12 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -55,6 +59,14 @@ public final class Constants {
     public static final double kDirectionSlewRate = 3; // radians per second //old is 9
     public static final double kMagnitudeSlewRate = 1.6; // percent per second (1 = 100%) //old is 2.6
     public static final double kRotationalSlewRate = 2.0; // percent per second (1 = 100%)
+
+    public static final HolonomicPathFollowerConfig holonomicPathFollower = new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
+          new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+          new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
+          4.5, // Max module speed, in m/s
+          0.4, // Drive base radius in meters. Distance from robot center to furthest module.
+          new ReplanningConfig() // Default path replanning config. See the API for the options here
+        );
 
     // Chassis configuration
     public static final double kTrackWidth = Units.inchesToMeters(24.375);
