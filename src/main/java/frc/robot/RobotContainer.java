@@ -8,12 +8,16 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.CANIds;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.DynamicSwerveControllerCommand;
 import frc.robot.Constants.ElevatorConstants;
-import frc.robot.subsystems.DriveSubsystem;
+
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.drive.DriveSubsystem;
+import frc.robot.subsystems.drive.IO.GyroIONavX;
+import frc.robot.subsystems.drive.IO.ModuleIOSparkMax;
 import io.github.oblarg.oblog.Logger;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -30,7 +34,13 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
  */
 public class RobotContainer {
   // The robot's subsystems
-  private final DriveSubsystem robotDrive = new DriveSubsystem();
+  private final DriveSubsystem robotDrive = new DriveSubsystem(
+    new ModuleIOSparkMax(CANIds.kFrontLeftDrivingCanId, CANIds.kFrontLeftTurningCanId),
+    new ModuleIOSparkMax(CANIds.kFrontRightDrivingCanId, CANIds.kFrontRightTurningCanId),
+    new ModuleIOSparkMax(CANIds.kRearLeftDrivingCanId, CANIds.kRearLeftTurningCanId),
+    new ModuleIOSparkMax(CANIds.kRearRightDrivingCanId, CANIds.kRearRightTurningCanId),
+    new GyroIONavX()
+  );
   private final Elevator elevator = new Elevator();
 
   // The driver's controller

@@ -45,7 +45,7 @@ public class ModuleIOSparkMax implements ModuleIO {
   private final SparkPIDController drivePIDController;
   private final SparkPIDController turnPIDController;
 
-  public ModuleIOSparkMax(int driveID, int turnID, double chassisOffset) {
+  public ModuleIOSparkMax(int driveID, int turnID) {
         
     driveSparkMax = new CANSparkMax(driveID, MotorType.kBrushless);
     turnSparkMax = new CANSparkMax(turnID, MotorType.kBrushless);
