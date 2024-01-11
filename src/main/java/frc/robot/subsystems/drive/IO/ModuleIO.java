@@ -1,4 +1,4 @@
-package frc.robot.drive.IO;
+package frc.robot.subsystems.drive.IO;
 // Copyright 2021-2024 FRC 6328
 // http://github.com/Mechanical-Advantage
 //
@@ -19,16 +19,19 @@ import org.littletonrobotics.junction.AutoLog;
 public interface ModuleIO {
   @AutoLog
   public static class ModuleIOInputs {
-    public double drivePositionRad = 0.0;
-    public double driveVelocityRadPerSec = 0.0;
+    public double drivePosition = 0.0;
+    public double driveVelocity = 0.0;
     public double driveAppliedVolts = 0.0;
     public double[] driveCurrentAmps = new double[] {};
 
-    public Rotation2d turnAbsolutePosition = new Rotation2d();
-    public Rotation2d turnPosition = new Rotation2d();
-    public double turnVelocityRadPerSec = 0.0;
+    public Rotation2d turnRotation = new Rotation2d();
+    public double turnPosition = 0.0;
+    public double turnVelocity = 0.0;
     public double turnAppliedVolts = 0.0;
     public double[] turnCurrentAmps = new double[] {};
+
+    public double turnSetpoint = 0.0;
+    public double driveSetpoint = 0.0;
   }
 
   /** Updates the set of loggable inputs. */
@@ -40,6 +43,15 @@ public interface ModuleIO {
   /** Run the turn motor at the specified voltage. */
   public default void setTurnVoltage(double volts) {}
 
+  /** Set position of drive encoder */
+  public default void setDrivePosition(double pos) {}
+
+  /** Set drive speed setpoint */
+  public default void setDriveMotorSetpoint(double setpoint) {}
+
+  /** Set turn angle setpoint */
+  public default void setTurnMotorSetpoint(double setpoint) {}
+  
   /** Enable or disable brake mode on the drive motor. */
   public default void setDriveBrakeMode(boolean enable) {}
 

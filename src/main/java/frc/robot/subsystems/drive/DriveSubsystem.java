@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.drive;
+package frc.robot.subsystems.drive;
 
 import java.util.List;
 
@@ -21,10 +21,9 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Trajectories;
-import frc.robot.Constants.CANIds;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.drive.IO.GyroIO;
-import frc.robot.drive.IO.ModuleIO;
+import frc.robot.subsystems.drive.IO.GyroIO;
+import frc.robot.subsystems.drive.IO.ModuleIO;
 import frc.utils.SwerveUtils;
 import io.github.oblarg.oblog.Loggable;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -63,26 +62,18 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     // Create IO swerve modules
     m_frontLeft = new MAXSwerveModule(
       FLIO,
-      CANIds.kFrontLeftDrivingCanId,
-      CANIds.kFrontLeftTurningCanId,
       DriveConstants.kFrontLeftChassisAngularOffset);
 
     m_frontRight = new MAXSwerveModule(
         FRIO,
-        CANIds.kFrontRightDrivingCanId,
-        CANIds.kFrontRightTurningCanId,
         DriveConstants.kFrontRightChassisAngularOffset);
 
     m_rearLeft = new MAXSwerveModule(
         BLIO,
-        CANIds.kRearLeftDrivingCanId,
-        CANIds.kRearLeftTurningCanId,
         DriveConstants.kBackLeftChassisAngularOffset);
 
     m_rearRight = new MAXSwerveModule(
         BRIO,
-        CANIds.kRearRightDrivingCanId,
-        CANIds.kRearRightTurningCanId,
         DriveConstants.kBackRightChassisAngularOffset);
 
     this.gyroIO = gyroIO;
