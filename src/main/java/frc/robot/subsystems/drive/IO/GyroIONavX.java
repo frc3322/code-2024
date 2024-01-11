@@ -1,34 +1,35 @@
-// Copyright 2021-2024 FRC 6328
-// http://github.com/Mechanical-Advantage
-//
-// This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License
-// version 3 as published by the Free Software Foundation or
-// available in the root directory of this project.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// GNU General Public License for more details.
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems.drive.IO;
 
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.Constants;
 
-/** IO implementation for Pigeon2 */
-public class GyroIONavX implements GyroIO {
-  private final AHRS gyro = new AHRS();
-  private final double yawAngle = Constants.DriveConstants.kGyroReversed ? -gyro.getYaw() : gyro.getYaw();
+/** Add your docs here. */
+public class GyroIONavX implements GyroIO{
+    
+    private AHRS gyro = new AHRS();
 
-  public GyroIONavX() {
-    gyro.reset();
-  }
+    private final boolean reversed;
+    
+    public GyroIONavX(boolean reversed) {
+        this.reversed = reversed;
+    }
 
-  @Override
-  public void updateInputs(GyroIOInputs inputs) {
-    inputs.yawPosition = Rotation2d.fromDegrees(yawAngle);
-  }
+    @Override
+    public void updateInputs(GyroIOInputs inputs){
+        inputs.yawAngle = reversed ? -gyro.getYaw() : gyro.getYaw();
+        inputs.yawRate = reversed ? -gyro.getRate() : gyro.getRate();
+        inputs.yawRotation = new Rotation2d(inputs.yawAngle);
+    }
+
+    @Override
+    public void reset() {
+        gyro.reset();
+    }   
+
+
 }

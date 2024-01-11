@@ -39,7 +39,7 @@ public class RobotContainer {
     new ModuleIOSparkMax(CANIds.kFrontRightDrivingCanId, CANIds.kFrontRightTurningCanId),
     new ModuleIOSparkMax(CANIds.kRearLeftDrivingCanId, CANIds.kRearLeftTurningCanId),
     new ModuleIOSparkMax(CANIds.kRearRightDrivingCanId, CANIds.kRearRightTurningCanId),
-    new GyroIONavX()
+    new GyroIONavX(Constants.DriveConstants.kGyroReversed)
   );
   private final Elevator elevator = new Elevator();
 

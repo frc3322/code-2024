@@ -6,7 +6,6 @@ package frc.robot.subsystems.drive;
 
 import java.util.List;
 
-import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -23,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Trajectories;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.drive.IO.GyroIO;
+import frc.robot.subsystems.drive.IO.GyroIOInputsAutoLogged;
 import frc.robot.subsystems.drive.IO.ModuleIO;
 import frc.utils.SwerveUtils;
 import io.github.oblarg.oblog.Loggable;
@@ -36,8 +36,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
   private final MAXSwerveModule m_rearRight;
 
   // The gyro sensor
-  private final AHRS m_gyro = new AHRS();
-  // private final ADIS16470_IMU gyro2 = new ADIS16470_IMU();
+  //private final AHRS m_gyro = new AHRS();
 
   // Slew rate filter variables for controlling lateral acceleration
   private double m_currentRotation = 0.0;
@@ -56,6 +55,9 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
 
   // IO class for logging gyro
   GyroIO gyroIO;
+
+  // Inputs class for gyro
+  GyroIOInputsAutoLogged inputs;
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem(ModuleIO FLIO, ModuleIO FRIO, ModuleIO BLIO, ModuleIO BRIO, GyroIO gyroIO) {
@@ -102,7 +104,12 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
             m_rearRight.getPosition()
         });
        
+    m_frontLeft.periodic();
+    m_frontRight.periodic();
+    m_rearLeft.periodic();
+    m_rearRight.periodic();
 
+    gyroIO.updateInputs(inputs);
 
     SmartDashboard.updateValues();
   }
@@ -118,7 +125,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
 
   // Returns the corrected yaw for the robot
   public double getAngle() {
-    double yaw = DriveConstants.kGyroReversed ? -m_gyro.getAngle() : m_gyro.getAngle();
+    double yaw = inputs.yawAngle;
     return yaw;
   }
 
@@ -261,7 +268,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
 
   /** Zeroes the heading of the robot. */
   public void zeroHeading() {
-    m_gyro.reset();
+    gyroIO.reset();
   }
 
   /**
@@ -279,7 +286,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
    * @return The turn rate of the robot, in degrees per second
    */
   public double getTurnRate() {
-    return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
+    return inputs.yawRate;
   }
 
   public Trajectory ZeroZeroDynamicTrajectory() {
