@@ -57,7 +57,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
   GyroIO gyroIO;
 
   // Inputs class for gyro
-  GyroIOInputsAutoLogged inputs;
+  GyroIOInputsAutoLogged inputs = new GyroIOInputsAutoLogged();
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem(ModuleIO FLIO, ModuleIO FRIO, ModuleIO BLIO, ModuleIO BRIO, GyroIO gyroIO) {
