@@ -25,7 +25,10 @@ import frc.utils.SwerveUtils;
 import io.github.oblarg.oblog.Loggable;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+
+
 public class DriveSubsystem extends SubsystemBase implements Loggable{
+  
   // Create MAXSwerveModules
   private final MAXSwerveModule m_frontLeft = new MAXSwerveModule(
       CANIds.kFrontLeftDrivingCanId,
@@ -49,73 +52,62 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
 
   // The gyro sensor
   private final AHRS m_gyro = new AHRS();
-  // private final ADIS16470_IMU gyro2 = new ADIS16470_IMU();
 
   // Slew rate filter variables for controlling lateral acceleration
   private double m_currentRotation = 0.0;
   private double m_currentTranslationDir = 0.0;
   private double m_currentTranslationMag = 0.0;
   
-  private double lastDir = 0;
-  
-
   private SlewRateLimiter m_magLimiter = new SlewRateLimiter(DriveConstants.kMagnitudeSlewRate);
   private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(DriveConstants.kRotationalSlewRate);
   private double m_prevTime = WPIUtilJNI.now() * 1e-6;
 
+  // Used to store the last movment angle to avoid eccessive rotation of the wheels
+  private double lastDir = 0;
+
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
-      DriveConstants.kDriveKinematics,
-      Rotation2d.fromDegrees(getAngle()),
-      new SwerveModulePosition[] {
-          m_frontLeft.getPosition(),
-          m_frontRight.getPosition(),
-          m_rearLeft.getPosition(),
-          m_rearRight.getPosition()
-      });
+    DriveConstants.kDriveKinematics,
+    Rotation2d.fromDegrees(getAngle()),
+    new SwerveModulePosition[] {
+        m_frontLeft.getPosition(),
+        m_frontRight.getPosition(),
+        m_rearLeft.getPosition(),
+        m_rearRight.getPosition()
+    }
+  );
 
   
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
-   // Configure AutoBuilder last
-      AutoBuilder.configureHolonomic(
-        this::getPose, // Robot pose supplier
-        this::resetOdometryToPose, // Method to reset odometry (will be called if your auto has a starting pose)
-        this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-        this::autoDrive, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-        DriveConstants.holonomicPathFollower,
-        () -> {
-          // Boolean supplier that controls when the path will be mirrored for the red alliance
-          // This will flip the path being followed to the red side of the field.
-          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+    
+    // Configure AutoBuilder last
+    AutoBuilder.configureHolonomic(
+      this::getPose, // Robot pose supplier
+      this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+      this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+      this::autoDrive, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+      DriveConstants.holonomicPathFollower,
+      () -> {
+        // Boolean supplier that controls when the path will be mirrored for the red alliance
+        // This will flip the path being followed to the red side of the field.
+        // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-          var alliance = DriverStation.getAlliance();
-          if (alliance.isPresent()) {
-              return alliance.get() == DriverStation.Alliance.Red;
-          }
-          return false;
-        },
-        this // Reference to this subsystem to set requirements
-      );
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+        }
+        return false;
+      },
+      this // Reference to this subsystem to set requirements
+    );
+
   }
 
-  @Override
-  public void periodic() {
-    // Update the odometry in the periodic block
-    m_odometry.update(
-        Rotation2d.fromDegrees(getAngle()),
-        new SwerveModulePosition[] {
-            m_frontLeft.getPosition(),
-            m_frontRight.getPosition(),
-            m_rearLeft.getPosition(),
-            m_rearRight.getPosition()
-        });
-       
-
-
-    SmartDashboard.updateValues();
-  }
+  /*◇─◇──◇─◇
+    Odometry
+  ◇─◇──◇─◇*/
 
   /**
    * Returns the currently-estimated pose of the robot.
@@ -124,25 +116,6 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
    */
   public Pose2d getPose() {
     return m_odometry.getPoseMeters();
-  }
-
-  public void resetOdometryToPose(Pose2d pose){
-    m_odometry.resetPosition(
-      new Rotation2d(getAngle()),
-      new SwerveModulePosition[] {
-            m_frontLeft.getPosition(),
-            m_frontRight.getPosition(),
-            m_rearLeft.getPosition(),
-            m_rearRight.getPosition()
-        },
-      pose);
-      
-  }
-
-  // Returns the corrected yaw for the robot
-  public double getAngle() {
-    double yaw = DriveConstants.kGyroReversed ? -m_gyro.getAngle() : m_gyro.getAngle();
-    return yaw;
   }
 
   /**
@@ -161,6 +134,10 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
         },
         pose);
   }
+
+  /*◇─◇──◇─◇
+      Drive
+  ◇─◇──◇─◇*/
 
   /**
    * Method to drive the robot using joystick info.
@@ -250,7 +227,10 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     m_rearRight.setDesiredState(swerveModuleStates[3]);
   }
 
-  /** Drives the robot relative to the robot when given chassis speeds */
+  /** Drives the robot relative to the robot when given chassis speeds
+   * 
+   * @param speeds The robot relative desired chassis speeds
+  */
   public void autoDrive(ChassisSpeeds speeds) {
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(speeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(
@@ -263,7 +243,11 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     m_rearRight.setDesiredState(swerveModuleStates[3]);
   }
 
-  //** Returns robot relative chassis speeds */
+  /** 
+   * Returns the robot relative chassis speeds 
+   * 
+   * @return The chassis speeds object representing the robot relative speed of the chassis
+  */
   public ChassisSpeeds getRobotRelativeSpeeds(){
     return DriveConstants.kDriveKinematics.toChassisSpeeds(
             m_frontLeft.getState(),
@@ -327,4 +311,30 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
   public double getTurnRate() {
     return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
   }
+
+  /** 
+    * Returns the current angle of the robot 
+    *
+    * @return The current yaw of the robot, in degrees
+  */
+  public double getAngle() {
+    double yaw = DriveConstants.kGyroReversed ? -m_gyro.getAngle() : m_gyro.getAngle();
+    return yaw;
+  }
+  
+  @Override
+  public void periodic() {
+    // Update the odometry in the periodic block
+    m_odometry.update(
+        Rotation2d.fromDegrees(getAngle()),
+        new SwerveModulePosition[] {
+            m_frontLeft.getPosition(),
+            m_frontRight.getPosition(),
+            m_rearLeft.getPosition(),
+            m_rearRight.getPosition()
+        });
+    SmartDashboard.updateValues();
+  }
+
+
 }
