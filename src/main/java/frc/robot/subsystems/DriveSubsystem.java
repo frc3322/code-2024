@@ -6,7 +6,8 @@ package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
-
+import com.pathplanner.lib.commands.FollowPathHolonomic;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -19,10 +20,12 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.CANIds;
 import frc.robot.Constants.DriveConstants;
 import frc.utils.SwerveUtils;
 import io.github.oblarg.oblog.Loggable;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
@@ -88,7 +91,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
       this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
       this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
       this::autoDrive, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-      DriveConstants.holonomicPathFollower,
+      AutoConstants.holonomicPathFollower,
       () -> {
         // Boolean supplier that controls when the path will be mirrored for the red alliance
         // This will flip the path being followed to the red side of the field.
@@ -243,20 +246,34 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     m_rearRight.setDesiredState(swerveModuleStates[3]);
   }
 
-  /** 
-   * Returns the robot relative chassis speeds 
+  /**
+   * Follows a PathPlanner auton path.
    * 
-   * @return The chassis speeds object representing the robot relative speed of the chassis
-  */
-  public ChassisSpeeds getRobotRelativeSpeeds(){
-    return DriveConstants.kDriveKinematics.toChassisSpeeds(
-            m_frontLeft.getState(),
-            m_frontRight.getState(),
-            m_rearLeft.getState(),
-            m_rearRight.getState()
-        );
+   * @param path The path the robot should follow
+   * @return The command to follow the path
+   */
+  public Command followAutonPath(PathPlannerPath path){
+    return new FollowPathHolonomic(
+      path, //Path from params
+      this::getPose, // Robot pose supplier
+      this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+      this::autoDrive, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+      AutoConstants.holonomicPathFollower,
+      () -> {
+        // Boolean supplier that controls when the path will be mirrored for the red alliance
+        // This will flip the path being followed to the red side of the field.
+        // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+        }
+        return false;
+      },
+      this // Reference to this subsystem to set requirements
+    );
   }
-  
+
   /**
    * Sets the wheels into an X formation to prevent movement.
    */
@@ -294,6 +311,20 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     m_gyro.reset();
   }
 
+  /** 
+   * Returns the robot relative chassis speeds 
+   * 
+   * @return The chassis speeds object representing the robot relative speed of the chassis
+  */
+  public ChassisSpeeds getRobotRelativeSpeeds(){
+    return DriveConstants.kDriveKinematics.toChassisSpeeds(
+            m_frontLeft.getState(),
+            m_frontRight.getState(),
+            m_rearLeft.getState(),
+            m_rearRight.getState()
+        );
+  }
+  
   /**
    * Returns the heading of the robot.
    *

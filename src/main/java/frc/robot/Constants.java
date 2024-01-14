@@ -4,12 +4,14 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import com.revrobotics.CANSparkBase.IdleMode;
 
-import edu.wpi.first.math.controller.HolonomicDriveController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -60,19 +62,14 @@ public final class Constants {
     public static final double kMagnitudeSlewRate = 1.6; // percent per second (1 = 100%) //old is 2.6
     public static final double kRotationalSlewRate = 2.0; // percent per second (1 = 100%)
 
-    public static final HolonomicPathFollowerConfig holonomicPathFollower = new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-          new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-          new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
-          4.5, // Max module speed, in m/s
-          0.4, // Drive base radius in meters. Distance from robot center to furthest module.
-          new ReplanningConfig() // Default path replanning config. See the API for the options here
-        );
-
     // Chassis configuration
-    public static final double kTrackWidth = Units.inchesToMeters(24.375);
     // Distance between centers of right and left wheels on robot
-    public static final double kWheelBase = Units.inchesToMeters(24.375);
+    public static final double kTrackWidth = Units.inchesToMeters(24.375);
     // Distance between front and back wheels on robot
+    public static final double kWheelBase = Units.inchesToMeters(24.375);
+    // Distance from center of robot to furthest wheel
+    public static final double kWheelRadius = Units.inchesToMeters(34.5);
+    
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
         new Translation2d(kWheelBase / 2, kTrackWidth / 2),
         new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
@@ -177,14 +174,52 @@ public final class Constants {
     public static final double kPYController = 1;
     public static final double kPThetaController = 1;
 
+    public static final double kPHoloTranslationController = 5;
+    public static final double kPHoloRotationController = 5;
+
     // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
         kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+
+    public static final HolonomicPathFollowerConfig holonomicPathFollower = new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
+      new PIDConstants(kPHoloTranslationController, 0.0, 0.0), // Translation PID constants
+      new PIDConstants(kPHoloRotationController, 0.0, 0.0), // Rotation PID constants
+      4.5, // Max module speed, in m/s
+      DriveConstants.kWheelRadius, // Drive base radius in meters. Distance from robot center to furthest module.
+      new ReplanningConfig() // Default path replanning config. See the API for the options here
+    );
+
+    PathConstraints constraints = new PathConstraints(kMaxSpeedMetersPerSecond, 
+      kMaxAccelerationMetersPerSecondSquared, 
+      Units.radiansToDegrees(kMaxAngularSpeedRadiansPerSecond), 
+      Units.radiansToDegrees(kMaxAngularSpeedRadiansPerSecondSquared)
+    );
   }
 
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 5676;
 
     public static final int neo550CurrentLimitAmps = 20;
+  }
+
+  public static final class FieldConstants {
+    // Starting note transforms - Top is amp. Notes are 5ft 6in apart, with one centered on the line
+    public static final Translation2d centerTopPose = new Translation2d(0, Units.feetToMeters(11));
+    public static final Translation2d centerMidTopPose = new Translation2d(0, Units.feetToMeters(5.5));
+    public static final Translation2d centerMidPose = new Translation2d(0, Units.feetToMeters(11));
+    public static final Translation2d centerMidBottomPose = new Translation2d(0, Units.feetToMeters(-5.5));
+    public static final Translation2d centerBottomPose = new Translation2d(0, Units.feetToMeters(-11));
+
+    // Amp poses. Both halves of the field together are 651.25 in long, and amp is 4 ft 1.5 in from the wall.
+    // The top wall that the amp is in is 161.625 from the center of the field. Needs to have an offset subtracted from it later
+    public static final Pose2d redAmpPose = new Pose2d(
+      new Translation2d(Units.inchesToMeters(325.625 - 49.5), Units.inchesToMeters(161.625)),
+      new Rotation2d(-90)
+    );
+    
+    public static final Pose2d blueAmpPose = new Pose2d(
+      new Translation2d(-Units.inchesToMeters(325.625 - 49.5), Units.inchesToMeters(161.625)),
+      new Rotation2d(90)
+    );
   }
 }
