@@ -7,12 +7,9 @@ package frc.robot;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
-import frc.robot.autos.Trajectories;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
@@ -21,8 +18,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -54,7 +51,9 @@ public class RobotContainer {
     Logger.configureLoggingAndConfig(this, true);
 
     // Auton selector config
-    autoSelector.setDefaultOption("Slow forward 5 meters", new SlowForward5Meters());
+    autoSelector.setDefaultOption("Test4+1", new Test4And1Auto());
+
+    autoSelector.addOption("No auto", null);
 
     // Configure default commands
 
@@ -117,7 +116,9 @@ public class RobotContainer {
 
     driverController.start().onTrue(new InstantCommand(()->robotDrive.zeroHeading()));
             
-  
+    driverController.leftBumper().whileTrue(
+      robotDrive.AmpLineupDynamicTrajectory()
+    );
   }
   public void updateLogger() {
     Logger.updateEntries();
@@ -130,33 +131,28 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new PathPlannerAuto("Test4+1Auto");
+
+    /*
+     * !! ATTENTION !!
+     * WE USE PATHPLANNER FOR OUR AUTO PATHS
+     * https://github.com/mjansen4857/pathplanner
+     */
+
+     return autoSelector.getSelected();
   }
 
   /*◇─◇──◇─◇
       Autos
   ◇─◇──◇─◇*/
   
-  private class SlowForward5Meters extends SequentialCommandGroup {
-    
-    public SlowForward5Meters(){
+  private static class Test4And1Auto extends SequentialCommandGroup{
+
+    public Test4And1Auto(){
       addCommands(
-        new InstantCommand( () -> {
-          robotDrive.resetOdometry(Trajectories.slowForward4Meters().getInitialPose());
-        }),
-
-        new SwerveControllerCommand(
-          Trajectories.slowForward4Meters(),
-          robotDrive::getPose, // Functional interface to feed supplier
-          DriveConstants.kDriveKinematics,
-
-          // Position controllers
-          new PIDController(AutoConstants.kPXController, 0, 0),
-          new PIDController(AutoConstants.kPYController, 0, 0),
-          Trajectories.getDefaultThetaController(),
-          robotDrive::setModuleStates,
-          robotDrive)
+        new PathPlannerAuto("Test4+1Auto")
       );
     }
+    
   }
+
 }

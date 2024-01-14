@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.FollowPathHolonomic;
+import com.pathplanner.lib.commands.PathfindThenFollowPathHolonomic;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -80,7 +81,8 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     }
   );
 
-  
+  // Path strings
+  private String ampLineupPathName = "AmpLineup";
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
@@ -91,7 +93,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
       this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
       this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
       this::autoDrive, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-      AutoConstants.holonomicPathFollower,
+      AutoConstants.holonomicPathFollowerConfig,
       () -> {
         // Boolean supplier that controls when the path will be mirrored for the red alliance
         // This will flip the path being followed to the red side of the field.
@@ -258,7 +260,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
       this::getPose, // Robot pose supplier
       this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
       this::autoDrive, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-      AutoConstants.holonomicPathFollower,
+      AutoConstants.holonomicPathFollowerConfig,
       () -> {
         // Boolean supplier that controls when the path will be mirrored for the red alliance
         // This will flip the path being followed to the red side of the field.
@@ -271,6 +273,47 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
         return false;
       },
       this // Reference to this subsystem to set requirements
+    );
+  }
+
+  /**
+   * Pathfinds to the start of the given path, then follows that path.
+   * 
+   * @param path The path to move to and follow
+   * @return The pathfinding and following command
+   */
+  public Command pathfindThenFollowPath(PathPlannerPath path) {
+    return new PathfindThenFollowPathHolonomic(
+        path,
+        AutoConstants.constraints,
+        this::getPose,
+        this::getRobotRelativeSpeeds,
+        this::autoDrive,
+        AutoConstants.holonomicPathFollowerConfig, // HolonomicPathFollwerConfig, see the API or "Follow a single path" example for more info
+        3.0, // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate. Optional
+        () -> {
+            // Boolean supplier that controls when the path will be mirrored for the red alliance
+            // This will flip the path being followed to the red side of the field.
+            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+            var alliance = DriverStation.getAlliance();
+            if (alliance.isPresent()) {
+                return alliance.get() == DriverStation.Alliance.Red;
+            }
+            return false;
+        },
+        this // Reference to drive subsystem to set requirements
+      );
+  }
+
+  /**
+   * Returns command to drive to amp.
+   * 
+   * @return Dynamic trajectory to drive to amp
+   */
+  public Command AmpLineupDynamicTrajectory() {
+    return pathfindThenFollowPath(
+      PathPlannerPath.fromPathFile(ampLineupPathName)
     );
   }
 

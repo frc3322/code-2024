@@ -181,7 +181,7 @@ public final class Constants {
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
         kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
 
-    public static final HolonomicPathFollowerConfig holonomicPathFollower = new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
+    public static final HolonomicPathFollowerConfig holonomicPathFollowerConfig = new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
       new PIDConstants(kPHoloTranslationController, 0.0, 0.0), // Translation PID constants
       new PIDConstants(kPHoloRotationController, 0.0, 0.0), // Rotation PID constants
       4.5, // Max module speed, in m/s
@@ -189,7 +189,7 @@ public final class Constants {
       new ReplanningConfig() // Default path replanning config. See the API for the options here
     );
 
-    PathConstraints constraints = new PathConstraints(kMaxSpeedMetersPerSecond, 
+    public static final PathConstraints constraints = new PathConstraints(kMaxSpeedMetersPerSecond, 
       kMaxAccelerationMetersPerSecondSquared, 
       Units.radiansToDegrees(kMaxAngularSpeedRadiansPerSecond), 
       Units.radiansToDegrees(kMaxAngularSpeedRadiansPerSecondSquared)
