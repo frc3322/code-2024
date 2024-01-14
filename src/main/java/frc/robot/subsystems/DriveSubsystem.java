@@ -317,6 +317,10 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     );
   }
 
+  /*◇─◇──◇─◇
+     Setters
+  ◇─◇──◇─◇*/
+  
   /**
    * Sets the wheels into an X formation to prevent movement.
    */
@@ -353,6 +357,10 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
   public void zeroHeading() {
     m_gyro.reset();
   }
+
+  /*◇─◇──◇─◇
+     Getters
+  ◇─◇──◇─◇*/
 
   /** 
    * Returns the robot relative chassis speeds 
