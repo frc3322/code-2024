@@ -20,12 +20,14 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.CANIds;
 import frc.robot.Constants.DriveConstants;
 import frc.utils.SwerveUtils;
 import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Log;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -80,6 +82,9 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
         m_rearRight.getPosition()
     }
   );
+
+  @Log
+  public Field2d field = new Field2d();
 
   // Path strings
   private String ampLineupPathName = "AmpLineup";
@@ -290,7 +295,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
         this::getRobotRelativeSpeeds,
         this::autoDrive,
         AutoConstants.holonomicPathFollowerConfig, // HolonomicPathFollwerConfig, see the API or "Follow a single path" example for more info
-        3.0, // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate. Optional
+        0, // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate. Optional
         () -> {
             // Boolean supplier that controls when the path will be mirrored for the red alliance
             // This will flip the path being followed to the red side of the field.
@@ -416,6 +421,8 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
             m_rearRight.getPosition()
         });
     SmartDashboard.updateValues();
+
+    field.setRobotPose(getPose());
   }
 
 
