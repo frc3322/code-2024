@@ -45,13 +45,31 @@ public final class Constants {
     public static final int kFrontRightTurningCanId = 36;
     public static final int kRearRightTurningCanId = 12;
     
+    //Change GroundIntake motor ids here:
+    public static final int kTopRollerCanId = 70;
+    public static final int kBottomRollerCanId = 71;
+
+    //Change GroundIntake arm id here:
+    public static final int kArmCanId = 73;
+    
     // Based on the sides of the chassis. If electrical does not label anything i will be murdering them -simran
     public static final int kElevatorLeftId = 62;
     public static final int kElevatorRightId = 61;
     public static final int intakeLeftId = 9;
     public static final int intakeRightId = 6 ;
+    
 
   }
+  public static final class GroundIntakeConstants {
+    public static final int bottomZoneLimit = 7;
+    public static final int topZoneLimit = 2;
+    public static final int slowZoneStart = 3;
+
+    public static final double armUpSlowSpeed = -0.2;
+    public static final double armUpSpeed = -0.3;
+    public static final double armDownSpeed = 0.2;
+  }
+
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
