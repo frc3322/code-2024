@@ -45,13 +45,28 @@ public class GroundIntake extends SubsystemBase {
     return armEncoder.getPosition() < 1;
   }
 
-  public Boolean atBottom() {
+  public Boolean atGround() {
     return armEncoder.getPosition() > Constants.GroundIntakeConstants.bottomZoneLimit;
   }
 
     public void setFlipperSpeed(double speed){
     //moves the entire arm
     intakeArm.set(speed);
+  }
+
+  public Boolean atAmpAngle() {
+    return armEncoder.getPosition() > Constants.GroundIntakeConstants.ampZoneLimit;
+  }
+
+  @Log
+  public double calculateIntakeFlipAmp() {
+    if (armEncoder.getPosition() > Constants.GroundIntakeConstants.ampZoneLimit) {
+      return 0;
+    } else if (armEncoder.getPosition() > Constants.GroundIntakeConstants.bottomZoneLimit && armEncoder.getPosition() < Constants.GroundIntakeConstants.ampZoneLimit){
+      return Constants.GroundIntakeConstants.armDownSlowSpeed;
+    } else {
+      return Constants.GroundIntakeConstants.armDownSpeed;
+    }   
   }
 
   @Log
@@ -66,7 +81,7 @@ public class GroundIntake extends SubsystemBase {
   }
 
   @Log
-  public double calculateIntakeFlipDown(){
+  public double calculateIntakeFlipGround(){
     if (armEncoder.getPosition() > Constants.GroundIntakeConstants.bottomZoneLimit){
       return 0;  
     }else {
@@ -83,27 +98,33 @@ public class GroundIntake extends SubsystemBase {
       
     }
 
-  public Command flipDown(){
+  public Command flipToGround(){
     //flips to bottom, does not spin. may be able to delete
     return new RunCommand(
-      () -> setFlipperSpeed(calculateIntakeFlipDown())
+      () -> setFlipperSpeed(calculateIntakeFlipGround())
     )
-    .until(()->atBottom());
+    .until(()->atGround());
       
+  }
+
+  public Command flipToAmp() {
+    return new RunCommand(
+      () -> setFlipperSpeed(calculateIntakeFlipAmp()) 
+      ).until(() -> atAmpAngle());
   }
 
   public void spinRollers(int volts) {
     topRoller.setVoltage(volts);
     bottomRoller.setVoltage(volts);
   }
+
   public void resetArmEncoder() {
     armEncoder.setPosition(0);
   }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-
-
     armPosition = armEncoder.getPosition();
     armPower = intakeArm.getAppliedOutput();
 

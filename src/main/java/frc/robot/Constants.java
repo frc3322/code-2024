@@ -61,13 +61,21 @@ public final class Constants {
 
   }
   public static final class GroundIntakeConstants {
+    //PID Constants
+    public static final int intakeP = 0;
+    public static final int intakeI = 0;
+    public static final int intakeD = 0;
+
     public static final int bottomZoneLimit = 7;
     public static final int topZoneLimit = 2;
+    public static final int ampZoneLimit = 11;
     public static final int slowZoneStart = 3;
+
 
     public static final double armUpSlowSpeed = -0.2;
     public static final double armUpSpeed = -0.3;
-    public static final double armDownSpeed = 0.2;
+    public static final double armDownSlowSpeed = 0.2;
+    public static final double armDownSpeed = 0.3;
   }
 
   public static final class DriveConstants {
