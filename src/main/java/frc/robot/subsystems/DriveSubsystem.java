@@ -32,7 +32,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
-
 public class DriveSubsystem extends SubsystemBase implements Loggable{
   
   // Create MAXSwerveModules
@@ -91,7 +90,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
-    
+
     // Configure AutoBuilder last
     AutoBuilder.configureHolonomic(
       this::getPose, // Robot pose supplier
@@ -422,8 +421,12 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
         });
     SmartDashboard.updateValues();
 
-    field.setRobotPose(getPose());
+    SmartDashboard.putString("Drivetrain Pose", "Pose X: " + this.getPose().getX() + " Pose Y: " + this.getPose().getY() + " Rotation: " + this.getPose().getRotation().getDegrees());
+
+    // pass current robot pose to limelight subsystem
+    Pose2d bestPose = LimeLightVision.getBestPose("limelight-right", "limelight-left", this.getPose());
+  
+    field.setRobotPose(bestPose);
+    this.resetOdometry(bestPose);
   }
-
-
 }
