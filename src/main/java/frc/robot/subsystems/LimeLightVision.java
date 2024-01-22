@@ -10,7 +10,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.LimeLightConstants;;
+import frc.robot.Constants.LimeLightConstants;
 
 public class LimeLightVision extends SubsystemBase {
   /** Creates a new LimeLightVision. */
@@ -93,7 +93,6 @@ public class LimeLightVision extends SubsystemBase {
 
     SmartDashboard.putBoolean("LimeLight One Has Target", hasTargetOne);
     SmartDashboard.putBoolean("LimeLight Two Has Target", hasTargetTwo);
-
     if (hasTargetOne) {
       SmartDashboard.putString("LimeLight One Pose", poseAsString(getPose(limeLightOne)));
     }
@@ -180,6 +179,22 @@ public class LimeLightVision extends SubsystemBase {
     convertRotationTo180(yawAverage /= length);
     new Rotation2d();
     return new Pose2d(xAverage, yAverage, Rotation2d.fromDegrees(yawAverage));
+  }
+  public static Pose2d limeLightAverage(){
+    if (hasTarget("limelight-right") && hasTarget("limelight-right")){
+      Pose2d left = getPose("limelight-left");
+      Pose2d right = getPose("limelight-right");
+      Pose2d[] poseArray = {left, right};
+      return averagePoses(poseArray);
+    } else if (hasTarget("limelight-right")){
+      Pose2d right = getPose("limelight-right");
+      Pose2d[] poseArray = {right};
+      return averagePoses(poseArray);
+    }
+    Pose2d left = getPose("limelight-left");
+    Pose2d[] poseArray = {left};
+    return averagePoses(poseArray);
+    
   }
   
   @Override
