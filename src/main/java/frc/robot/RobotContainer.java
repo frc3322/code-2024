@@ -116,7 +116,7 @@ public class RobotContainer {
 
     driverController.start().onTrue(new InstantCommand(()->robotDrive.zeroHeading()));
             
-    driverController.leftBumper().whileTrue(
+    driverController.b().whileTrue(
       robotDrive.AmpLineupDynamicTrajectory()
     );
   }
