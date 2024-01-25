@@ -108,7 +108,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     // Configure AutoBuilder last
     AutoBuilder.configureHolonomic(
       this::getPose, // Robot pose supplier
-      this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+      this::resetEstimatedPose, // Method to reset odometry (will be called if your auto has a starting pose)
       this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
       this::autoDrive, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
       AutoConstants.holonomicPathFollowerConfig,
@@ -156,6 +156,18 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
             m_rearRight.getPosition()
         },
         pose);
+  }
+
+  public void resetEstimatedPose(Pose2d pose){
+    estimatedPose.resetPosition(
+      Rotation2d.fromDegrees(getAngle()),
+      new SwerveModulePosition[] {
+            m_frontLeft.getPosition(),
+            m_frontRight.getPosition(),
+            m_rearLeft.getPosition(),
+            m_rearRight.getPosition()
+        },
+      pose);
   }
 
   /*◇─◇──◇─◇
@@ -446,6 +458,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
 
     // pass current robot pose to limelight subsystem
     Pose2d bestPose = LimeLightVision.getBestPose("limelight-right", "limelight-left", this.getPose());
+    
   
     //field.setRobotPose(bestPose);
     //this.resetOdometry(bestPose);
