@@ -40,24 +40,38 @@ public class GroundIntake extends SubsystemBase {
     bottomRoller.burnFlash();
     intakeArm.burnFlash();
   }
+  /*◇─◇──◇─◇
+      Angle Boolean Methods
+      By getting the current position of the arm encoders, it check if the arm is at the specific angle
+    ◇─◇──◇─◇*/
 
+  // Returns if arm is flipped up  
   public Boolean atTop() {
     return armEncoder.getPosition() < 1;
   }
 
+  // Returns if arm is flipped down to ground
   public Boolean atGround() {
     return armEncoder.getPosition() > Constants.GroundIntakeConstants.bottomZoneLimit;
   }
 
-    public void setFlipperSpeed(double speed){
-    //moves the entire arm
-    intakeArm.set(speed);
-  }
-
+  // Returns if arm is flipped down to Amp angle
   public Boolean atAmpAngle() {
     return armEncoder.getPosition() > Constants.GroundIntakeConstants.ampZoneLimit;
   }
 
+  //Sets the arm's speed to change its angle
+  public void setFlipperSpeed(double speed){
+    //moves the entire arm
+    intakeArm.set(speed);
+  }
+
+   /*◇─◇──◇─◇
+      Calculating Speed Methods
+      These methods calculate the speed the arm should be set to
+    ◇─◇──◇─◇*/
+
+  // By getting the encoder arm position, output a specific speed the arm should move to reach the Amp angle
   @Log
   public double calculateIntakeFlipAmp() {
     if (armEncoder.getPosition() > Constants.GroundIntakeConstants.ampZoneLimit) {
@@ -69,6 +83,7 @@ public class GroundIntake extends SubsystemBase {
     }   
   }
 
+  // By getting the encoder arm position, output a specific speed the arm should move to reach the Flipped Up angle
   @Log
   public double calculateIntakeFlipUp(){
     if (armEncoder.getPosition() < Constants.GroundIntakeConstants.topZoneLimit){
@@ -80,6 +95,7 @@ public class GroundIntake extends SubsystemBase {
     }
   }
 
+  // By getting the encoder arm position, output a specific speed the arm should move to reach the Ground angle
   @Log
   public double calculateIntakeFlipGround(){
     if (armEncoder.getPosition() > Constants.GroundIntakeConstants.bottomZoneLimit){
@@ -89,6 +105,12 @@ public class GroundIntake extends SubsystemBase {
     }
   }
 
+     /*◇─◇──◇─◇
+      Flip to Angle Commands
+      These methods create a Run Command which sets the arm to a specific speed, allowing for it to go to the specific angle.
+    ◇─◇──◇─◇*/
+
+    // Creates a new Run Command which sets the arm flipper to a specific speed until it has reached the Flipped Up Angle
   public Command flipUp(){
       return new RunCommand(
         //set flipper to correct setting until it is true that the flipper is at the top.
@@ -98,6 +120,7 @@ public class GroundIntake extends SubsystemBase {
       
     }
 
+    // Creates a new Run Command which sets the arm flipper to a specific speed until it has reached the Ground Angle
   public Command flipToGround(){
     //flips to bottom, does not spin. may be able to delete
     return new RunCommand(
@@ -107,12 +130,14 @@ public class GroundIntake extends SubsystemBase {
       
   }
 
+  // Creates a new Run Command which sets the arm flipper to a specific speed until it has reached the Amp Angle
   public Command flipToAmp() {
     return new RunCommand(
       () -> setFlipperSpeed(calculateIntakeFlipAmp()) 
       ).until(() -> atAmpAngle());
   }
 
+  // Spins the Rollers with a given voltage
   public void spinRollers(int volts) {
     topRoller.setVoltage(volts);
     bottomRoller.setVoltage(volts);
@@ -120,6 +145,10 @@ public class GroundIntake extends SubsystemBase {
 
   public void resetArmEncoder() {
     armEncoder.setPosition(0);
+  }
+
+  public double getArmEncoderVal() {
+    return armEncoder.getPosition();
   }
 
   @Override
