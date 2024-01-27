@@ -77,6 +77,8 @@ public final class Constants {
     public static final double armDownSlowSpeed = 0.2;
     public static final double armDownSpeed = 0.3;
 
+    public static final int rollerSpeed = 3;
+
 
     public static final double kTurnToleranceDeg = 0.5;
     public static final double kTurnRateToleranceDegPerS = 5;

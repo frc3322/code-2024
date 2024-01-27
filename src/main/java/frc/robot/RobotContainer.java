@@ -13,11 +13,13 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.GroundIntake;
 import io.github.oblarg.oblog.Logger;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -31,6 +33,7 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem robotDrive = new DriveSubsystem();
   private final Elevator elevator = new Elevator();
+  private final GroundIntake groundIntake = new GroundIntake();
 
   // The driver's controller
   CommandXboxController driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
@@ -92,6 +95,7 @@ public class RobotContainer {
           elevator.setMotor(limitedPower); 
         }, elevator)
     );
+
   }
 
   /**
@@ -119,7 +123,19 @@ public class RobotContainer {
     driverController.b().whileTrue(
       robotDrive.AmpLineupDynamicTrajectory()
     );
+
+    // Rollers in (Intake)
+    driverController.leftBumper()
+        .whileTrue(new StartEndCommand(
+          () -> groundIntake.spinRollers(Constants.GroundIntakeConstants.rollerSpeed), () -> groundIntake.spinRollers(0), groundIntake));
+
+    // Roller out (Outtake)
+    driverController.rightBumper()
+        .whileTrue(new StartEndCommand(
+          () -> groundIntake.spinRollers(-Constants.GroundIntakeConstants.rollerSpeed), () -> groundIntake.spinRollers(0), groundIntake));
+        
   }
+
   public void updateLogger() {
     Logger.updateEntries();
   }
