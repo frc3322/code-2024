@@ -76,7 +76,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
   private double lastDir = 0;
   public SwerveDrivePoseEstimator estimatedPose;
 
-  public Pose2d visionMeasurement2d;
+  public Pose2d averageVisionMeasurement;
   public Timer time;
 
   // Odometry class for tracking robot pose
@@ -455,18 +455,17 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
         });
     SmartDashboard.updateValues();
     
-    //updates pose with current time, rotation, and module positions.
+    // updates pose with current time, rotation, and module positions.
     estimatedPose.updateWithTime(Timer.getFPGATimestamp(), Rotation2d.fromDegrees(getAngle()), getModulePositions());
 
-    //update vision from limelights only
-    visionMeasurement2d = LimeLightVision.limeLightAverage();
-
-    //updates pose with ll positions
+    // updates pose with Lime Light positions
     if ((LimeLightVision.hasTarget("limelight-left") || LimeLightVision.hasTarget("limelight-right")) && this.getTurnRate() <= LimeLightConstants.turnRateThreshold){
-      estimatedPose.addVisionMeasurement(visionMeasurement2d, Timer.getFPGATimestamp());
+      averageVisionMeasurement = LimeLightVision.limeLightAverage();
+
+      estimatedPose.addVisionMeasurement(averageVisionMeasurement, Timer.getFPGATimestamp());
     }
+    
     field.setRobotPose(estimatedPose.getEstimatedPosition());
     this.resetOdometry(estimatedPose.getEstimatedPosition());
   }
-
 }
