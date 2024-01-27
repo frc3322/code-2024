@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.CANIds;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.LimeLightConstants;
 import frc.utils.SwerveUtils;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
@@ -453,24 +454,16 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
             m_rearRight.getPosition()
         });
     SmartDashboard.updateValues();
-
-    SmartDashboard.putString("Drivetrain Pose", "Pose X: " + this.getPose().getX() + " Pose Y: " + this.getPose().getY() + " Rotation: " + this.getPose().getRotation().getDegrees());
-
-    // pass current robot pose to limelight subsystem
-    Pose2d bestPose = LimeLightVision.getBestPose("limelight-right", "limelight-left", this.getPose());
     
-  
-    //field.setRobotPose(bestPose);
-    //this.resetOdometry(bestPose);
+    //updates pose with current time, rotation, and module positions.
+    estimatedPose.updateWithTime(Timer.getFPGATimestamp(), Rotation2d.fromDegrees(getAngle()), getModulePositions());
 
     //update vision from limelights only
     visionMeasurement2d = LimeLightVision.limeLightAverage();
-    
-    //updates pose with current time, rotation, and module positions.
-    estimatedPose.updateWithTime(time.getFPGATimestamp(), Rotation2d.fromDegrees(getAngle()), getModulePositions());
+
     //updates pose with ll positions
-    if (LimeLightVision.hasTarget("limelight-left") || LimeLightVision.hasTarget("limelight-right")){
-      estimatedPose.addVisionMeasurement(visionMeasurement2d, time.getFPGATimestamp());
+    if ((LimeLightVision.hasTarget("limelight-left") || LimeLightVision.hasTarget("limelight-right")) && this.getTurnRate() <= LimeLightConstants.turnRateThreshold){
+      estimatedPose.addVisionMeasurement(visionMeasurement2d, Timer.getFPGATimestamp());
     }
     field.setRobotPose(estimatedPose.getEstimatedPosition());
     this.resetOdometry(estimatedPose.getEstimatedPosition());

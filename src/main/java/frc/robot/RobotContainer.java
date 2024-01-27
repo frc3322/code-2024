@@ -51,7 +51,7 @@ public class RobotContainer {
     Logger.configureLoggingAndConfig(this, true);
 
     // Auton selector config
-    autoSelector.setDefaultOption("Test4+1", new Test4And1Auto());
+    autoSelector.setDefaultOption("Test", new Test4And1Auto());
 
     autoSelector.addOption("No auto", null);
 
@@ -138,11 +138,11 @@ public class RobotContainer {
      * https://github.com/mjansen4857/pathplanner
      */
 
-     return autoSelector.getSelected();
+     return new PathPlannerAuto("Test");
   }
 
   /*◇─◇──◇─◇
-      Autos
+      Autos\
   ◇─◇──◇─◇*/
   
   private static class Test4And1Auto extends SequentialCommandGroup{

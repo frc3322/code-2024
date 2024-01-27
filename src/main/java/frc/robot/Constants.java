@@ -226,7 +226,7 @@ public final class Constants {
   public static class LimeLightConstants {
     // threshold values used for desiding what sensor inputs are averaged to detect robot pose (meters)
     public static final double xyThreshold = 0.1;
-    public static final double yawThreshold = 0.125; // not currently implamented
+    public static final double turnRateThreshold = 4; // if rotating above value in rps will not use vision
 
     // offset used to convert lime light field space (0,0 is center of field) to wpilib field space (bottom left is 0,0)
     public static final double fieldLengthOffset = Units.inchesToMeters(651.25 / 2);

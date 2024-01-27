@@ -181,7 +181,7 @@ public class LimeLightVision extends SubsystemBase {
     return new Pose2d(xAverage, yAverage, Rotation2d.fromDegrees(yawAverage));
   }
   public static Pose2d limeLightAverage(){
-    if (hasTarget("limelight-right") && hasTarget("limelight-right")){
+    if (hasTarget("limelight-right") && hasTarget("limelight-left")){
       Pose2d left = getPose("limelight-left");
       Pose2d right = getPose("limelight-right");
       Pose2d[] poseArray = {left, right};
