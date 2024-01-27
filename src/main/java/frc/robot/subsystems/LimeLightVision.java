@@ -8,7 +8,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LimeLightConstants;
 
@@ -87,77 +86,6 @@ public class LimeLightVision extends SubsystemBase {
     return rotation;
   }
 
-  public static Pose2d getBestPose(String limeLightOne, String limeLightTwo, Pose2d driveTrainPose){
-    boolean hasTargetOne = hasTarget(limeLightOne);
-    boolean hasTargetTwo = hasTarget(limeLightTwo);
-
-    SmartDashboard.putBoolean("LimeLight One Has Target", hasTargetOne);
-    SmartDashboard.putBoolean("LimeLight Two Has Target", hasTargetTwo);
-    if (hasTargetOne) {
-      SmartDashboard.putString("LimeLight One Pose", poseAsString(getPose(limeLightOne)));
-    }
-    if (hasTargetTwo) {
-      SmartDashboard.putString("LimeLight Two Pose", poseAsString(getPose(limeLightTwo)));
-    }
-
-    if (hasTargetOne && hasTargetTwo) {
-      Pose2d limeLightOnePose = getPose(limeLightOne);
-      Pose2d limeLightTwoPose = getPose(limeLightTwo);
-
-      double limeLightOneDistance = driveTrainPose.getTranslation().getDistance(limeLightOnePose.getTranslation());
-      double limeLightTwoDistance = driveTrainPose.getTranslation().getDistance(limeLightTwoPose.getTranslation());
-
-      // if both are within the threshold average them
-      if (limeLightOneDistance < LimeLightConstants.xyThreshold && limeLightTwoDistance < LimeLightConstants.xyThreshold) {
-        Pose2d[] poseArray = {limeLightOnePose, limeLightTwoPose};
-        SmartDashboard.putString("Lime Light Logic Status", "Both are within threshold");
-        return averagePoses(poseArray);
-      }
-      if (limeLightOneDistance < LimeLightConstants.xyThreshold) {
-        Pose2d[] poseArray = {limeLightOnePose, driveTrainPose};
-        SmartDashboard.putString("Lime Light Logic Status", "Lime Light One is within threshold");
-        return averagePoses(poseArray);
-      }
-      if (limeLightTwoDistance < LimeLightConstants.xyThreshold) {
-        Pose2d[] poseArray = {limeLightTwoPose, driveTrainPose};
-        SmartDashboard.putString("Lime Light Logic Status", "Lime Light Two is within threshold");
-        return averagePoses(poseArray);
-      }
-      double limeOneTwoDistance = limeLightOnePose.getTranslation().getDistance(limeLightTwoPose.getTranslation());
-      if (limeOneTwoDistance < LimeLightConstants.xyThreshold) {
-        Pose2d[] poseArray = {limeLightOnePose, limeLightTwoPose};
-        SmartDashboard.putString("Lime Light Logic Status", "Averaging only limelights");
-        return averagePoses(poseArray);
-      }
-      SmartDashboard.putString("Lime Light Logic Status", "No limelights are within threshold, using drive train pose");
-      return driveTrainPose;
-    }
-    else if (hasTargetOne) {
-      Pose2d limeLightOnePose = getPose(limeLightOne);
-      double limeLightOneDistance = driveTrainPose.getTranslation().getDistance(limeLightOnePose.getTranslation());
-      if (limeLightOneDistance < LimeLightConstants.xyThreshold) {
-        Pose2d[] poseArray = {limeLightOnePose, driveTrainPose};
-        SmartDashboard.putString("Lime Light Logic Status", "Lime Light One is within threshold");
-        return averagePoses(poseArray);
-      }
-      SmartDashboard.putString("Lime Light Logic Status", "Lime Light One is not within threshold, using drive train pose");
-      return driveTrainPose;
-    }
-    else if (hasTargetTwo) {
-      Pose2d limeLightTwoPose = getPose(limeLightTwo);
-      double limeLightTwoDistance = driveTrainPose.getTranslation().getDistance(limeLightTwoPose.getTranslation());
-      if (limeLightTwoDistance < LimeLightConstants.xyThreshold) {
-        Pose2d[] poseArray = {limeLightTwoPose, driveTrainPose};
-        SmartDashboard.putString("Lime Light Logic Status", "Lime Light Two is within threshold");
-        return averagePoses(poseArray);
-      }
-      SmartDashboard.putString("Lime Light Logic Status", "Lime Light Two is not within threshold, using drive train pose");
-      return driveTrainPose;
-    }
-    SmartDashboard.putString("Lime Light Logic Status", "No limelights have targets, using drive train pose");
-    return driveTrainPose;
-  }
-
   /**
    * Averages the positions of Pose2d objects.
    *
@@ -180,6 +108,12 @@ public class LimeLightVision extends SubsystemBase {
     new Rotation2d();
     return new Pose2d(xAverage, yAverage, Rotation2d.fromDegrees(yawAverage));
   }
+
+  /**
+   * Gets the average of the current limelight poses
+   * 
+   * @return a pose2d object, empty pose2d if no limelight have targets
+   */
   public static Pose2d limeLightAverage(){
     if (hasTarget("limelight-right") && hasTarget("limelight-left")){
       Pose2d left = getPose("limelight-left");
@@ -191,10 +125,12 @@ public class LimeLightVision extends SubsystemBase {
       Pose2d[] poseArray = {right};
       return averagePoses(poseArray);
     }
-    Pose2d left = getPose("limelight-left");
-    Pose2d[] poseArray = {left};
-    return averagePoses(poseArray);
-    
+    else if (hasTarget("limelight-left")){
+      Pose2d left = getPose("limelight-left");
+      Pose2d[] poseArray = {left};
+      return averagePoses(poseArray);
+    }
+    return new Pose2d();
   }
   
   @Override
