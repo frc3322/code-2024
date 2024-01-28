@@ -18,11 +18,12 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANIds;
 import frc.robot.Constants.ElevatorConstants;
+import io.github.oblarg.oblog.Loggable;
 
 /**
  * The elevator subsystem for 3322's 2024 robot.
  */
-public class Elevator extends SubsystemBase {
+public class Elevator extends SubsystemBase implements Loggable {
   
   private final CANSparkMax elevatorLeftMotor = new CANSparkMax(CANIds.kElevatorLeftCanId, MotorType.kBrushless);
   private final CANSparkMax elevatorRightMotor = new CANSparkMax(CANIds.kElevatorRightCanId, MotorType.kBrushless);

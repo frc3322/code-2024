@@ -20,11 +20,12 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.CANIds;
 import frc.robot.Constants.DIOids;
 import frc.robot.Constants.TransferConstants;
+import io.github.oblarg.oblog.Loggable;
 
 /**
  * The transfer subsystem for 3322's 2024 robot.
  */
-public class Transfer extends SubsystemBase {
+public class Transfer extends SubsystemBase implements Loggable {
   
   private final CANSparkMax transferMotor = new CANSparkMax(CANIds.kTransferCanId, MotorType.kBrushless);
   private final CANSparkMax shooterTransferMotor = new CANSparkMax(CANIds.kShooterTransferCanId, MotorType.kBrushless);
