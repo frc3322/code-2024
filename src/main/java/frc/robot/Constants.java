@@ -62,22 +62,10 @@ public final class Constants {
     public static final int kShooterPivotCanId = 17;
     public static final int kShooterTransferCanId = 18;
   }
-  public static final class GroundIntakeConstants {
-    //PID Constants
-    public static final int intakeP = 0;
-    public static final int intakeI = 0;
-    public static final int intakeD = 0;
 
-    public static final int bottomZoneLimit = 7;
-    public static final int topZoneLimit = 2;
-    public static final int ampZoneLimit = 11;
-    public static final int slowZoneStart = 3;
-
-
-    public static final double armUpSlowSpeed = -0.2;
-    public static final double armUpSpeed = -0.3;
-    public static final double armDownSlowSpeed = 0.2;
-    public static final double armDownSpeed = 0.3;
+  public final class DIOids {
+    public static final int transferBeamBreakDIO = 0;
+    public static final int shooterBeamBreakDIO = 1;
   }
 
   public static final class DriveConstants {
@@ -113,27 +101,6 @@ public final class Constants {
     // Works now, reverses gyro everywhere in drivetrain
     public static final boolean kGyroReversed = true;
   }
-
-  public static final class IntakeConstants{
-    public static final double intakeSpeed = 1;
-    public static final double intakeOutputLimit = 8;
-  }
-
-  public static final class ElevatorConstants{
-    public static final double elevatorP = 0;
-    public static final double elevatorI = 0;
-    public static final double elevatorD = 0;
-    public static final double velocityConstraint = 0;
-    public static final double accelerationConstraint = 0;
-
-    public static final double elevatorBottomPosition = 0;
-    public static final double elevatorAmpPosition = 0;
-    public static final double elevatorTopPosition = 0;
-    
-    public static final double elevatorBottomThreshold = 0;
-    public static final double elevatorTopThreshold = 0;
-  }
-
 
   public static final class ModuleConstants {
     // The MAXSwerve module can be configured with one of three pinion gears: 12T, 13T, or 14T.
@@ -185,6 +152,47 @@ public final class Constants {
     public static final int kDrivingMotorCurrentLimit = 50; // amps
     public static final int kTurningMotorCurrentLimit = 20; // amps
   }
+
+  public static final class ElevatorConstants{
+    public static final double elevatorP = 0;
+    public static final double elevatorI = 0;
+    public static final double elevatorD = 0;
+    public static final double velocityConstraint = 0;
+    public static final double accelerationConstraint = 0;
+
+    public static final double elevatorBottomPosition = 0;
+    public static final double elevatorAmpPosition = 0;
+    public static final double elevatorTopPosition = 0;
+    
+    public static final double elevatorBottomThreshold = 0;
+    public static final double elevatorTopThreshold = 0;
+  }
+
+  public static final class TransferConstants {
+    public static final double transferSpeed = 0.1;
+  }
+
+  public static final class GroundIntakeConstants {
+    //PID Constants
+    public static final int intakeP = 0;
+    public static final int intakeI = 0;
+    public static final int intakeD = 0;
+
+    public static final int bottomZoneLimit = 7;
+    public static final int topZoneLimit = 2;
+    public static final int ampZoneLimit = 11;
+    public static final int slowZoneStart = 3;
+
+
+    public static final double armUpSlowSpeed = -0.2;
+    public static final double armUpSpeed = -0.3;
+    public static final double armDownSlowSpeed = 0.2;
+    public static final double armDownSpeed = 0.3;
+  }
+
+
+
+  
 
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
