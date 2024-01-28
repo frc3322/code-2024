@@ -12,12 +12,18 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.CANIds;
 import frc.robot.Constants.DIOids;
 import frc.robot.Constants.TransferConstants;
 
+/**
+ * The transfer subsystem for 3322's 2024 robot.
+ */
 public class Transfer extends SubsystemBase {
   
   private final CANSparkMax transferMotor = new CANSparkMax(CANIds.kTransferCanId, MotorType.kBrushless);
@@ -42,10 +48,18 @@ public class Transfer extends SubsystemBase {
   ✨Getters✨
   ◇─◇──◇─◇*/
 
+  /**
+   * Returns whether the transfer beam break is tripped.
+   * @return A boolean representing if the transfer has a game piece.
+   */
   public boolean transferFull() {
     return transferBeamBreak.get();
   }
 
+  /**
+   * Returns whether the shooter beam break is tripped.
+   * @return A boolean representing if the shooter has a game piece.
+   */
   public boolean shooterFull() {
     return shooterBeamBreak.get();
   }
@@ -54,18 +68,32 @@ public class Transfer extends SubsystemBase {
   ✨Setters✨
   ◇─◇──◇─◇*/
 
+  /**
+   * Sets the speed of the transfer.
+   * @param power The speed of the transfer.
+   */
   public void setTransferSpeeds(double power){
     transferMotor.set(power);
   }
 
+  /**
+   * Sets the speed of the shooter transfer.
+   * @param power The speed of the shooter transfer.
+   */
   public void setShooterTransferSpeeds(double power) {
     shooterTransferMotor.set(power);
   }
 
+  /**
+   * Stops the transfer motor.
+   */
   public void stopTransfer(){
     transferMotor.stopMotor();
   }
 
+  /**
+   * Stops the shooter tranfer motor.
+   */
   public void stopShooterTransfer(){
     shooterTransferMotor.stopMotor();
   }
@@ -74,7 +102,11 @@ public class Transfer extends SubsystemBase {
   ✨Commands✨
   ◇─◇──◇─◇*/
 
-  public Command intakeToShooter() {
+  /**
+   * Returns a command that moves a game piece from the intake to the shooter.
+   * @return A start end command.
+   */
+  public Command intakeToShooterCommand() {
     return new StartEndCommand(
       () -> {
         setTransferSpeeds(TransferConstants.transferSpeed);
@@ -89,7 +121,12 @@ public class Transfer extends SubsystemBase {
     .until(this::shooterFull);
   }
 
-  public Command shooterToIntake(BooleanSupplier intakeFull) {
+  /**
+   * Returns a command that moves the game piece from the shooter to the intake.
+   * @param intakeFull A boolean supplier representing if the intake is full or not.
+   * @return A start end command.
+   */
+  public Command shooterToIntakeCommand(BooleanSupplier intakeFull) {
     return new StartEndCommand(
       () -> {
         setTransferSpeeds(-TransferConstants.transferSpeed);
@@ -101,6 +138,27 @@ public class Transfer extends SubsystemBase {
       }, 
       this
     ).until(intakeFull);
+  }
+
+  /**
+   * Returns a command that feeds the game piece into the shooter wheels.
+   * @return A RunCommand.
+   */
+  public Command shootCommand() {
+    return new RunCommand(
+      () -> {
+        setShooterTransferSpeeds(TransferConstants.transferSpeed);
+      }, 
+      this
+    )
+    .until(this::shooterFull)
+    .andThen(new WaitCommand(TransferConstants.shootWaitTime))
+    .andThen(new InstantCommand(
+      () -> {
+        stopShooterTransfer();
+      },
+      this
+    ));
   }
 
   @Override
