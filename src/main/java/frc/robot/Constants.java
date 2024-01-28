@@ -33,32 +33,34 @@ public final class Constants {
 
   public static final class CANIds {
     // SPARK MAX CAN IDs
-    public static final int kFrontLeftDrivingCanId = 13;
-    public static final int kRearLeftDrivingCanId = 7;
+    public static final int kFrontLeftDrivingCanId = 2;
+    public static final int kRearLeftDrivingCanId = 3;
 
-    public static final int kFrontRightDrivingCanId = 40;
-    public static final int kRearRightDrivingCanId = 55;
+    public static final int kFrontRightDrivingCanId = 4;
+    public static final int kRearRightDrivingCanId = 5;
 
-    public static final int kFrontLeftTurningCanId = 20;
-    public static final int kRearLeftTurningCanId = 23; 
+    public static final int kFrontLeftTurningCanId = 6;
+    public static final int kRearLeftTurningCanId = 7; 
 
-    public static final int kFrontRightTurningCanId = 36;
-    public static final int kRearRightTurningCanId = 12;
-    
-    //Change GroundIntake motor ids here:
-    public static final int kTopRollerCanId = 70;
-    public static final int kBottomRollerCanId = 71;
+    public static final int kFrontRightTurningCanId = 8;
+    public static final int kRearRightTurningCanId = 9;
 
-    //Change GroundIntake arm id here:
-    public static final int kArmCanId = 73;
-    
-    // Based on the sides of the chassis. If electrical does not label anything i will be murdering them -simran
-    public static final int kElevatorLeftId = 62;
-    public static final int kElevatorRightId = 61;
-    public static final int intakeLeftId = 9;
-    public static final int intakeRightId = 6 ;
-    
+    // Elevator CAN IDs - front is shooter side
+    public static final int kElevatorLeftCanId = 10;
+    public static final int kElevatorRightCanId = 11;
 
+    // Intake CAN IDs
+    public static final int kIntakePivotCanId = 12;
+    public static final int kIntakeWheelsCanId = 13;
+
+    // Transfer ID
+    public static final int kTransferCanId = 14;
+
+    // Shooter IDs
+    public static final int kShooterLeftCanId = 15;
+    public static final int kShooterRightCanId = 16;
+    public static final int kShooterPivotCanId = 17;
+    public static final int kShooterTransferCanId = 18;
   }
   public static final class GroundIntakeConstants {
     //PID Constants
@@ -118,17 +120,18 @@ public final class Constants {
   }
 
   public static final class ElevatorConstants{
-    public static final double elevatorTopLimit = 19.5;
+    public static final double elevatorP = 0;
+    public static final double elevatorI = 0;
+    public static final double elevatorD = 0;
+    public static final double velocityConstraint = 0;
+    public static final double accelerationConstraint = 0;
 
-    public static final double[] elevatorSetpoints = {0.1, 1.5, 5.33, 9.1, 12.65, 18.3};
-
-    public static final double secondCubeSetpoint = 2.8;
-
-    public static final double elevatorP = .2;
-    public static final double elevatorI = 0.15;
-    public static final double elevatorD = 0.01;
-    public static final double velocityConstraint = 100;
-    public static final double accelerationConstraint = 25;
+    public static final double elevatorBottomPosition = 0;
+    public static final double elevatorAmpPosition = 0;
+    public static final double elevatorTopPosition = 0;
+    
+    public static final double elevatorBottomThreshold = 0;
+    public static final double elevatorTopThreshold = 0;
   }
 
 

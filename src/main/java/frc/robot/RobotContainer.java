@@ -85,11 +85,10 @@ public class RobotContainer {
           // Booleans to limit elevator movment
           boolean goingDown = -secondaryController.getRightY() < 0;
           boolean goingUp = -secondaryController.getRightY() > 0;
-          boolean aboveLimit = elevator.getElevatorLeftEncoder() > ElevatorConstants.elevatorTopLimit;
           
-          double limitedPower = (elevator.atBottom() && goingDown) || (aboveLimit && goingUp) ? 0 : powerIn;
+          double limitedPower = (elevator.atBottom() && goingDown) || (elevator.atTop() && goingUp) ? 0 : powerIn;
           
-          elevator.setMotor(limitedPower); 
+          elevator.setElevatorPower(limitedPower); 
         }, elevator)
     );
   }

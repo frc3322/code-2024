@@ -9,157 +9,186 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.*;
-import io.github.oblarg.oblog.Loggable;
-import io.github.oblarg.oblog.annotations.Log;
+import frc.robot.Constants.CANIds;
+import frc.robot.Constants.ElevatorConstants;
 
-public class Elevator extends SubsystemBase implements Loggable{
-  private final CANSparkMax elevatorLeft = new CANSparkMax(CANIds.kElevatorLeftId, MotorType.kBrushless);
-  private final CANSparkMax elevatorRight = new CANSparkMax(CANIds.kElevatorRightId, MotorType.kBrushless);
-  private final DigitalInput bottomLimit = new DigitalInput(1);
-  private final RelativeEncoder elevatorLeftEncoder = elevatorLeft.getEncoder();
-  private final RelativeEncoder elevatorRightEncoder = elevatorRight.getEncoder();
+/**
+ * The elevator subsystem for 3322's 2024 robot.
+ */
+public class Elevator extends SubsystemBase {
   
-  @Log public double elevatorLeftEncoderVal;
-  @Log public double elevatorRightEncoderVal;
+  private final CANSparkMax elevatorLeftMotor = new CANSparkMax(CANIds.kElevatorLeftCanId, MotorType.kBrushless);
+  private final CANSparkMax elevatorRightMotor = new CANSparkMax(CANIds.kElevatorRightCanId, MotorType.kBrushless);
 
-  private boolean slowModeOn = false;
-
-  @Log
-  private int currentSetpointIndex = 0;
-
-  private double setpoint = 0;
+  private final RelativeEncoder elevatorLeftEncoder = elevatorLeftMotor.getEncoder();
   
+  private final ProfiledPIDController elevatorPidController = new ProfiledPIDController(
+    ElevatorConstants.elevatorP,
+    ElevatorConstants.elevatorI,
+    ElevatorConstants.elevatorD,
+    new Constraints(
+      ElevatorConstants.velocityConstraint, 
+      ElevatorConstants.accelerationConstraint
+    )
+  );
+  
+  /** Creates a new Elevator. */
   public Elevator() {
+    elevatorLeftMotor.restoreFactoryDefaults();
+    elevatorRightMotor.restoreFactoryDefaults();
 
-   
+    elevatorLeftMotor.setIdleMode(IdleMode.kBrake);
+    elevatorRightMotor.setIdleMode(IdleMode.kBrake);
 
-    //not sure which we need to invert. Make up positive though.
-    // left cw up
+    elevatorLeftMotor.setInverted(false);
+    elevatorRightMotor.follow(elevatorLeftMotor, true);
 
-    elevatorRight.restoreFactoryDefaults();
-    elevatorLeft.restoreFactoryDefaults();
-     
-    elevatorLeft.setInverted(false);
-     elevatorRight.follow(elevatorLeft, true);
-    
-     
-     elevatorLeft.setIdleMode(IdleMode.kBrake);
-     elevatorRight.setIdleMode(IdleMode.kBrake);
-
-     elevatorRight.burnFlash();
-     elevatorLeft.burnFlash();
-
+    elevatorLeftMotor.burnFlash();
+    elevatorRightMotor.burnFlash();
   }
 
   /*◇─◇──◇─◇
-     Getters
+  ✨Getters✨
   ◇─◇──◇─◇*/
 
-  public double getElevatorLeftEncoder(){
-    return elevatorLeftEncoderVal;
+  /**
+   * Returns the current position goal of the profiled PID.
+   * @return The position goal of the elevator PID.
+   */
+  public double getSetpoint() {
+    return elevatorPidController.getGoal().position;
   }
 
-  @Log
-  public boolean atBottom(){
-    return bottomLimit.get();
+  /**
+   * Get the position of the left elevator motor encoder.
+   * @return The position of the elevator encoder.
+   */
+  public double getElevatorEncoderPosition() {
+    return elevatorLeftEncoder.getPosition();
   }
 
-  @Log
-  public double getCurrentCycleSetpoint() {
-    return ElevatorConstants.elevatorSetpoints[currentSetpointIndex];
+  /**
+   * Returns a boolean representing if the elevator position is below the bottom threshold
+   * @return A boolean represening if the elevator is at the bottom
+   */
+  public boolean atBottom() {
+    return getElevatorEncoderPosition() < ElevatorConstants.elevatorBottomThreshold;
   }
 
-  public double getSetpoint(){
-    return setpoint;
-  }
-
-  // public double inchesToEncoder(double inches){
-  //   
-  // }
-  
-  /*◇─◇──◇─◇
-     Setters
-  ◇─◇──◇─◇*/
-
-  public Command exampleCommand(){
-    return new InstantCommand(() -> {});
-  }
-
-  public void setMotor(double left){
-    elevatorLeft.set(left);
-  }
-
-  public void setpointCycleUp(){
-    if (currentSetpointIndex < ElevatorConstants.elevatorSetpoints.length - 1) currentSetpointIndex++;
-    setpoint = getCurrentCycleSetpoint();
-  }
-
-  public void setpointCycleDown(){
-    
-    if (currentSetpointIndex > 0) currentSetpointIndex--;
-    setpoint = getCurrentCycleSetpoint();
-  }
-
-  public void setSetpoint(double setpoint){
-    this.setpoint = setpoint;
-  }
-
-  public void setSetpointCycleIndex(int index){
-    currentSetpointIndex = index;
-    setpoint = getCurrentCycleSetpoint();
-  }
-
-  public void resetElevatorEncoders(){
-    elevatorLeftEncoder.setPosition(0);
-    elevatorRightEncoder.setPosition(0);
-  }
-
-  public void toggleElevatorSlowMode(){
-    if(slowModeOn){
-      slowModeOn = false;
-    }else{
-      slowModeOn = true;
-    }
+  /**
+   * Returns a boolean representing if the elevator position is above the top threshold
+   * @return A boolean represening if the elevator is at the top
+   */
+  public boolean atTop() {
+    return getElevatorEncoderPosition() > ElevatorConstants.elevatorTopThreshold;
   }
 
   /*◇─◇──◇─◇
-    Commands
+  ✨Setters✨
   ◇─◇──◇─◇*/
-  
-  public Command setpointCycleUpCommand() {
-    return new InstantCommand( () -> setpointCycleUp(), this);
+
+  /**
+   * Set the power of both elevator motors, with one inverted.
+   * @param power The power for both motors.
+   */
+  public void setElevatorPower(double power) {
+    elevatorLeftMotor.set(power);
   }
 
-  public Command setpointCycleDownCommand() {
-    return new InstantCommand( () -> setpointCycleDown(), this);
+  /**
+   * Stop both elevator motors.
+   */
+  public void stopElevator(){
+    elevatorLeftMotor.stopMotor();
   }
 
-  @Log
-  public Command resetElevatorEncodersCommand(){
-    return new InstantCommand( () -> resetElevatorEncoders());
-
+  /**
+   * Set the setpoint of the elevator PID controller.
+   * @param setpoint The setpoint of the PID controller.
+   */
+  public void setElevatorSetpoint(double setpoint) {
+    elevatorPidController.setGoal(setpoint);
   }
 
-  public Command stopElevator() {
-    return new InstantCommand( () -> elevatorLeft.set(0), this);
+  /*◇─◇──◇─◇
+  ✨Commands✨
+  ◇─◇──◇─◇*/
+
+  /**
+   * Returns a command that uses the elevator PID command to go to its setpoint until interuppeted.
+   * @return A run command that moves the elevator towards its setpoint.
+   */
+  public Command goToSetpoint() {
+    return new RunCommand(
+      () -> {
+        elevatorLeftMotor.set(elevatorPidController.calculate(getElevatorEncoderPosition()));
+        // Not working? Are your PID constants 0? Are your constraints 0? Are your setpoints 0?
+      }, 
+      this
+    );
+  }
+
+  /**
+   * A command that sets the PID goal to the bottom position and moves to it.
+   * @return A sequential command group that moves the elevator to the bottom position.
+   */
+  public Command goToBottomCommand() {
+    return new SequentialCommandGroup(
+      new InstantCommand( 
+        () -> setElevatorSetpoint(ElevatorConstants.elevatorBottomPosition)
+      ),
+      goToSetpoint()
+    );
+  }
+
+  /**
+   * A command that sets the PID goal to the AMP position and moves to it.
+   * @return A sequential command group that moves the elevator to the AMP position.
+   */
+  public Command goToAmpCommand() {
+    return new SequentialCommandGroup(
+      new InstantCommand( 
+        () -> setElevatorSetpoint(ElevatorConstants.elevatorAmpPosition)
+      ),
+      goToSetpoint()
+    );
+  }
+
+  /**
+   * A command that sets the PID goal to the top position and moves to it.
+   * @return A sequential command group that moves the elevator to the top position.
+   */
+  public Command goToTopCommand() {
+    return new SequentialCommandGroup(
+      new InstantCommand( 
+        () -> setElevatorSetpoint(ElevatorConstants.elevatorTopPosition)
+      ),
+      goToSetpoint()
+    );
+  }
+
+  /**
+   * An instant command that stops the elevator. Can be used to return to manual control.
+   * @return An instant command that stops the elevator
+   */
+  public Command stopElevatorCommand() {
+    return new InstantCommand(
+      () -> {
+        stopElevator();
+      },
+      this
+    );
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    elevatorLeftEncoderVal = elevatorLeftEncoder.getPosition();
-    elevatorRightEncoderVal = elevatorRightEncoder.getPosition();
-
-    if(atBottom()){
-     resetElevatorEncoders();
-    }
-
   }
-
-  
 }

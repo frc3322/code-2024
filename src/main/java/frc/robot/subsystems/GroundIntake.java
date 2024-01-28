@@ -8,21 +8,18 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
-import edu.wpi.first.networktables.BooleanEntry;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.IntakeConstants;
 import io.github.oblarg.oblog.annotations.Log;
 
 public class GroundIntake extends SubsystemBase {
   /** Creates a new GroundIntake. */
 
   //Creates motor objects
-  private final CANSparkMax topRoller = new CANSparkMax(Constants.CANIds.kTopRollerCanId, MotorType.kBrushless);
-  private final CANSparkMax bottomRoller = new CANSparkMax(Constants.CANIds.kBottomRollerCanId, MotorType.kBrushless);
-  private final CANSparkMax intakeArm = new CANSparkMax(Constants.CANIds.kArmCanId, MotorType.kBrushless);
+  private final CANSparkMax wheelsMotor = new CANSparkMax(Constants.CANIds.kIntakeWheelsCanId, MotorType.kBrushless);
+  private final CANSparkMax intakeArm = new CANSparkMax(Constants.CANIds.kIntakePivotCanId, MotorType.kBrushless);
 
   //Creates encoder for intakeArm
   private final RelativeEncoder armEncoder = intakeArm.getEncoder();
@@ -32,12 +29,10 @@ public class GroundIntake extends SubsystemBase {
   @Log private boolean intakeAtTop;
 
   public GroundIntake() {
-    topRoller.setIdleMode(IdleMode.kBrake);
-    bottomRoller.setIdleMode(IdleMode.kBrake);
+    wheelsMotor.setIdleMode(IdleMode.kBrake);
     intakeArm.setIdleMode(IdleMode.kBrake);
 
-    topRoller.burnFlash();
-    bottomRoller.burnFlash();
+    wheelsMotor.burnFlash();
     intakeArm.burnFlash();
   }
 
@@ -113,9 +108,8 @@ public class GroundIntake extends SubsystemBase {
       ).until(() -> atAmpAngle());
   }
 
-  public void spinRollers(int volts) {
-    topRoller.setVoltage(volts);
-    bottomRoller.setVoltage(volts);
+  public void spinRollers(double power) {
+    wheelsMotor.set(power);
   }
 
   public void resetArmEncoder() {
