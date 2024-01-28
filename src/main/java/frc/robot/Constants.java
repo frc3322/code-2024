@@ -57,8 +57,8 @@ public final class Constants {
     public static final int kTransferCanId = 14;
 
     // Shooter IDs
-    public static final int kShooterLeftCanId = 15;
-    public static final int kShooterRightCanId = 16;
+    public static final int kShooterTopCanId = 15;
+    public static final int kShooterBottomCanId = 16;
     public static final int kShooterPivotCanId = 17;
     public static final int kShooterTransferCanId = 18;
   }
@@ -170,6 +170,7 @@ public final class Constants {
 
   public static final class TransferConstants {
     public static final double transferSpeed = 0.1;
+    public static double shootWaitTime = 0.1;
   }
 
   public static final class GroundIntakeConstants {
@@ -189,10 +190,6 @@ public final class Constants {
     public static final double armDownSlowSpeed = 0.2;
     public static final double armDownSpeed = 0.3;
   }
-
-
-
-  
 
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
