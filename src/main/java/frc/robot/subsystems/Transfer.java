@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.CANIds;
 import frc.robot.Constants.DIOids;
+import frc.robot.Constants.NeoMotorConstants;
 import frc.robot.Constants.TransferConstants;
 import io.github.oblarg.oblog.Loggable;
 
@@ -40,6 +41,13 @@ public class Transfer extends SubsystemBase implements Loggable {
 
     transferMotor.setIdleMode(IdleMode.kBrake);
     shooterTransferMotor.setIdleMode(IdleMode.kBrake);
+
+    /* Current limit so that we dont fry our 550s
+    - https://www.revrobotics.com/neo-550-brushless-motor-locked-rotor-testing/
+    - https://www.chiefdelphi.com/t/clear-concise-best-practices-for-sparkmax-neo-current-limiting/405541/5  
+    */
+    transferMotor.setSmartCurrentLimit(NeoMotorConstants.neo550CurrentLimitAmps);
+    shooterTransferMotor.setSmartCurrentLimit(NeoMotorConstants.neo550CurrentLimitAmps);
 
     transferMotor.burnFlash();
     shooterTransferMotor.burnFlash();
