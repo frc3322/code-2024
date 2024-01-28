@@ -173,6 +173,16 @@ public final class Constants {
     public static double shootWaitTime = 0.1;
   }
 
+  public static final class ShooterConstants{
+    public static final double shooterP = 0;
+    public static final double shooterI = 0;
+    public static final double shooterD = 0;
+
+    public static final double shooterV = 0;
+
+    public static final double shootingRMPAutoLine = 4000;
+  }
+
   public static final class GroundIntakeConstants {
     //PID Constants
     public static final int intakeP = 0;
