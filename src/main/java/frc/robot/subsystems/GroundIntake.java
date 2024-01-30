@@ -8,10 +8,15 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.GroundIntakeConstants;
 import io.github.oblarg.oblog.annotations.Log;
 
 public class GroundIntake extends SubsystemBase {
@@ -23,6 +28,10 @@ public class GroundIntake extends SubsystemBase {
 
   //Creates encoder for intakeArm
   private final RelativeEncoder armEncoder = intakeArm.getEncoder();
+
+  private final DigitalInput intakeOuterBeamBreak = new DigitalInput(0);
+  private final DigitalInput intakeInnerBeamBreak = new DigitalInput(1);
+
   
   @Log private double armPosition;
   @Log private double armPower;
@@ -42,6 +51,10 @@ public class GroundIntake extends SubsystemBase {
 
   public Boolean atGround() {
     return armEncoder.getPosition() > Constants.GroundIntakeConstants.bottomZoneLimit;
+  }
+
+  public Boolean intakeEmpty(){
+    return !intakeInnerBeamBreak.get() && !intakeOuterBeamBreak.get();
   }
 
     public void setFlipperSpeed(double speed){
@@ -102,10 +115,48 @@ public class GroundIntake extends SubsystemBase {
       
   }
 
+
+
   public Command flipToAmp() {
     return new RunCommand(
       () -> setFlipperSpeed(calculateIntakeFlipAmp()) 
       ).until(() -> atAmpAngle());
+  }
+
+  public Command intakeUntilBeamBreak(){
+    return new RunCommand(
+    () ->
+    {
+      // //AROOSH ADD CODE HERE CAUSE IM TOO LAZY - simran
+    }, this);
+  }
+
+  public Command stopRollersCommand(){
+    return new InstantCommand(
+      () -> {
+        spinRollers(0);
+      }
+    );
+  }
+
+    public Command intakeCommand(){
+    return new InstantCommand(
+      () -> {
+        spinRollers(GroundIntakeConstants.intakeSpeed);
+      }
+    );
+  }
+
+  public Command ejectCommand(){
+    return new StartEndCommand(
+      () ->{
+        spinRollers(-GroundIntakeConstants.intakeSpeed);
+      }, 
+      () -> {
+        spinRollers(0);
+      }, this)
+      .until(this::intakeEmpty);
+      
   }
 
   public void spinRollers(double power) {

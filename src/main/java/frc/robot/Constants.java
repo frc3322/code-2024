@@ -199,6 +199,8 @@ public final class Constants {
     public static final double armUpSpeed = -0.3;
     public static final double armDownSlowSpeed = 0.2;
     public static final double armDownSpeed = 0.3;
+
+    public static final double intakeSpeed = .2;
   }
 
   public static final class OIConstants {

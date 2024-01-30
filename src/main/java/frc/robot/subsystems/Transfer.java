@@ -73,6 +73,10 @@ public class Transfer extends SubsystemBase implements Loggable {
     return shooterBeamBreak.get();
   }
 
+  public boolean shooterNotFull() {
+    return !shooterBeamBreak.get();
+  }
+
   /*◇─◇──◇─◇
   ✨Setters✨
   ◇─◇──◇─◇*/
@@ -160,7 +164,7 @@ public class Transfer extends SubsystemBase implements Loggable {
       }, 
       this
     )
-    .until(this::shooterFull)
+    .until(this::shooterNotFull)
     .andThen(new WaitCommand(TransferConstants.shootWaitTime))
     .andThen(new InstantCommand(
       () -> {
