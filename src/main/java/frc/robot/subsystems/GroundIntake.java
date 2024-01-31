@@ -24,7 +24,7 @@ public class GroundIntake extends SubsystemBase {
 
   //Creates motor objects
   private final CANSparkMax wheelsMotor = new CANSparkMax(Constants.CANIds.kIntakeWheelsCanId, MotorType.kBrushless);
-  private final CANSparkMax intakeArm = new CANSparkMax(Constants.CANIds.kIntakePivotCanId, MotorType.kBrushless);
+  private final CANSparkMax intakeArm = new CANSparkMax(Constants.CANIds.kIntakePivotLeftCanId, MotorType.kBrushless);
 
   //Creates encoder for intakeArm
   private final RelativeEncoder armEncoder = intakeArm.getEncoder();

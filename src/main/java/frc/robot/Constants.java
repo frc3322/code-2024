@@ -50,17 +50,18 @@ public final class Constants {
     public static final int kElevatorRightCanId = 11;
 
     // Intake CAN IDs
-    public static final int kIntakePivotCanId = 12;
-    public static final int kIntakeWheelsCanId = 13;
+    public static final int kIntakePivotLeftCanId = 12;
+    public static final int kIntakePivotRightCanId = 13;
+    public static final int kIntakeWheelsCanId = 14;
 
     // Transfer ID
-    public static final int kTransferCanId = 14;
+    public static final int kTransferCanId = 15;
 
     // Shooter IDs
-    public static final int kShooterTopCanId = 15;
-    public static final int kShooterBottomCanId = 16;
-    public static final int kShooterPivotCanId = 17;
-    public static final int kShooterTransferCanId = 18;
+    public static final int kShooterTopCanId = 16;
+    public static final int kShooterBottomCanId = 17;
+    public static final int kShooterPivotCanId = 18;
+    public static final int kShooterTransferCanId = 19;
   }
 
   public final class DIOids {
