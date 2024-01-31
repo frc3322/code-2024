@@ -8,12 +8,13 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LimeLightConstants;
 
 public class LimeLightVision extends SubsystemBase {
   /** Creates a new LimeLightVision. */
-  
+  public Pose2d limelightPose;
   public LimeLightVision() {
   }
 
@@ -21,39 +22,97 @@ public class LimeLightVision extends SubsystemBase {
     return NetworkTableInstance.getDefault().getTable(limeLight).getEntry(entryKey);
   }
   /**
-   * Gets the pose from the LimeLight vision system.
+   * Gets the pose from the left Limelight
    *
-   * @param limeLight The LimeLight table name.
    * @return The pose retrieved from LimeLight.
    */
-  public static Pose2d getPose(String limeLight){
-    double[] limeLightData = getTableEntry(limeLight, "botpose").getDoubleArray(new double[6]);
+  public Pose2d getLeftPose(){
+    double[] limeLightData = getTableEntry("limelight-left", "botpose").getDoubleArray(new double[6]);
     return new Pose2d(limeLightData[0] + LimeLightConstants.fieldLengthOffset, limeLightData[1] + LimeLightConstants.fieldWidthOffset, Rotation2d.fromDegrees(limeLightData[5]));
   }
-
   /**
-   * Gets the target ID from the LimeLight vision system.
+   * Gets the pose from the right Limelight
    *
-   * @param limeLight The LimeLight table name.
+   * @return The pose retrieved from LimeLight.
+   */
+  public Pose2d getRightPose(){
+    double[] limeLightData = getTableEntry("limelight-right", "botpose").getDoubleArray(new double[6]);
+    return new Pose2d(limeLightData[0] + LimeLightConstants.fieldLengthOffset, limeLightData[1] + LimeLightConstants.fieldWidthOffset, Rotation2d.fromDegrees(limeLightData[5]));
+  }
+  /**
+   * Gets the average pose from the Limelight vision system.
+   *
+   * @return The average pose retrieved from both LimeLights.
+   */
+
+  public Pose2d getLimeLightAverage(){
+    if (hasLeftTarget() && hasRightTarget()){
+      Pose2d left = getLeftPose();
+      Pose2d right = getRightPose();
+      Pose2d[] poses = {left, right};
+      return averagePoses(poses);
+    } else if (hasRightTarget()){
+      Pose2d right = getRightPose();
+      Pose2d[] poseArray = {right};
+      return averagePoses(poseArray);
+    }
+    else if (hasLeftTarget()){
+      Pose2d left = getLeftPose();
+      Pose2d[] poseArray = {left};
+      return averagePoses(poseArray);
+    }
+    return new Pose2d();
+  }
+  /**
+   * Gets the target ID from the left LimeLight.
+   *
    * @return The target ID.
    */
-  public double getTagID(String limeLight){
-    if (hasTarget(limeLight)){
-        double[] tag = getTableEntry(limeLight, "tid").getDoubleArray(new double[6]);
+  public double getLeftTagID(){
+    if (hasLeftTarget()){
+        double[] tag = getTableEntry("limelight-left", "tid").getDoubleArray(new double[6]);
+        return tag[0];
+    }
+    return -1;
+  }
+    /**
+   * Gets the target ID from the right LimeLight.
+   *
+   * @return The target ID.
+   */
+  public double getRightTagID(){
+    if (hasLeftTarget()){
+        double[] tag = getTableEntry("limelight-right", "tid").getDoubleArray(new double[6]);
         return tag[0];
     }
     return -1;
   }
 
   /**
-   * Checks if LimeLight has a target.
+   * Checks if right LimeLight has a target.
    *
-   * @param limeLight The LimeLight table name.
    * @return True if LimeLight has a target, false otherwise.
    */
-  public static boolean hasTarget(String limeLight){
-    double hasTarget = getTableEntry(limeLight, "tv").getDouble(0);
+  public boolean hasRightTarget(){
+    double hasTarget = getTableEntry("limelight-right", "tv").getDouble(0);
     return hasTarget == 1;
+  }
+  /**
+   * Checks if left LimeLight has a target.
+   *
+   * @return True if LimeLight has a target, false otherwise.
+   */
+  public boolean hasLeftTarget(){
+    double hasTarget = getTableEntry("limelight-left", "tv").getDouble(0);
+    return hasTarget == 1;
+  }
+  /**
+   * Checks if left LimeLight has a target.
+   *
+   * @return True if LimeLight has a target, false otherwise.
+   */
+  public boolean hasTarget(){
+    return (hasLeftTarget() || hasRightTarget());
   }
   
   public static String poseAsString(Pose2d pose){
@@ -114,27 +173,14 @@ public class LimeLightVision extends SubsystemBase {
    * 
    * @return a pose2d object, empty pose2d if no limelight have targets
    */
-  public static Pose2d limeLightAverage(){
-    if (hasTarget("limelight-right") && hasTarget("limelight-left")){
-      Pose2d left = getPose("limelight-left");
-      Pose2d right = getPose("limelight-right");
-      Pose2d[] poseArray = {left, right};
-      return averagePoses(poseArray);
-    } else if (hasTarget("limelight-right")){
-      Pose2d right = getPose("limelight-right");
-      Pose2d[] poseArray = {right};
-      return averagePoses(poseArray);
-    }
-    else if (hasTarget("limelight-left")){
-      Pose2d left = getPose("limelight-left");
-      Pose2d[] poseArray = {left};
-      return averagePoses(poseArray);
-    }
-    return new Pose2d();
-  }
+
   
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    //limelightPose = getLimeLightAverage();
+
+    SmartDashboard.putString("Limelight Average Pose: ", poseAsString(getLimeLightAverage()));
+    SmartDashboard.updateValues();
   }
 }

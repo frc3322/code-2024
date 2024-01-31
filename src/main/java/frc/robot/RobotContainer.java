@@ -13,6 +13,7 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.LimeLightVision;
 import io.github.oblarg.oblog.Logger;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -31,6 +32,7 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem robotDrive = new DriveSubsystem();
   private final Elevator elevator = new Elevator();
+  private final LimeLightVision vision = new LimeLightVision();
 
   // The driver's controller
   CommandXboxController driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
@@ -60,15 +62,16 @@ public class RobotContainer {
     /*◇─◇──◇─◇
      Drivetrain
     ◇─◇──◇─◇*/
+    robotDrive.setVisionSystem(vision);
 
     robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
         new RunCommand(
             () -> robotDrive.drive(
-                -MathUtil.applyDeadband(driverController.getLeftY() /2, OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(driverController.getLeftX() /2, OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(driverController.getRightX() /2, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(driverController.getLeftY() , OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(driverController.getLeftX() , OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(driverController.getRightX() /1.5, OIConstants.kDriveDeadband),
                 true, true),
             robotDrive));
 

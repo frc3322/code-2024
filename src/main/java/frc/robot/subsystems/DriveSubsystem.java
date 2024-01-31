@@ -78,6 +78,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
 
   public Pose2d averageVisionMeasurement;
   public Timer time;
+  public LimeLightVision vision;
 
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
@@ -352,6 +353,9 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
      Setters
   ◇─◇──◇─◇*/
   
+  public void setVisionSystem(LimeLightVision vision){
+    this.vision = vision;
+  }
   /**
    * Sets the wheels into an X formation to prevent movement.
    */
@@ -453,14 +457,18 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
             m_rearLeft.getPosition(),
             m_rearRight.getPosition()
         });
+    SmartDashboard.putString("robot pose, just odometry", LimeLightVision.poseAsString(getPose()));
+    SmartDashboard.putString("Limelight in drivetrain", LimeLightVision.poseAsString(vision.getLimeLightAverage()));
+    SmartDashboard.putString("wpilib estimated pose w/ ll", LimeLightVision.poseAsString(estimatedPose.getEstimatedPosition()));
     SmartDashboard.updateValues();
     
     // updates pose with current time, rotation, and module positions.
     estimatedPose.updateWithTime(Timer.getFPGATimestamp(), Rotation2d.fromDegrees(getAngle()), getModulePositions());
 
     // updates pose with Lime Light positions
-    if ((LimeLightVision.hasTarget("limelight-left") || LimeLightVision.hasTarget("limelight-right")) && this.getTurnRate() <= LimeLightConstants.turnRateThreshold){
-      averageVisionMeasurement = LimeLightVision.limeLightAverage();
+    if ((vision.hasTarget()) && this.getTurnRate() <= LimeLightConstants.turnRateThreshold){
+      averageVisionMeasurement = vision.getLimeLightAverage();
+      //averageVisionMeasurement = vision.limelightPose;
 
       estimatedPose.addVisionMeasurement(averageVisionMeasurement, Timer.getFPGATimestamp());
     }
