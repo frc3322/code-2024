@@ -16,11 +16,13 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
@@ -30,6 +32,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.CANIds;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.LimeLightConstants;
+import frc.robot.Constants.FieldConstants;
 import frc.utils.SwerveUtils;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
@@ -327,11 +330,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
             // This will flip the path being followed to the red side of the field.
             // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-            var alliance = DriverStation.getAlliance();
-            if (alliance.isPresent()) {
-                return alliance.get() == DriverStation.Alliance.Red;
-            }
-            return false;
+            return isAllianceRed();
         },
         this // Reference to drive subsystem to set requirements
       );
@@ -347,6 +346,8 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
       PathPlannerPath.fromPathFile(ampLineupPathName)
     );
   }
+
+
 
   /*◇─◇──◇─◇
      Setters
@@ -440,6 +441,23 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     SwerveModulePosition rl = m_rearLeft.getPosition();
     SwerveModulePosition rr = m_rearRight.getPosition();
     return new SwerveModulePosition[] {fl, fr, rl, rr};
+  }
+
+  public boolean isAllianceRed() {
+    var alliance = DriverStation.getAlliance();
+    if (alliance.isPresent()) {
+        return alliance.get() == DriverStation.Alliance.Red;
+    }
+    return false;
+  }
+
+  @Log
+  public double getAngleToShooter() {
+    Translation2d speakerPose = isAllianceRed() ? FieldConstants.redSpeakerTranslation : FieldConstants.blueSpeakerTranslation;
+    Pose2d robotPose = getPose();
+    double calculatedAngle = Math.atan2((robotPose.getX()-speakerPose.getX()), (robotPose.getY()-speakerPose.getY()));
+    Units.radiansToDegrees(calculatedAngle);
+    return Units.radiansToDegrees(Math.PI + calculatedAngle)%360;
   }
   
   @Override

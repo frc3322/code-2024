@@ -45,22 +45,48 @@ public final class Constants {
     public static final int kFrontRightTurningCanId = 36;
     public static final int kRearRightTurningCanId = 12;
     
+    //Change GroundIntake motor ids here:
+    public static final int kTopRollerCanId = 70;
+    public static final int kBottomRollerCanId = 71;
+
+    //Change GroundIntake arm id here:
+    public static final int kArmCanId = 73;
+    
     // Based on the sides of the chassis. If electrical does not label anything i will be murdering them -simran
     public static final int kElevatorLeftId = 62;
     public static final int kElevatorRightId = 61;
     public static final int intakeLeftId = 9;
     public static final int intakeRightId = 6 ;
+    
 
   }
+  public static final class GroundIntakeConstants {
+    //PID Constants
+    public static final int intakeP = 0;
+    public static final int intakeI = 0;
+    public static final int intakeD = 0;
+
+    public static final int bottomZoneLimit = 7;
+    public static final int topZoneLimit = 2;
+    public static final int ampZoneLimit = 11;
+    public static final int slowZoneStart = 3;
+
+
+    public static final double armUpSlowSpeed = -0.2;
+    public static final double armUpSpeed = -0.3;
+    public static final double armDownSlowSpeed = 0.2;
+    public static final double armDownSpeed = 0.3;
+  }
+
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
     public static final double kMaxSpeedMetersPerSecond = 4.8;
     public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
 
-    public static final double kDirectionSlewRate = 3; // radians per second //old is 9
-    public static final double kMagnitudeSlewRate = 1.6; // percent per second (1 = 100%) //old is 2.6
-    public static final double kRotationalSlewRate = 2.0; // percent per second (1 = 100%)
+    public static final double kDirectionSlewRate = 9; // radians per second //old is 9
+    public static final double kMagnitudeSlewRate = 2.6; // percent per second (1 = 100%) //old is 2.6
+    public static final double kRotationalSlewRate = 3.0; // percent per second (1 = 100%)
 
     // Chassis configuration
     // Distance between centers of right and left wheels on robot
@@ -220,6 +246,16 @@ public final class Constants {
     public static final Pose2d blueAmpPose = new Pose2d(
       new Translation2d(-Units.inchesToMeters(325.625 - 49.5), Units.inchesToMeters(161.625)),
       new Rotation2d(90)
+    );
+
+    public static final Translation2d redSpeakerTranslation = new Translation2d(
+      652.73,
+      218.42
+    );
+
+    public static final Translation2d blueSpeakerTranslation = new Translation2d(
+      -1.50,
+      218.42
     );
   }
 
