@@ -10,6 +10,7 @@ import com.pathplanner.lib.commands.FollowPathHolonomic;
 import com.pathplanner.lib.commands.PathfindThenFollowPathHolonomic;
 import com.pathplanner.lib.path.PathPlannerPath;
 
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -97,6 +98,11 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
   @Log
   public Field2d field = new Field2d();
 
+  ProfiledPIDController thetaController = new ProfiledPIDController(
+    AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints
+  );
+  
+
   // Path strings
   private String ampLineupPathName = "AmpLineup";
 
@@ -129,6 +135,9 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
       },
       this // Reference to this subsystem to set requirements
     );
+
+
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
   }
 
@@ -458,6 +467,10 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     double calculatedAngle = Math.atan2((robotPose.getX()-speakerPose.getX()), (robotPose.getY()-speakerPose.getY()));
     Units.radiansToDegrees(calculatedAngle);
     return Units.radiansToDegrees(calculatedAngle);
+  }
+
+  public double getOutputToAngle(double angle){
+    return thetaController.calculate(getAngle(), angle);
   }
   
   @Override
