@@ -84,9 +84,9 @@ public final class Constants {
     public static final double kMaxSpeedMetersPerSecond = 4.8;
     public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
 
-    public static final double kDirectionSlewRate = 3; // radians per second //old is 9
-    public static final double kMagnitudeSlewRate = 1.6; // percent per second (1 = 100%) //old is 2.6
-    public static final double kRotationalSlewRate = 2.0; // percent per second (1 = 100%)
+    public static final double kDirectionSlewRate = 9; // radians per second //old is 9
+    public static final double kMagnitudeSlewRate = 2.6; // percent per second (1 = 100%) //old is 2.6
+    public static final double kRotationalSlewRate = 3.0; // percent per second (1 = 100%)
 
     // Chassis configuration
     // Distance between centers of right and left wheels on robot
@@ -246,6 +246,16 @@ public final class Constants {
     public static final Pose2d blueAmpPose = new Pose2d(
       new Translation2d(-Units.inchesToMeters(325.625 - 49.5), Units.inchesToMeters(161.625)),
       new Rotation2d(90)
+    );
+
+    public static final Translation2d redSpeakerTranslation = new Translation2d(
+      652.73,
+      218.42
+    );
+
+    public static final Translation2d blueSpeakerTranslation = new Translation2d(
+      -1.50,
+      218.42
     );
   }
 }
