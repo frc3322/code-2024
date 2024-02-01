@@ -457,7 +457,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     Pose2d robotPose = getPose();
     double calculatedAngle = Math.atan2((robotPose.getX()-speakerPose.getX()), (robotPose.getY()-speakerPose.getY()));
     Units.radiansToDegrees(calculatedAngle);
-    return Units.radiansToDegrees(Math.PI + calculatedAngle)%360;
+    return Units.radiansToDegrees(calculatedAngle);
   }
   
   @Override
