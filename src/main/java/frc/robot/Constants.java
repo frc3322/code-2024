@@ -198,7 +198,8 @@ public final class Constants {
 
     public static final double kPXController = 1;
     public static final double kPYController = 1;
-    public static final double kPThetaController = 1;
+    public static final double kPThetaController = .01;
+    public static final double kIThetaController = 0.001;
 
     public static final double kPHoloTranslationController = 5;
     public static final double kPHoloRotationController = 5;

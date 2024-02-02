@@ -126,10 +126,21 @@ public class RobotContainer {
             () -> robotDrive.drive(
                 -MathUtil.applyDeadband(driverController.getLeftY() , OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(driverController.getLeftX() , OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(robotDrive.getOutputToAngle(robotDrive.getAngleToShooter()) , OIConstants.kDriveDeadband),
+                robotDrive::getOutputToAngle,
                 true, true),
             robotDrive)
       );
+
+    // driverController.a()
+    //   .whileTrue(
+    //     new RunCommand(
+    //         () -> robotDrive.drive(
+    //             0,
+    //             0,
+    //             robotDrive.getOutputToAngle(90),
+    //             true, true),
+    //         robotDrive)
+    //   );
   }
   public void updateLogger() {
     Logger.updateEntries();

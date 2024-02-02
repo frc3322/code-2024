@@ -4,12 +4,15 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.FollowPathHolonomic;
 import com.pathplanner.lib.commands.PathfindThenFollowPathHolonomic;
 import com.pathplanner.lib.path.PathPlannerPath;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -98,8 +101,8 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
   @Log
   public Field2d field = new Field2d();
 
-  ProfiledPIDController thetaController = new ProfiledPIDController(
-    AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints
+  PIDController thetaController = new PIDController(
+    AutoConstants.kPThetaController, AutoConstants.kIThetaController, 0
   );
   
 
@@ -136,8 +139,9 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
       this // Reference to this subsystem to set requirements
     );
 
+    thetaController.enableContinuousInput(-180, 180);
 
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+    SmartDashboard.putData(thetaController);
 
   }
 
@@ -291,6 +295,10 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     m_rearRight.setDesiredState(swerveModuleStates[3]);
   }
 
+  public void drive(double xSpeed, double ySpeed, DoubleSupplier rot, boolean fieldRelative, boolean rateLimit) {
+    this.drive(xSpeed, ySpeed, rot.getAsDouble(), fieldRelative, rateLimit);
+  }
+
   /**
    * Follows a PathPlanner auton path.
    * 
@@ -440,6 +448,8 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     *
     * @return The current yaw of the robot, in degrees
   */
+  
+  @Log
   public double getAngle() {
     double yaw = DriveConstants.kGyroReversed ? -m_gyro.getAngle() : m_gyro.getAngle();
     return yaw;
@@ -464,13 +474,22 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
   public double getAngleToShooter() {
     Translation2d speakerPose = isAllianceRed() ? FieldConstants.redSpeakerTranslation : FieldConstants.blueSpeakerTranslation;
     Pose2d robotPose = getPose();
+
     double calculatedAngle = Math.atan2((robotPose.getX()-speakerPose.getX()), (robotPose.getY()-speakerPose.getY()));
-    Units.radiansToDegrees(calculatedAngle);
-    return Units.radiansToDegrees(calculatedAngle);
+
+    return 180 - Units.radiansToDegrees(calculatedAngle);
   }
 
-  public double getOutputToAngle(double angle){
-    return thetaController.calculate(getAngle(), angle);
+  public double getOutputToAngle(){
+    double output = thetaController.calculate(getAngle(), getAngleToShooter());
+    if (output > 1) {
+      output = 1;
+    }
+    if (output < -1) {
+      output = -1;
+    }
+
+    return output;
   }
   
   @Override
