@@ -475,7 +475,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     Translation2d speakerPose = isAllianceRed() ? FieldConstants.redSpeakerTranslation : FieldConstants.blueSpeakerTranslation;
     Pose2d robotPose = getPose();
 
-    double calculatedAngle = Math.atan2((robotPose.getX()-speakerPose.getX()), (robotPose.getY()-speakerPose.getY()));
+    double calculatedAngle = Math.atan2((robotPose.getY()-speakerPose.getY()), (robotPose.getX()-speakerPose.getX()));
 
     return 180 - Units.radiansToDegrees(calculatedAngle);
   }
