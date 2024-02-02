@@ -4,19 +4,29 @@
 
 package frc.robot;
 
+import java.beans.Encoder;
+
+import javax.sql.rowset.spi.TransactionalWriter;
+
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Constants.TransferConstants;
+import frc.robot.commands.ComboCommands;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.GroundIntake;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Transfer;
 import io.github.oblarg.oblog.Logger;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -30,11 +40,17 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem robotDrive = new DriveSubsystem();
   private final Elevator elevator = new Elevator();
+  private final Transfer transfer = new Transfer();
+  private final GroundIntake groundIntake = new GroundIntake();
+  private final Shooter shooter = new Shooter();
 
   // The driver's controller
   CommandXboxController driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
   // Secondary controller
   CommandXboxController secondaryController = new CommandXboxController(OIConstants.kSecondaryControllerPort);
+
+  //combination commands class
+  ComboCommands comboCommands = new ComboCommands(groundIntake, elevator, transfer, shooter);
 
   // Auton selector for dashboard
   SendableChooser<SequentialCommandGroup> autoSelector = new SendableChooser<>();
@@ -92,6 +108,7 @@ public class RobotContainer {
     );
   }
 
+
   /**
    * Use this method to define your button->command mappings. Buttons can be
    * created by
@@ -117,6 +134,57 @@ public class RobotContainer {
     driverController.b().whileTrue(
       robotDrive.AmpLineupDynamicTrajectory()
     );
+
+    /*◇─◇──◇─◇
+     Transfer
+    ◇─◇──◇─◇*/
+
+    driverController.povLeft().onTrue(comboCommands.noteTransferToShooter);
+    driverController.povRight().onTrue(comboCommands.noteTransferToIntake);
+
+    /*◇─◇──◇─◇
+     Intake
+    ◇─◇──◇─◇*/
+
+    driverController.leftBumper()
+    .onTrue(comboCommands.startShooterIntakeCommand)
+    .onFalse(comboCommands.stopIntakeCommand);
+
+    driverController.rightBumper()
+    .onTrue(comboCommands.startAmpIntakeCommand)
+    .onFalse(comboCommands.stopIntakeCommand);
+
+    driverController.y()
+    .onTrue(comboCommands.startAmpIntakeCommand)
+    .onFalse(comboCommands.stopIntakeCommand);
+
+
+    /*◇─◇──◇─◇
+     testing controls
+    ◇─◇──◇─◇*/
+
+    secondaryController.povUp()
+        .whileTrue(new StartEndCommand(() -> {
+          transfer.setTransferSpeeds(TransferConstants.transferSpeed);
+        }, () -> {
+          transfer.setTransferSpeeds(0);
+        }, transfer));
+
+    secondaryController.povUp()
+        .whileTrue(new StartEndCommand(() -> {
+          transfer.setTransferSpeeds(-TransferConstants.transferSpeed);
+        }, () -> {
+          transfer.setTransferSpeeds(0);
+        }, transfer));
+
+    // elevator on secondary right y already
+
+    groundIntake.setDefaultCommand(new RunCommand(() -> {
+      groundIntake.setFlipperSpeed(secondaryController.getLeftY());
+      groundIntake.spinRollers(secondaryController.getLeftTriggerAxis());
+    }, groundIntake));
+
+
   }
   public void updateLogger() {
     Logger.updateEntries();

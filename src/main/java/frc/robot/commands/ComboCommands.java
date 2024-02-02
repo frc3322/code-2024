@@ -38,15 +38,35 @@ public class ComboCommands{
     transfer.intakeToShooterCommand()
   );
 
-  /*public ParallelCommandGroup stopIntakeCommand = new ParallelCommandGroup(
-    groundIntake.stopRollersCommand(),
-    groundIntake.flipUp()
-  );*/
+    public ParallelCommandGroup startMiddleIntakeCommand = new ParallelCommandGroup(
+    elevator.goToBottomCommand()/*
+    groundIntake.flipToGround(),
+    groundIntake.intakeCommand(),
+    groundIntake.intakeToMiddle()*/
+    
+  );
+
+  public ParallelCommandGroup stopIntakeCommand = new ParallelCommandGroup(
+   // groundIntake.stopRollersCommand(),
+   // groundIntake.flipUp()
+  );
 
   public SequentialCommandGroup ampCommands =  new ParallelCommandGroup(
     elevator.goToAmpCommand(),
     groundIntake.flipToAmp()
   ).andThen(groundIntake.ejectCommand());
-    
+
+   public SequentialCommandGroup noteTransferToShooter =  new ParallelCommandGroup(
+    elevator.goToBottomCommand(),
+    groundIntake.flipToGround()
+  ).andThen(groundIntake.intakeCommand()
+  .alongWith(transfer.intakeToShooterCommand()));
+
+   public SequentialCommandGroup noteTransferToIntake =  new ParallelCommandGroup(
+    elevator.goToBottomCommand(),
+    groundIntake.flipToGround()
+  ).andThen(transfer.shooterToIntakeCommand(()->groundIntake.outerIntakeFull()));
+
+
  
 }

@@ -57,6 +57,10 @@ public class GroundIntake extends SubsystemBase {
     return !intakeInnerBeamBreak.get() && !intakeOuterBeamBreak.get();
   }
 
+  public Boolean outerIntakeFull(){
+    return intakeOuterBeamBreak.get();
+  }
+
     public void setFlipperSpeed(double speed){
     //moves the entire arm
     intakeArm.set(speed);
@@ -129,6 +133,13 @@ public class GroundIntake extends SubsystemBase {
     {
       // //AROOSH ADD CODE HERE CAUSE IM TOO LAZY - simran
     }, this);
+  }
+
+  public Command intakeUntilMiddle(){
+    return new RunCommand(()->
+    {
+      //arooshhh write so that it stops once it has triggered and released both 
+    }, null);
   }
 
   public Command stopRollersCommand(){
