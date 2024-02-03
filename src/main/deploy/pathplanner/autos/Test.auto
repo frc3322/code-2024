@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.72,
-      "y": 6.692737604597271
+      "x": 0.59,
+      "y": 6.59
     },
-    "rotation": -120.0
+    "rotation": -117.92317627331198
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Simple Curve"
+            "pathName": "Top3"
           }
         }
       ]

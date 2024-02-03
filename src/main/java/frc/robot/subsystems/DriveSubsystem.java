@@ -454,6 +454,14 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     double yaw = DriveConstants.kGyroReversed ? -m_gyro.getAngle() : m_gyro.getAngle();
     return yaw;
   }
+
+  @Log
+  public double getEstimatedAngle() {
+    double rotation = estimatedPose.getEstimatedPosition().getRotation().getDegrees();
+    double yaw = DriveConstants.kGyroReversed ? rotation : -rotation;
+    return yaw;
+  }
+
   public SwerveModulePosition[] getModulePositions(){
     SwerveModulePosition fl = m_frontLeft.getPosition();
     SwerveModulePosition fr = m_frontRight.getPosition();
@@ -473,15 +481,15 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
   @Log
   public double getAngleToShooter() {
     Translation2d speakerPose = isAllianceRed() ? FieldConstants.redSpeakerTranslation : FieldConstants.blueSpeakerTranslation;
-    Pose2d robotPose = getPose();
+    Pose2d robotPose = estimatedPose.getEstimatedPosition();
 
-    double calculatedAngle = Math.atan2((robotPose.getY()-speakerPose.getY()), (robotPose.getX()-speakerPose.getX()));
+    double calculatedAngle = Math.atan2(robotPose.getX()-speakerPose.getX(), robotPose.getY()-speakerPose.getY());
 
-    return 180 - Units.radiansToDegrees(calculatedAngle);
+    return 270 - Units.radiansToDegrees(calculatedAngle);
   }
 
   public double getOutputToAngle(){
-    double output = thetaController.calculate(getAngle());
+    double output = thetaController.calculate(getEstimatedAngle());
     if (output > 1) {
       output = 1;
     }
@@ -504,7 +512,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
             m_rearRight.getPosition()
         });
     SmartDashboard.updateValues();
-    
+  
     // updates pose with current time, rotation, and module positions.
     estimatedPose.updateWithTime(Timer.getFPGATimestamp(), Rotation2d.fromDegrees(getAngle()), getModulePositions());
 

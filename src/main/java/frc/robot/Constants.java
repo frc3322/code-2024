@@ -250,13 +250,13 @@ public final class Constants {
     );
 
     public static final Translation2d redSpeakerTranslation = new Translation2d(
-      652.73,
-      218.42
+      Units.inchesToMeters(652.73),
+      Units.inchesToMeters(217)
     );
 
     public static final Translation2d blueSpeakerTranslation = new Translation2d(
-      -1.50,
-      218.42
+      Units.inchesToMeters(-1.50),
+      Units.inchesToMeters(217)
     );
   }
 
