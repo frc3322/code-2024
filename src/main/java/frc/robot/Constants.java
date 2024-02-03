@@ -75,12 +75,12 @@ public final class Constants {
     public static final double kMaxSpeedMetersPerSecond = 4.8;
     public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
 
-    public static final double kDirectionSlewRate = 9; // radians per second //old is 9
+    public static final double kDirectionSlewRate = 3; // radians per second //old is 9
     public static final double kMagnitudeSlewRate = 2.6; // percent per second (1 = 100%) //old is 2.6
-    public static final double kRotationalSlewRate = 3.0; // percent per second (1 = 100%)
+    public static final double kRotationalSlewRate = 3.0; // percent per second (1 = 100%) //0ld is 2.0
 
     // Chassis configuration
-    // Distance between centers of right and left wheels on robot
+    // Distance between centers of right and left wheels on robots
     public static final double kTrackWidth = Units.inchesToMeters(24.375);
     // Distance between front and back wheels on robot
     public static final double kWheelBase = Units.inchesToMeters(24.375);
@@ -274,5 +274,15 @@ public final class Constants {
       new Translation2d(-Units.inchesToMeters(325.625 - 49.5), Units.inchesToMeters(161.625)),
       new Rotation2d(90)
     );
+  }
+
+  public static class LimeLightConstants {
+    // threshold values used for desiding what sensor inputs are averaged to detect robot pose (meters)
+    public static final double xyThreshold = 0.1;
+    public static final double turnRateThreshold = 4; // if rotating above value in rps will not use vision
+
+    // offset used to convert lime light field space (0,0 is center of field) to wpilib field space (bottom left is 0,0)
+    public static final double fieldLengthOffset = Units.inchesToMeters(651.25 / 2);
+    public static final double fieldWidthOffset = Units.inchesToMeters(323.25 / 2);
   }
 }

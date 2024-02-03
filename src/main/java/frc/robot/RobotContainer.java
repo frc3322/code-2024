@@ -18,6 +18,7 @@ import frc.robot.Constants.TransferConstants;
 import frc.robot.commands.ComboCommands;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.LimeLightVision;
 import frc.robot.subsystems.GroundIntake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Transfer;
@@ -40,6 +41,7 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem robotDrive = new DriveSubsystem();
   private final Elevator elevator = new Elevator();
+  private final LimeLightVision vision = new LimeLightVision();
   private final Transfer transfer = new Transfer();
   private final GroundIntake groundIntake = new GroundIntake();
   private final Shooter shooter = new Shooter();
@@ -66,7 +68,7 @@ public class RobotContainer {
     Logger.configureLoggingAndConfig(this, true);
 
     // Auton selector config
-    autoSelector.setDefaultOption("Test4+1", new Test4And1Auto());
+    autoSelector.setDefaultOption("Test", new Test4And1Auto());
 
     autoSelector.addOption("No auto", null);
 
@@ -75,6 +77,7 @@ public class RobotContainer {
     /*◇─◇──◇─◇
      Drivetrain
     ◇─◇──◇─◇*/
+    robotDrive.setVisionSystem(vision);
 
     robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
@@ -204,11 +207,11 @@ public class RobotContainer {
      * https://github.com/mjansen4857/pathplanner
      */
 
-     return autoSelector.getSelected();
+     return new PathPlannerAuto("Test");
   }
 
   /*◇─◇──◇─◇
-      Autos
+      Autos\
   ◇─◇──◇─◇*/
   
   private static class Test4And1Auto extends SequentialCommandGroup{
@@ -218,7 +221,5 @@ public class RobotContainer {
         new PathPlannerAuto("Test4+1Auto")
       );
     }
-    
   }
-
 }

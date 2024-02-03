@@ -10,8 +10,11 @@ import com.pathplanner.lib.commands.FollowPathHolonomic;
 import com.pathplanner.lib.commands.PathfindThenFollowPathHolonomic;
 import com.pathplanner.lib.path.PathPlannerPath;
 
+import edu.wpi.first.math.estimator.PoseEstimator;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -20,17 +23,18 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.CANIds;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.LimeLightConstants;
 import frc.utils.SwerveUtils;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 
 
 public class DriveSubsystem extends SubsystemBase implements Loggable{
@@ -70,6 +74,11 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
 
   // Used to store the last movment angle to avoid eccessive rotation of the wheels
   private double lastDir = 0;
+  public SwerveDrivePoseEstimator estimatedPose;
+
+  public Pose2d averageVisionMeasurement;
+  public Timer time;
+  public LimeLightVision vision;
 
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
@@ -91,11 +100,17 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
+    estimatedPose = new SwerveDrivePoseEstimator(
+      DriveConstants.kDriveKinematics, 
+      Rotation2d.fromDegrees(getAngle()), 
+      getModulePositions(), getPose()
+      );
     
+
     // Configure AutoBuilder last
     AutoBuilder.configureHolonomic(
       this::getPose, // Robot pose supplier
-      this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+      this::resetEstimatedPose, // Method to reset odometry (will be called if your auto has a starting pose)
       this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
       this::autoDrive, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
       AutoConstants.holonomicPathFollowerConfig,
@@ -143,6 +158,18 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
             m_rearRight.getPosition()
         },
         pose);
+  }
+
+  public void resetEstimatedPose(Pose2d pose){
+    estimatedPose.resetPosition(
+      Rotation2d.fromDegrees(getAngle()),
+      new SwerveModulePosition[] {
+            m_frontLeft.getPosition(),
+            m_frontRight.getPosition(),
+            m_rearLeft.getPosition(),
+            m_rearRight.getPosition()
+        },
+      pose);
   }
 
   /*◇─◇──◇─◇
@@ -326,6 +353,9 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
      Setters
   ◇─◇──◇─◇*/
   
+  public void setVisionSystem(LimeLightVision vision){
+    this.vision = vision;
+  }
   /**
    * Sets the wheels into an X formation to prevent movement.
    */
@@ -408,6 +438,13 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     double yaw = DriveConstants.kGyroReversed ? -m_gyro.getAngle() : m_gyro.getAngle();
     return yaw;
   }
+  public SwerveModulePosition[] getModulePositions(){
+    SwerveModulePosition fl = m_frontLeft.getPosition();
+    SwerveModulePosition fr = m_frontRight.getPosition();
+    SwerveModulePosition rl = m_rearLeft.getPosition();
+    SwerveModulePosition rr = m_rearRight.getPosition();
+    return new SwerveModulePosition[] {fl, fr, rl, rr};
+  }
   
   @Override
   public void periodic() {
@@ -420,10 +457,23 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
             m_rearLeft.getPosition(),
             m_rearRight.getPosition()
         });
+    SmartDashboard.putString("robot pose, just odometry", LimeLightVision.poseAsString(getPose()));
+    SmartDashboard.putString("Limelight in drivetrain", LimeLightVision.poseAsString(vision.getLimeLightAverage()));
+    SmartDashboard.putString("wpilib estimated pose w/ ll", LimeLightVision.poseAsString(estimatedPose.getEstimatedPosition()));
     SmartDashboard.updateValues();
+    
+    // updates pose with current time, rotation, and module positions.
+    estimatedPose.updateWithTime(Timer.getFPGATimestamp(), Rotation2d.fromDegrees(getAngle()), getModulePositions());
 
-    field.setRobotPose(getPose());
+    // updates pose with Lime Light positions
+    if ((vision.hasTarget()) && this.getTurnRate() <= LimeLightConstants.turnRateThreshold){
+      averageVisionMeasurement = vision.getLimeLightAverage();
+      //averageVisionMeasurement = vision.limelightPose;
+
+      estimatedPose.addVisionMeasurement(averageVisionMeasurement, Timer.getFPGATimestamp());
+    }
+    
+    field.setRobotPose(estimatedPose.getEstimatedPosition());
+    this.resetOdometry(estimatedPose.getEstimatedPosition());
   }
-
-
 }

@@ -3,7 +3,7 @@
   "startingPose": {
     "position": {
       "x": 0.72,
-      "y": 6.69
+      "y": 6.692737604597271
     },
     "rotation": -120.0
   },
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Top4+1"
+            "pathName": "Simple Curve"
           }
         }
       ]
