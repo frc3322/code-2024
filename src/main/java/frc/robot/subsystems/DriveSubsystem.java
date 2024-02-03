@@ -481,7 +481,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
   }
 
   public double getOutputToAngle(){
-    double output = thetaController.calculate(getAngle(), getAngleToShooter());
+    double output = thetaController.calculate(getAngle());
     if (output > 1) {
       output = 1;
     }
@@ -517,5 +517,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     
     field.setRobotPose(estimatedPose.getEstimatedPosition());
     this.resetOdometry(estimatedPose.getEstimatedPosition());
+
+    thetaController.setSetpoint(getAngleToShooter());
   }
 }
