@@ -186,13 +186,13 @@ public final class Constants {
 
   public static final class GroundIntakeConstants {
     //PID Constants
-    public static final int intakeP = 0;
-    public static final int intakeI = 0;
-    public static final int intakeD = 0;
+    public static final int gIntakeP = 0;
+    public static final int gIntakeI = 0;
+    public static final int gIntakeD = 0;
 
-    public static final int bottomZoneLimit = 7;
-    public static final int topZoneLimit = 2;
-    public static final int ampZoneLimit = 11;
+    public static final int bottomZonePosition = 7;
+    public static final int topZonePosition = 2;
+    public static final int ampZonePosition = 11;
     public static final int slowZoneStart = 3;
 
 
@@ -201,7 +201,13 @@ public final class Constants {
     public static final double armDownSlowSpeed = 0.2;
     public static final double armDownSpeed = 0.3;
 
-    public static final double intakeSpeed = .2;
+    public static final double groundIntakeSpeed = .2;
+
+    public static final double kTurnToleranceDeg = 0.5;
+    public static final double kTurnRateToleranceDegPerS = 5;
+
+    public static final double veloConstraint = 0;
+    public static final double accelConstraint = 0;
   }
 
   public static final class OIConstants {

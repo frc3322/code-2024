@@ -26,15 +26,15 @@ public class ComboCommands{
   }
 
   public ParallelCommandGroup startAmpIntakeCommand = new ParallelCommandGroup(
-    elevator.goToBottomCommand()//,
-    //groundIntake.flipToGround(),
-    //groundIntake.intakeUntilBeamBreak()
+    elevator.goToBottomCommand(),
+    groundIntake.flipToGround(),
+    groundIntake.intakeUntilBeamBreak()
   );
 
   public ParallelCommandGroup startShooterIntakeCommand = new ParallelCommandGroup(
-    elevator.goToBottomCommand(),/*
+    elevator.goToBottomCommand(),
     groundIntake.flipToGround(),
-    groundIntake.intakeCommand(),*/
+    groundIntake.intakeCommand(),
     transfer.intakeToShooterCommand()
   );
 

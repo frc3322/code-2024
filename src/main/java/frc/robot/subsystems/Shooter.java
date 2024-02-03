@@ -126,7 +126,7 @@ public class Shooter extends SubsystemBase implements Loggable {
    * @param speed The speed of the motor.
    */
   public void setBottomShooterSpeed(double speed) {
-    shooterTopMotor.set(speed);
+    shooterBottomMotor.set(speed);
   }
 
   /**
