@@ -51,6 +51,9 @@ public class GroundIntake extends SubsystemBase {
 
   // GroundIntake Constructor
   public GroundIntake() {
+    intakeArmLeft.restoreFactoryDefaults();
+    intakeArmRight.restoreFactoryDefaults();
+
     wheelsMotor.setIdleMode(IdleMode.kBrake);
     intakeArmLeft.setIdleMode(IdleMode.kBrake);
     intakeArmRight.setIdleMode(IdleMode.kBrake);
@@ -97,30 +100,6 @@ public class GroundIntake extends SubsystemBase {
 
   public Boolean outerIntakeFull() {
     return intakeOuterBeamBreak.get();
-  }
-
-  /**
-   * Returns a boolean representing if the intake arm position is above the top zone threshold
-   * @return A boolean represening if the intake arm is flipped up
-   */
-  public Boolean atTop() {
-    return armLeftEncoder.getPosition() < 1;
-  }
-
-  /**
-   * Returns a boolean representing if the intake arm position is below the bottom zone threshold
-   * @return A boolean represening if the intake arm is at the ground
-   */
-  public Boolean atGround() {
-    return armLeftEncoder.getPosition() > Constants.GroundIntakeConstants.bottomZonePosition;
-  }
-
-  /**
-   * Returns a boolean representing if the intake arm position is below the amp zone threshold, which is below the bottom zone threshold
-   * @return A boolean represening if the intake arm is at the amp zone threshold
-   */
-  public Boolean atAmpAngle() {
-    return armLeftEncoder.getPosition() > Constants.GroundIntakeConstants.ampZonePosition;
   }
 
   /*◇─◇──◇─◇

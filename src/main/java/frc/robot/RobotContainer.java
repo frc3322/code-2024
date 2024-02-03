@@ -180,7 +180,7 @@ public class RobotContainer {
     // elevator on secondary right y already
 
     groundIntake.setDefaultCommand(new RunCommand(() -> {
-      groundIntake.setFlipperSpeed(secondaryController.getLeftY());
+      groundIntake.setArmSpeed(secondaryController.getLeftY());
       groundIntake.spinRollers(secondaryController.getLeftTriggerAxis());
     }, groundIntake));
 
