@@ -102,7 +102,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
   public Field2d field = new Field2d();
 
   PIDController thetaController = new PIDController(
-    AutoConstants.kPThetaController, AutoConstants.kIThetaController, 0
+    AutoConstants.kPThetaController, AutoConstants.kIThetaController, AutoConstants.kDThetaController
   );
   
 
