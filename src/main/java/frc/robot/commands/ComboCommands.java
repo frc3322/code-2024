@@ -39,10 +39,10 @@ public class ComboCommands{
   );
 
     public ParallelCommandGroup startMiddleIntakeCommand = new ParallelCommandGroup(
-    elevator.goToBottomCommand()/*
+    elevator.goToBottomCommand(),
     groundIntake.flipToGround(),
     groundIntake.intakeCommand(),
-    groundIntake.intakeToMiddle()*/
+    groundIntake.intakeToMiddleCommand()
     
   );
 

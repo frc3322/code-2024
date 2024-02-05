@@ -234,6 +234,27 @@ public class GroundIntake extends SubsystemBase {
       .until(this::intakeFull);
   }
 
+    /**
+   * A command that keeps spinning the intake rollers until the beam sensors detect a ring, then run them again until its empty
+   * @return A run command that spins the intake's rollers until it ring is detected
+   */
+  public Command intakeToMiddleCommand(){
+    return new StartEndCommand(
+        () -> {
+          spinRollers(-GroundIntakeConstants.groundIntakeSpeed);
+        },
+        () -> {}, this)
+        .until(this::intakeFull)
+        .andThen(new StartEndCommand(
+            () -> {
+              spinRollers(-GroundIntakeConstants.groundIntakeSpeed);
+            },
+            () -> {
+              spinRollers(0);
+            }, this).until(this::intakeEmpty));
+      
+  }
+
   /**
    * An instant command that stops the intake rollers
    * @return An instant command that stops the intake rollers
@@ -278,5 +299,7 @@ public class GroundIntake extends SubsystemBase {
   public void periodic() {
 
   }
+
+
 
 }
