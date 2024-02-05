@@ -13,12 +13,12 @@ import frc.robot.subsystems.*;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ComboCommands{
 
-  GroundIntake groundIntake;
+  Intake groundIntake;
   Elevator elevator;
   Transfer transfer;
   Shooter shooter;
 
-  public ComboCommands(GroundIntake groundIntake, Elevator elevator, Transfer transfer, Shooter shooter){
+  public ComboCommands(Intake groundIntake, Elevator elevator, Transfer transfer, Shooter shooter){
     this.groundIntake = groundIntake;
     this.elevator = elevator;
     this.transfer = transfer;

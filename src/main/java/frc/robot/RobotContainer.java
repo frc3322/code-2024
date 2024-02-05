@@ -19,7 +19,7 @@ import frc.robot.commands.ComboCommands;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.LimeLightVision;
-import frc.robot.subsystems.GroundIntake;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Transfer;
 import io.github.oblarg.oblog.Logger;
@@ -43,7 +43,7 @@ public class RobotContainer {
   private final Elevator elevator = new Elevator();
   private final LimeLightVision vision = new LimeLightVision();
   private final Transfer transfer = new Transfer();
-  private final GroundIntake groundIntake = new GroundIntake();
+  private final Intake groundIntake = new Intake();
   private final Shooter shooter = new Shooter();
 
   // The driver's controller
