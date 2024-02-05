@@ -22,7 +22,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.GroundIntakeConstants;
 import io.github.oblarg.oblog.annotations.Log;
 
-public class GroundIntake extends SubsystemBase {
+public class Intake extends SubsystemBase {
   /** Creates a new GroundIntake. */
 
   // Creates motor objects
@@ -50,7 +50,7 @@ public class GroundIntake extends SubsystemBase {
     );
 
   // GroundIntake Constructor
-  public GroundIntake() {
+  public Intake() {
     intakeArmLeft.restoreFactoryDefaults();
     intakeArmRight.restoreFactoryDefaults();
 
