@@ -11,6 +11,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -19,6 +20,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANIds;
 import frc.robot.Constants.ElevatorConstants;
 import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Config;
+import io.github.oblarg.oblog.annotations.Log;
 
 /**
  * The elevator subsystem for 3322's 2024 robot.
@@ -53,6 +56,9 @@ public class Elevator extends SubsystemBase implements Loggable {
 
     elevatorLeftMotor.burnFlash();
     elevatorRightMotor.burnFlash();
+
+    SmartDashboard.putData("ElevatorPID", elevatorPidController);
+    
   }
 
   /*◇─◇──◇─◇
@@ -63,6 +69,7 @@ public class Elevator extends SubsystemBase implements Loggable {
    * Returns the current position goal of the profiled PID.
    * @return The position goal of the elevator PID.
    */
+  @Log
   public double getSetpoint() {
     return elevatorPidController.getGoal().position;
   }
@@ -114,6 +121,7 @@ public class Elevator extends SubsystemBase implements Loggable {
    * Set the setpoint of the elevator PID controller.
    * @param setpoint The setpoint of the PID controller.
    */
+  @Config
   public void setElevatorSetpoint(double setpoint) {
     elevatorPidController.setGoal(setpoint);
   }
