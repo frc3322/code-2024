@@ -186,15 +186,13 @@ public final class Constants {
 
   public static final class GroundIntakeConstants {
     //PID Constants
-    public static final int gIntakeP = 0;
-    public static final int gIntakeI = 0;
-    public static final int gIntakeD = 0;
+    public static final int intakeP = 0;
+    public static final int intakeI = 0;
+    public static final int intakeD = 0;
 
     public static final int bottomZonePosition = 7;
     public static final int topZonePosition = 2;
     public static final int ampZonePosition = 11;
-    public static final int slowZoneStart = 3;
-
 
     public static final double armUpSlowSpeed = -0.2;
     public static final double armUpSpeed = -0.3;

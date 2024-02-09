@@ -22,6 +22,7 @@ import frc.robot.Constants.DIOids;
 import frc.robot.Constants.NeoMotorConstants;
 import frc.robot.Constants.TransferConstants;
 import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Config;
 
 /**
  * The transfer subsystem for 3322's 2024 robot.
@@ -31,7 +32,6 @@ public class Transfer extends SubsystemBase implements Loggable {
   private final CANSparkMax transferMotor = new CANSparkMax(CANIds.kTransferCanId, MotorType.kBrushless);
   private final CANSparkMax shooterTransferMotor = new CANSparkMax(CANIds.kShooterTransferCanId, MotorType.kBrushless);
 
-  private final DigitalInput transferBeamBreak = new DigitalInput(DIOids.transferBeamBreakDIO);
   private final DigitalInput shooterBeamBreak = new DigitalInput(DIOids.shooterBeamBreakDIO);
   
   /** Creates a new Transfer. */
@@ -58,14 +58,6 @@ public class Transfer extends SubsystemBase implements Loggable {
   ◇─◇──◇─◇*/
 
   /**
-   * Returns whether the transfer beam break is tripped.
-   * @return A boolean representing if the transfer has a game piece.
-   */
-  public boolean transferFull() {
-    return transferBeamBreak.get();
-  }
-
-  /**
    * Returns whether the shooter beam break is tripped.
    * @return A boolean representing if the shooter has a game piece.
    */
@@ -85,6 +77,7 @@ public class Transfer extends SubsystemBase implements Loggable {
    * Sets the speed of the transfer.
    * @param power The speed of the transfer.
    */
+  @Config
   public void setTransferSpeeds(double power){
     transferMotor.set(power);
   }

@@ -78,6 +78,7 @@ public class Elevator extends SubsystemBase implements Loggable {
    * Get the position of the left elevator motor encoder.
    * @return The position of the elevator encoder.
    */
+  @Log
   public double getElevatorEncoderPosition() {
     return elevatorLeftEncoder.getPosition();
   }
@@ -134,6 +135,7 @@ public class Elevator extends SubsystemBase implements Loggable {
    * Returns a command that uses the elevator PID command to go to its setpoint until interuppeted.
    * @return A run command that moves the elevator towards its setpoint.
    */
+  @Config
   public Command goToSetpoint() {
     return new RunCommand(
       () -> {

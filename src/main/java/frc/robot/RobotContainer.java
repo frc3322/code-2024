@@ -134,58 +134,60 @@ public class RobotContainer {
 
     driverController.start().onTrue(new InstantCommand(()->robotDrive.zeroHeading()));
             
-    driverController.b().whileTrue(
-      robotDrive.AmpLineupDynamicTrajectory()
-    );
+    //  driverController.b().whileTrue(
+    //   robotDrive.AmpLineupDynamicTrajectory()
+    // );
 
-    /*◇─◇──◇─◇
-     Transfer
-    ◇─◇──◇─◇*/
+    // /*◇─◇──◇─◇
+    //  Transfer
+    // ◇─◇──◇─◇*/
 
-    driverController.povLeft().onTrue(comboCommands.noteTransferToShooter);
-    driverController.povRight().onTrue(comboCommands.noteTransferToIntake);
+    // driverController.povLeft().onTrue(comboCommands.noteTransferToShooter);
+    // driverController.povRight().onTrue(comboCommands.noteTransferToIntake);
 
-    /*◇─◇──◇─◇
-     Intake
-    ◇─◇──◇─◇*/
+    // /*◇─◇──◇─◇
+    //  Intake
+    // ◇─◇──◇─◇*/
 
-    driverController.leftBumper()
-    .onTrue(comboCommands.startShooterIntakeCommand)
-    .onFalse(comboCommands.stopIntakeCommand);
+    // driverController.leftBumper()
+    // .onTrue(comboCommands.startShooterIntakeCommand)
+    // .onFalse(comboCommands.stopIntakeCommand);
 
-    driverController.rightBumper()
-    .onTrue(comboCommands.startAmpIntakeCommand)
-    .onFalse(comboCommands.stopIntakeCommand);
+    // driverController.rightBumper()
+    // .onTrue(comboCommands.startAmpIntakeCommand)
+    // .onFalse(comboCommands.stopIntakeCommand);
 
-    driverController.y()
-    .onTrue(comboCommands.startAmpIntakeCommand)
-    .onFalse(comboCommands.stopIntakeCommand);
+    // driverController.y()
+    // .onTrue(comboCommands.startAmpIntakeCommand)
+    // .onFalse(comboCommands.stopIntakeCommand);
 
 
-    /*◇─◇──◇─◇
-     testing controls
-    ◇─◇──◇─◇*/
+    // /*◇─◇──◇─◇
+    //  testing controls
+    // ◇─◇──◇─◇*/
 
-    secondaryController.povUp()
-        .whileTrue(new StartEndCommand(() -> {
-          transfer.setTransferSpeeds(TransferConstants.transferSpeed);
-        }, () -> {
-          transfer.setTransferSpeeds(0);
-        }, transfer));
+    // secondaryController.povUp()
+    //     .whileTrue(new StartEndCommand(() -> {
+    //       transfer.setTransferSpeeds(TransferConstants.transferSpeed);
+    //     }, () -> {
+    //       transfer.setTransferSpeeds(0);
+    //     }, transfer));
 
-    secondaryController.povUp()
-        .whileTrue(new StartEndCommand(() -> {
-          transfer.setTransferSpeeds(-TransferConstants.transferSpeed);
-        }, () -> {
-          transfer.setTransferSpeeds(0);
-        }, transfer));
+    // secondaryController.povUp()
+    //     .whileTrue(new StartEndCommand(() -> {
+    //       transfer.setTransferSpeeds(-TransferConstants.transferSpeed);
+    //     }, () -> {
+    //       transfer.setTransferSpeeds(0);
+    //     }, transfer));
 
-    // elevator on secondary right y already
+    // // elevator on secondary right y already
 
-    groundIntake.setDefaultCommand(new RunCommand(() -> {
-      groundIntake.setArmSpeed(secondaryController.getLeftY());
-      groundIntake.spinRollers(secondaryController.getLeftTriggerAxis());
-    }, groundIntake));
+    // groundIntake.setDefaultCommand(new RunCommand(() -> {
+    //   groundIntake.setArmSpeed(secondaryController.getLeftY());
+    //   groundIntake.spinRollers(secondaryController.getLeftTriggerAxis());
+    // }, groundIntake));
+
+    
 
 
   }

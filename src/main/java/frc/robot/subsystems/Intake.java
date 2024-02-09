@@ -12,6 +12,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -39,10 +40,10 @@ public class Intake extends SubsystemBase {
   private final DigitalInput intakeInnerBeamBreak = new DigitalInput(1);
 
   // Creates a new Profiled PID Controller
-  public final ProfiledPIDController gIntakePIDController = new ProfiledPIDController(
-    GroundIntakeConstants.gIntakeP, 
-    GroundIntakeConstants.gIntakeI, 
-    GroundIntakeConstants.gIntakeD, 
+  public final ProfiledPIDController intakePIDController = new ProfiledPIDController(
+    GroundIntakeConstants.intakeP, 
+    GroundIntakeConstants.intakeI, 
+    GroundIntakeConstants.intakeD, 
     new Constraints(
       GroundIntakeConstants.veloConstraint, 
       GroundIntakeConstants.accelConstraint
@@ -64,7 +65,10 @@ public class Intake extends SubsystemBase {
     wheelsMotor.burnFlash();
     intakeArmLeft.burnFlash();
     intakeArmRight.burnFlash();
+
+    SmartDashboard.putData("intake", intakePIDController);
   }
+
 
   /*◇─◇──◇─◇
   ✨Getters✨
@@ -74,18 +78,21 @@ public class Intake extends SubsystemBase {
    * Returns the current position goal of the profiled PID.
    * @return The position goal of the elevator PID.
    */
+  @Log
   public double getSetpoint() {
-    return gIntakePIDController.getGoal().position;
+    return intakePIDController.getGoal().position;
   }
 
   /**
    * Returns the encoder position of the left arm encoder.
    * @return The position of the intake arm encoder.
    */
+  @Log
   public double getIntakeEncoderPosition() {
     return armLeftEncoder.getPosition();
   }
 
+  @Log
   public Boolean intakeEmpty(){
     return !intakeInnerBeamBreak.get() && !intakeOuterBeamBreak.get();
   }
@@ -94,10 +101,12 @@ public class Intake extends SubsystemBase {
    * Returns true if both of the beams detect a ring, returning false otherwise
    * @return Whether or not the intake has (true) or doesn't have (false) a ring
    */
+  @Log
   public Boolean intakeFull() {
     return intakeInnerBeamBreak.get() && intakeOuterBeamBreak.get();
   }
 
+  @Log
   public Boolean outerIntakeFull() {
     return intakeOuterBeamBreak.get();
   }
@@ -112,7 +121,7 @@ public class Intake extends SubsystemBase {
    * @param setpoint The setpoint of the PID controller.
    */
   public void setIntakeSetpoint(double setpoint) {
-    gIntakePIDController.setGoal(setpoint);
+    intakePIDController.setGoal(setpoint);
   }
 
   /**
@@ -154,7 +163,7 @@ public class Intake extends SubsystemBase {
   public Command flipToSetpoint() {
     return new RunCommand(
       () -> {
-        setArmSpeed((gIntakePIDController.calculate(getIntakeEncoderPosition())));
+        setArmSpeed((intakePIDController.calculate(getIntakeEncoderPosition())));
       }, 
       this
     );
