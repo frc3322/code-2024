@@ -37,7 +37,7 @@ public class RobotContainer {
   // private final Elevator elevator = new Elevator();
   private final LimeLightVision vision = new LimeLightVision();
   // private final Transfer transfer = new Transfer();
-  // private final Intake intake = new Intake();
+  private final Intake intake = new Intake();
   // private final Shooter shooter = new Shooter();
 
   // The driver's controller
@@ -103,6 +103,16 @@ public class RobotContainer {
   //         elevator.setElevatorPower(limitedPower); 
   //       }, elevator)
   //   );
+
+
+
+    intake.setDefaultCommand(
+      new RunCommand((
+        () -> intake.setArmSpeed(secondaryController.getLeftY())
+      ),
+      intake)
+    );
+
   }
 
 

@@ -20,10 +20,11 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.GroundIntakeConstants;
+import frc.robot.Constants.IntakeConstants;
+import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
 
-public class Intake extends SubsystemBase {
+public class Intake extends SubsystemBase implements Loggable {
   /** Creates a new GroundIntake. */
 
   // Creates motor objects
@@ -41,12 +42,12 @@ public class Intake extends SubsystemBase {
 
   // Creates a new Profiled PID Controller
   public final ProfiledPIDController intakePIDController = new ProfiledPIDController(
-    GroundIntakeConstants.intakeP, 
-    GroundIntakeConstants.intakeI, 
-    GroundIntakeConstants.intakeD, 
+    IntakeConstants.intakeP, 
+    IntakeConstants.intakeI, 
+    IntakeConstants.intakeD, 
     new Constraints(
-      GroundIntakeConstants.veloConstraint, 
-      GroundIntakeConstants.accelConstraint
+      IntakeConstants.velocityConstraint, 
+      IntakeConstants.accelerationConstraint
       )
     );
 
@@ -59,7 +60,10 @@ public class Intake extends SubsystemBase {
     intakeArmLeft.setIdleMode(IdleMode.kBrake);
     intakeArmRight.setIdleMode(IdleMode.kBrake);
 
-    intakeArmLeft.setInverted(false);
+    armLeftEncoder.setPositionConversionFactor(IntakeConstants.kIntakeArmGearRatio);
+    armLeftEncoder.setVelocityConversionFactor(IntakeConstants.kIntakeArmGearRatio);
+
+    intakeArmLeft.setInverted(true);
     intakeArmRight.follow(intakeArmLeft, true);
 
     wheelsMotor.burnFlash();
@@ -177,7 +181,7 @@ public class Intake extends SubsystemBase {
     //set flipper to correct setting until it is true that the flipper is at the top.
     return new SequentialCommandGroup (
       new InstantCommand(
-        () -> setIntakeSetpoint(GroundIntakeConstants.topZonePosition),
+        () -> setIntakeSetpoint(IntakeConstants.topZonePosition),
         this
       ),
       flipToSetpoint()
@@ -192,7 +196,7 @@ public class Intake extends SubsystemBase {
     //flips to bottom, does not spin. may be able to delete
     return new SequentialCommandGroup (
       new InstantCommand(
-        () -> setIntakeSetpoint(GroundIntakeConstants.bottomZonePosition),
+        () -> setIntakeSetpoint(IntakeConstants.bottomZonePosition),
         this
       ),
       flipToSetpoint()
@@ -207,7 +211,7 @@ public class Intake extends SubsystemBase {
   public Command flipToAmp() {
     return new SequentialCommandGroup (
       new InstantCommand(
-        () -> setIntakeSetpoint(GroundIntakeConstants.ampZonePosition),
+        () -> setIntakeSetpoint(IntakeConstants.ampZonePosition),
         this
       ),
       flipToSetpoint()
@@ -235,7 +239,7 @@ public class Intake extends SubsystemBase {
   public Command intakeUntilBeamBreak() {
     return new StartEndCommand(
       () ->{
-        spinRollers(-GroundIntakeConstants.groundIntakeSpeed);
+        spinRollers(-IntakeConstants.groundIntakeSpeed);
       }, 
       () -> {
         spinRollers(0);
@@ -250,13 +254,13 @@ public class Intake extends SubsystemBase {
   public Command intakeToMiddleCommand(){
     return new StartEndCommand(
         () -> {
-          spinRollers(-GroundIntakeConstants.groundIntakeSpeed);
+          spinRollers(-IntakeConstants.groundIntakeSpeed);
         },
         () -> {}, this)
         .until(this::intakeFull)
         .andThen(new StartEndCommand(
             () -> {
-              spinRollers(-GroundIntakeConstants.groundIntakeSpeed);
+              spinRollers(-IntakeConstants.groundIntakeSpeed);
             },
             () -> {
               spinRollers(0);
@@ -282,7 +286,7 @@ public class Intake extends SubsystemBase {
     public Command intakeCommand(){
     return new InstantCommand(
       () -> {
-        spinRollers(GroundIntakeConstants.groundIntakeSpeed);
+        spinRollers(IntakeConstants.groundIntakeSpeed);
       }
     );
   }
@@ -294,7 +298,7 @@ public class Intake extends SubsystemBase {
   public Command ejectCommand(){
     return new StartEndCommand(
       () ->{
-        spinRollers(-GroundIntakeConstants.groundIntakeSpeed);
+        spinRollers(-IntakeConstants.groundIntakeSpeed);
       }, 
       () -> {
         spinRollers(0);
