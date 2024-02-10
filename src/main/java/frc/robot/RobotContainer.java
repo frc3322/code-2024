@@ -4,17 +4,12 @@
 
 package frc.robot;
 
-import java.beans.Encoder;
-
-import javax.sql.rowset.spi.TransactionalWriter;
-
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.Constants.OIConstants;
-import frc.robot.Constants.TransferConstants;
 import frc.robot.commands.ComboCommands;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
@@ -27,7 +22,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -43,7 +37,7 @@ public class RobotContainer {
   private final Elevator elevator = new Elevator();
   private final LimeLightVision vision = new LimeLightVision();
   private final Transfer transfer = new Transfer();
-  private final Intake groundIntake = new Intake();
+  private final Intake intake = new Intake();
   private final Shooter shooter = new Shooter();
 
   // The driver's controller
@@ -52,7 +46,7 @@ public class RobotContainer {
   CommandXboxController secondaryController = new CommandXboxController(OIConstants.kSecondaryControllerPort);
 
   //combination commands class
-  ComboCommands comboCommands = new ComboCommands(groundIntake, elevator, transfer, shooter);
+  ComboCommands comboCommands = new ComboCommands(elevator, intake, transfer, shooter);
 
   // Auton selector for dashboard
   SendableChooser<SequentialCommandGroup> autoSelector = new SendableChooser<>();
