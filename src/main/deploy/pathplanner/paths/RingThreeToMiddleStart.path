@@ -3,38 +3,32 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.8501657516135543,
-        "y": 7.098351746561043
+        "x": 2.47,
+        "y": 4.47
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8475319488412703,
-        "y": 7.4498919632188
+        "x": 1.9561242726089052,
+        "y": 4.955160901312794
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.835943131345722,
-        "y": 7.589901305928739
+        "x": 1.26,
+        "y": 5.57
       },
       "prevControl": {
-        "x": 1.835943131345722,
-        "y": 7.294070804357825
+        "x": 1.7434960996048117,
+        "y": 5.1585443711427965
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 1,
-      "rotationDegrees": 90.0,
-      "rotateFast": true
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -45,11 +39,14 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.0,
+    "rotation": -178.93005509623018,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Dynamic trajectories",
-  "previewStartingState": null,
-  "useDefaultConstraints": true
+  "folder": "No pivot autos realistic",
+  "previewStartingState": {
+    "rotation": 135.7195823134895,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
 }

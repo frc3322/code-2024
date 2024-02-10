@@ -119,7 +119,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Original Trajectories",
   "previewStartingState": {
     "rotation": 120.86089168834945,
     "velocity": 0
