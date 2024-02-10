@@ -1,0 +1,33 @@
+{
+  "NetworkTables": {
+    "transitory": {
+      "Shuffleboard": {
+        "DriveSubsystem: Log": {
+          "open": true
+        },
+        "Intake: Log": {
+          "open": true
+        },
+        "open": true
+      },
+      "SmartDashboard": {
+        "intake": {
+          "open": true
+        },
+        "open": true
+      }
+    },
+    "types": {
+      "/FMSInfo": "FMSInfo",
+      "/Shuffleboard/DriveSubsystem: Log/field": "Field2d",
+      "/SmartDashboard/intake": "ProfiledPIDController"
+    }
+  },
+  "NetworkTables Info": {
+    "visible": true
+  },
+  "NetworkTables Settings": {
+    "mode": "Client (NT4)",
+    "serverTeam": "3322"
+  }
+}
