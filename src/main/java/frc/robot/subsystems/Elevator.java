@@ -54,6 +54,8 @@ public class Elevator extends SubsystemBase implements Loggable {
     elevatorLeftMotor.setInverted(false);
     elevatorRightMotor.follow(elevatorLeftMotor, true);
 
+    elevatorLeftEncoder.setPositionConversionFactor(ElevatorConstants.elevatorGearRatio);
+
     elevatorLeftMotor.burnFlash();
     elevatorRightMotor.burnFlash();
 
