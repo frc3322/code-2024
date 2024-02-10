@@ -13,36 +13,36 @@ import frc.robot.subsystems.*;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ComboCommands{
 
-  Intake groundIntake;
+  Intake intake;
   Elevator elevator;
   Transfer transfer;
   Shooter shooter;
 
-  public ComboCommands(Intake groundIntake, Elevator elevator, Transfer transfer, Shooter shooter){
-    this.groundIntake = groundIntake;
+  public ComboCommands(Elevator elevator, Intake groundIntake, Transfer transfer, Shooter shooter){
     this.elevator = elevator;
+    this.intake = groundIntake;
     this.transfer = transfer;
     this.shooter = shooter;
   }
 
   public ParallelCommandGroup startAmpIntakeCommand = new ParallelCommandGroup(
     elevator.goToBottomCommand(),
-    groundIntake.flipToGround(),
-    groundIntake.intakeUntilBeamBreak()
+    intake.flipToGround(),
+    intake.intakeUntilBeamBreak()
   );
 
   public ParallelCommandGroup startShooterIntakeCommand = new ParallelCommandGroup(
     elevator.goToBottomCommand(),
-    groundIntake.flipToGround(),
-    groundIntake.intakeCommand(),
+    intake.flipToGround(),
+    intake.intakeCommand(),
     transfer.intakeToShooterCommand()
   );
 
     public ParallelCommandGroup startMiddleIntakeCommand = new ParallelCommandGroup(
     elevator.goToBottomCommand(),
-    groundIntake.flipToGround(),
-    groundIntake.intakeCommand(),
-    groundIntake.intakeToMiddleCommand()
+    intake.flipToGround(),
+    intake.intakeCommand(),
+    intake.intakeToMiddleCommand()
     
   );
 
@@ -53,19 +53,19 @@ public class ComboCommands{
 
   public SequentialCommandGroup ampCommands =  new ParallelCommandGroup(
     elevator.goToAmpCommand(),
-    groundIntake.flipToAmp()
-  ).andThen(groundIntake.ejectCommand());
+    intake.flipToAmp()
+  ).andThen(intake.ejectCommand());
 
    public SequentialCommandGroup noteTransferToShooter =  new ParallelCommandGroup(
     elevator.goToBottomCommand(),
-    groundIntake.flipToGround()
-  ).andThen(groundIntake.intakeCommand()
+    intake.flipToGround()
+  ).andThen(intake.intakeCommand()
   .alongWith(transfer.intakeToShooterCommand()));
 
    public SequentialCommandGroup noteTransferToIntake =  new ParallelCommandGroup(
     elevator.goToBottomCommand(),
-    groundIntake.flipToGround()
-  ).andThen(transfer.shooterToIntakeCommand(()->groundIntake.outerIntakeFull()));
+    intake.flipToGround()
+  ).andThen(transfer.shooterToIntakeCommand(()->intake.outerIntakeFull()));
 
 
  

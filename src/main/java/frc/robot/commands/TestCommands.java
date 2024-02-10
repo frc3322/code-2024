@@ -18,21 +18,13 @@ public class TestCommands{
     private final Shooter shooter;
     private final Transfer transfer;
 
-    public TestCommands(
-        DriveSubsystem robotDrive,
-        Elevator elevator,
-        Intake intake,
-        Shooter shooter,
-        Transfer transfer
-    ) {
-
+    public TestCommands(DriveSubsystem robotDrive, Elevator elevator, Intake intake, Transfer transfer, Shooter shooter){
         this.robotDrive = robotDrive;
-        this.elevator = elevator;
         this.intake = intake;
-        this.shooter = shooter;
+        this.elevator = elevator;
         this.transfer = transfer;
-
-    }
+        this.shooter = shooter;
+      }
 
     public Command driveTestCommand() {
         return new SequentialCommandGroup(
