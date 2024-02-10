@@ -34,11 +34,11 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem robotDrive = new DriveSubsystem();
-  private final Elevator elevator = new Elevator();
+  // private final Elevator elevator = new Elevator();
   private final LimeLightVision vision = new LimeLightVision();
-  private final Transfer transfer = new Transfer();
-  private final Intake intake = new Intake();
-  private final Shooter shooter = new Shooter();
+  // private final Transfer transfer = new Transfer();
+  // private final Intake intake = new Intake();
+  // private final Shooter shooter = new Shooter();
 
   // The driver's controller
   CommandXboxController driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
@@ -46,7 +46,7 @@ public class RobotContainer {
   CommandXboxController secondaryController = new CommandXboxController(OIConstants.kSecondaryControllerPort);
 
   //combination commands class
-  ComboCommands comboCommands = new ComboCommands(elevator, intake, transfer, shooter);
+  //ComboCommands comboCommands = new ComboCommands(elevator, intake, transfer, shooter);
 
   // Auton selector for dashboard
   SendableChooser<SequentialCommandGroup> autoSelector = new SendableChooser<>();
@@ -62,7 +62,7 @@ public class RobotContainer {
     Logger.configureLoggingAndConfig(this, true);
 
     // Auton selector config
-    autoSelector.setDefaultOption("Test", new Test4And1Auto());
+   //  autoSelector.setDefaultOption("Test", new Test4And1Auto());
 
     autoSelector.addOption("No auto", null);
 
@@ -88,21 +88,21 @@ public class RobotContainer {
       Elevator
     ◇─◇──◇─◇*/
 
-    elevator.setDefaultCommand(
-      // Right stick on secondary controller is used for manual elevator. There are limits so it does not hit the top
-      new RunCommand(
-        () -> { 
+  //   elevator.setDefaultCommand(
+  //     // Right stick on secondary controller is used for manual elevator. There are limits so it does not hit the top
+  //     new RunCommand(
+  //       () -> { 
 
-          double powerIn = -MathUtil.applyDeadband(secondaryController.getRightY() / 4, .1);
-          // Booleans to limit elevator movment
-          boolean goingDown = -secondaryController.getRightY() < 0;
-          boolean goingUp = -secondaryController.getRightY() > 0;
+  //         double powerIn = -MathUtil.applyDeadband(secondaryController.getRightY() / 4, .1);
+  //         // Booleans to limit elevator movment
+  //         boolean goingDown = -secondaryController.getRightY() < 0;
+  //         boolean goingUp = -secondaryController.getRightY() > 0;
           
-          double limitedPower = (elevator.atBottom() && goingDown) || (elevator.atTop() && goingUp) ? 0 : powerIn;
+  //         double limitedPower = (elevator.atBottom() && goingDown) || (elevator.atTop() && goingUp) ? 0 : powerIn;
           
-          elevator.setElevatorPower(limitedPower); 
-        }, elevator)
-    );
+  //         elevator.setElevatorPower(limitedPower); 
+  //       }, elevator)
+  //   );
   }
 
 
