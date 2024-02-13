@@ -172,7 +172,7 @@ public final class Constants {
   }
 
   public static final class TransferConstants {
-    public static final double transferSpeed = 0.1;
+    public static final double transferSpeed = 0.7;
     public static double shootWaitTime = 0.1;
   }
 
@@ -183,7 +183,7 @@ public final class Constants {
 
     public static final double shooterV = 0.00009;
 
-    public static final double shootingRMPAutoLine = 1000;
+    public static final double shootingRMPAutoLine = 3000;
   }
 
   public static final class IntakeConstants {

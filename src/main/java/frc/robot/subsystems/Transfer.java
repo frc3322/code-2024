@@ -32,7 +32,7 @@ public class Transfer extends SubsystemBase implements Loggable {
   private final CANSparkMax transferMotor = new CANSparkMax(CANIds.kTransferCanId, MotorType.kBrushless);
   private final CANSparkMax shooterTransferMotor = new CANSparkMax(CANIds.kShooterTransferCanId, MotorType.kBrushless);
 
-  private final DigitalInput shooterBeamBreak = new DigitalInput(DIOids.shooterBeamBreakDIO);
+  //private final DigitalInput shooterBeamBreak = new DigitalInput(DIOids.shooterBeamBreakDIO);
   
   /** Creates a new Transfer. */
   public Transfer() {
@@ -41,6 +41,9 @@ public class Transfer extends SubsystemBase implements Loggable {
 
     transferMotor.setIdleMode(IdleMode.kBrake);
     shooterTransferMotor.setIdleMode(IdleMode.kBrake);
+
+    transferMotor.setInverted(true);
+    shooterTransferMotor.setInverted(true);
 
     /* Current limit so that we dont fry our 550s
     - https://www.revrobotics.com/neo-550-brushless-motor-locked-rotor-testing/
@@ -62,11 +65,11 @@ public class Transfer extends SubsystemBase implements Loggable {
    * @return A boolean representing if the shooter has a game piece.
    */
   public boolean shooterFull() {
-    return shooterBeamBreak.get();
+    return true;//shooterBeamBreak.get();
   }
 
   public boolean shooterNotFull() {
-    return !shooterBeamBreak.get();
+    return true;//!shooterBeamBreak.get();
   }
 
   /*◇─◇──◇─◇
@@ -169,6 +172,7 @@ public class Transfer extends SubsystemBase implements Loggable {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    transferMotor.set(TransferConstants.transferSpeed);
+    shooterTransferMotor.set(TransferConstants.transferSpeed);
   }
 }

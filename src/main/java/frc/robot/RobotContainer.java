@@ -34,11 +34,11 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem robotDrive = new DriveSubsystem();
-  // private final Elevator elevator = new Elevator();
+  private final Elevator elevator = new Elevator();
   private final LimeLightVision vision = new LimeLightVision();
-  // private final Transfer transfer = new Transfer();
+  private final Transfer transfer = new Transfer();
   private final Intake intake = new Intake();
-  // private final Shooter shooter = new Shooter();
+  private final Shooter shooter = new Shooter();
 
   // The driver's controller
   CommandXboxController driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
@@ -88,21 +88,21 @@ public class RobotContainer {
       Elevator
     ◇─◇──◇─◇*/
 
-  //   elevator.setDefaultCommand(
-  //     // Right stick on secondary controller is used for manual elevator. There are limits so it does not hit the top
-  //     new RunCommand(
-  //       () -> { 
+    elevator.setDefaultCommand(
+      // Right stick on secondary controller is used for manual elevator. There are limits so it does not hit the top
+      new RunCommand(
+        () -> { 
 
-  //         double powerIn = -MathUtil.applyDeadband(secondaryController.getRightY() / 4, .1);
-  //         // Booleans to limit elevator movment
-  //         boolean goingDown = -secondaryController.getRightY() < 0;
-  //         boolean goingUp = -secondaryController.getRightY() > 0;
+          double powerIn = MathUtil.applyDeadband(secondaryController.getRightY(), .1);
+          // Booleans to limit elevator movment
+          boolean goingDown = -secondaryController.getRightY() < 0;
+          boolean goingUp = -secondaryController.getRightY() > 0;
           
-  //         double limitedPower = (elevator.atBottom() && goingDown) || (elevator.atTop() && goingUp) ? 0 : powerIn;
+          double limitedPower = (elevator.atBottom() && goingDown) || (elevator.atTop() && goingUp) ? 0 : powerIn;
           
-  //         elevator.setElevatorPower(limitedPower); 
-  //       }, elevator)
-  //   );
+          elevator.setElevatorPower(powerIn); 
+        }, elevator)
+    );
 
 
 
@@ -137,6 +137,25 @@ public class RobotContainer {
             robotDrive));
 
     driverController.start().onTrue(new InstantCommand(()->robotDrive.zeroHeading()));
+
+    secondaryController.leftBumper().onTrue(
+      shooter.stopShooterCommand()
+    );
+
+    secondaryController.rightBumper().onTrue(
+      shooter.shooterAutoLineRevUpCommand()
+    );
+
+    secondaryController.povDown().onTrue(
+      intake.flipToGround()
+    );
+
+    secondaryController.povUp().onTrue(
+      intake.flipToStow()
+    );
+
+    secondaryController.x().onTrue(new InstantCommand(
+      ()->intake.resetArmEncoder()));
             
     //  driverController.b().whileTrue(
     //   robotDrive.AmpLineupDynamicTrajectory()

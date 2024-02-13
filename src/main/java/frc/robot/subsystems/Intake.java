@@ -315,7 +315,7 @@ public class Intake extends SubsystemBase implements Loggable {
   // This method will be called once per scheduler run
   @Override
   public void periodic() {
-
+    wheelsMotor.set(-.7);
   }
 
 
