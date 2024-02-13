@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANIds;
 import frc.robot.Constants.ShooterConstants;
 import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Log;
 
 /**
  * The shooter subsystem for 3322's 2024 robot.
@@ -40,7 +41,9 @@ public class Shooter extends SubsystemBase implements Loggable {
 
   private final SimpleMotorFeedforward shooterRPMFeedforward = new SimpleMotorFeedforward(0, ShooterConstants.shooterV);
 
+  @Log
   private double shooterTopSetpoint = 0;
+  @Log
   private double shooterBottomSetpoint = 0;
   
   /** Creates a new Shooter. */
@@ -51,7 +54,7 @@ public class Shooter extends SubsystemBase implements Loggable {
     shooterTopMotor.setIdleMode(IdleMode.kCoast);
     shooterBottomMotor.setIdleMode(IdleMode.kCoast);
 
-    shooterTopMotor.setInverted(false);
+    shooterTopMotor.setInverted(true);
     shooterBottomMotor.setInverted(true);
 
     shooterTopMotor.burnFlash();
@@ -69,7 +72,7 @@ public class Shooter extends SubsystemBase implements Loggable {
    * @return The PID controller's output.
    */
   public double getTopMotorPIDOutput() {
-    return shooterRPMController.calculate(shooterTopEncoder.getVelocity(), shooterTopSetpoint);
+    return shooterRPMController.calculate(getTopWheelRPM(), shooterTopSetpoint);
   }
   
   /**
@@ -77,7 +80,7 @@ public class Shooter extends SubsystemBase implements Loggable {
    * @return The PID controller's output.
    */
   public double getBottomMotorPIDOutput() {
-    return shooterRPMController.calculate(shooterBottomEncoder.getVelocity(), shooterBottomSetpoint);
+    return shooterRPMController.calculate(getBottomWheelRPM(), shooterBottomSetpoint);
   }
 
   /**
@@ -111,6 +114,18 @@ public class Shooter extends SubsystemBase implements Loggable {
   public double getBottomCombinedControllers() {
     return getBottomMotorFeedforwardOutput() + getBottomMotorFeedforwardOutput();
   }
+
+  @Log
+  public double getTopWheelRPM(){
+    return shooterTopEncoder.getVelocity();
+  }
+
+  @Log
+  public double getBottomWheelRPM(){
+    return shooterBottomEncoder.getVelocity();
+  }
+
+
 
   /*◇─◇──◇─◇
   ✨Setters✨
