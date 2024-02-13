@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import au.grapplerobotics.LaserCan;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
@@ -30,6 +31,9 @@ public class Elevator extends SubsystemBase implements Loggable {
   
   private final CANSparkMax elevatorLeftMotor = new CANSparkMax(CANIds.kElevatorLeftCanId, MotorType.kBrushless);
   private final CANSparkMax elevatorRightMotor = new CANSparkMax(CANIds.kElevatorRightCanId, MotorType.kBrushless);
+
+  //private final LaserCan grappleLaser = new LaserCan(CANIds.kGrappleLaserCanId);
+  //private LaserCan.Measurement measurement;
 
   private final RelativeEncoder elevatorLeftEncoder = elevatorLeftMotor.getEncoder();
   
@@ -61,6 +65,7 @@ public class Elevator extends SubsystemBase implements Loggable {
 
     SmartDashboard.putData("ElevatorPID", elevatorPidController);
     
+    
   }
 
   /*◇─◇──◇─◇
@@ -84,6 +89,11 @@ public class Elevator extends SubsystemBase implements Loggable {
   public double getElevatorEncoderPosition() {
     return elevatorLeftEncoder.getPosition();
   }
+  // @Log
+  // public double getPositionFromGrappleLaser(){
+  //   return measurement.distance_mm; //may need adjustment if it's consistently off
+  // }
+
 
   /**
    * Returns a boolean representing if the elevator position is below the bottom threshold

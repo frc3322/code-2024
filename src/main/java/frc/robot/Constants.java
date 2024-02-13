@@ -49,6 +49,8 @@ public final class Constants {
     public static final int kElevatorLeftCanId = 10;
     public static final int kElevatorRightCanId = 11;
 
+    //public static final int kGrappleLaserCanId = ;
+
     // Intake CAN IDs
     public static final int kIntakePivotLeftCanId = 13;
     public static final int kIntakePivotRightCanId = 12;
