@@ -17,11 +17,13 @@ import frc.robot.subsystems.LimeLightVision;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Transfer;
+import frc.robot.Constants.*;
 import io.github.oblarg.oblog.Logger;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -46,7 +48,7 @@ public class RobotContainer {
   CommandXboxController secondaryController = new CommandXboxController(OIConstants.kSecondaryControllerPort);
 
   //combination commands class
-  //ComboCommands comboCommands = new ComboCommands(elevator, intake, transfer, shooter);
+  ComboCommands comboCommands = new ComboCommands(elevator, intake, transfer, shooter);
 
   // Auton selector for dashboard
   SendableChooser<SequentialCommandGroup> autoSelector = new SendableChooser<>();
@@ -154,8 +156,7 @@ public class RobotContainer {
       intake.flipToStow()
     );
 
-    secondaryController.x().onTrue(new InstantCommand(
-      ()->intake.resetArmEncoder()));
+  
             
     //  driverController.b().whileTrue(
     //   robotDrive.AmpLineupDynamicTrajectory()
@@ -165,52 +166,56 @@ public class RobotContainer {
     //  Transfer
     // ◇─◇──◇─◇*/
 
-    // driverController.povLeft().onTrue(comboCommands.noteTransferToShooter);
-    // driverController.povRight().onTrue(comboCommands.noteTransferToIntake);
+    // driverController.povLeft().onTrue(comboCommands.noteTransferToShooter());
+    // driverController.povRight().onTrue(comboCommands.noteTransferToIntake());
+
+    // secondaryController.leftBumper().whileTrue(new StartEndCommand(() -> {
+    //   transfer.setTransferSpeeds(TransferConstants.transferSpeed);
+    //   transfer.setShooterTransferSpeeds(TransferConstants.transferSpeed);
+    // }, () -> {
+    //   transfer.stopTransfer();
+    //   transfer.stopShooterTransfer();
+    // }, transfer));
+
+    // secondaryController.rightBumper().whileTrue(new StartEndCommand(() -> {
+    //   transfer.setTransferSpeeds(-TransferConstants.transferSpeed);
+    //   transfer.setShooterTransferSpeeds(-TransferConstants.transferSpeed);
+    // }, () -> {
+    //   transfer.stopTransfer();
+    //   transfer.stopShooterTransfer();
+    // }, transfer));
+
 
     // /*◇─◇──◇─◇
     //  Intake
     // ◇─◇──◇─◇*/
 
     // driverController.leftBumper()
-    // .onTrue(comboCommands.startShooterIntakeCommand)
-    // .onFalse(comboCommands.stopIntakeCommand);
+    // .onTrue(comboCommands.startShooterIntakeCommand())
+    // .onFalse(comboCommands.stopIntakeCommand());
 
     // driverController.rightBumper()
-    // .onTrue(comboCommands.startAmpIntakeCommand)
-    // .onFalse(comboCommands.stopIntakeCommand);
+    // .onTrue(comboCommands.startAmpIntakeCommand())
+    // .onFalse(comboCommands.stopIntakeCommand());
+
+    // driverController.a()
+    // .onTrue(comboCommands.startMiddleIntakeCommand())
+    // .onFalse(comboCommands.stopIntakeCommand());
 
     // driverController.y()
-    // .onTrue(comboCommands.startAmpIntakeCommand)
-    // .onFalse(comboCommands.stopIntakeCommand);
-
-
-    // /*◇─◇──◇─◇
-    //  testing controls
-    // ◇─◇──◇─◇*/
-
-    // secondaryController.povUp()
-    //     .whileTrue(new StartEndCommand(() -> {
-    //       transfer.setTransferSpeeds(TransferConstants.transferSpeed);
-    //     }, () -> {
-    //       transfer.setTransferSpeeds(0);
-    //     }, transfer));
-
-    // secondaryController.povUp()
-    //     .whileTrue(new StartEndCommand(() -> {
-    //       transfer.setTransferSpeeds(-TransferConstants.transferSpeed);
-    //     }, () -> {
-    //       transfer.setTransferSpeeds(0);
-    //     }, transfer));
-
-    // // elevator on secondary right y already
-
-    // groundIntake.setDefaultCommand(new RunCommand(() -> {
-    //   groundIntake.setArmSpeed(secondaryController.getLeftY());
-    //   groundIntake.spinRollers(secondaryController.getLeftTriggerAxis());
-    // }, groundIntake));
-
+    // .onTrue(comboCommands.startAmpIntakeCommand())
+    // .onFalse(comboCommands.stopIntakeCommand());
     
+    //driverController.b().whileTrue(intake.ejectCommand());
+
+    // intake.setDefaultCommand(new RunCommand(() -> {
+    //   intake.setArmSpeed(-secondaryController.getLeftY());    
+    // }, intake));
+
+    // secondaryController.leftStick().onTrue(intake.stopIntakeArmCommand());
+
+    //auto amp controls go heeeeeerreeeeeeeeee (on right trigger)
+    //button box levels
 
 
   }

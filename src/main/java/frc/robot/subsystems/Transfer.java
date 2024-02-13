@@ -23,6 +23,7 @@ import frc.robot.Constants.NeoMotorConstants;
 import frc.robot.Constants.TransferConstants;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Config;
+import io.github.oblarg.oblog.annotations.Log;
 
 /**
  * The transfer subsystem for 3322's 2024 robot.
@@ -64,10 +65,12 @@ public class Transfer extends SubsystemBase implements Loggable {
    * Returns whether the shooter beam break is tripped.
    * @return A boolean representing if the shooter has a game piece.
    */
+  @Log
   public boolean shooterFull() {
     return true;//shooterBeamBreak.get();
   }
 
+  @Log
   public boolean shooterNotFull() {
     return true;//!shooterBeamBreak.get();
   }
@@ -172,7 +175,6 @@ public class Transfer extends SubsystemBase implements Loggable {
 
   @Override
   public void periodic() {
-    transferMotor.set(TransferConstants.transferSpeed);
-    shooterTransferMotor.set(TransferConstants.transferSpeed);
+    
   }
 }

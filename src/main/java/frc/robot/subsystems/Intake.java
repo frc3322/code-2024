@@ -257,19 +257,18 @@ public class Intake extends SubsystemBase implements Loggable {
    * @return A run command that spins the intake's rollers until it ring is detected
    */
   public Command intakeToMiddleCommand(){
-    return new StartEndCommand(
+    return new RunCommand(
+        () -> {
+          spinRollers(-IntakeConstants.groundIntakeSpeed);
+        }, this)
+        .until(this::intakeFull)
+        .andThen(new StartEndCommand(
         () -> {
           spinRollers(-IntakeConstants.groundIntakeSpeed);
         },
-        () -> {}, this)
-        .until(this::intakeFull)
-        .andThen(new StartEndCommand(
-            () -> {
-              spinRollers(-IntakeConstants.groundIntakeSpeed);
-            },
-            () -> {
-              spinRollers(0);
-            }, this).until(this::intakeEmpty));
+        () -> {
+          spinRollers(0);
+        }, this).until(this::intakeEmpty));
       
   }
 

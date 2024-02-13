@@ -25,47 +25,61 @@ public class ComboCommands{
     this.shooter = shooter;
   }
 
-  public ParallelCommandGroup startAmpIntakeCommand = new ParallelCommandGroup(
-    elevator.goToBottomCommand(),
-    intake.flipToGround(),
-    intake.intakeUntilBeamBreak()
-  );
+  public ParallelCommandGroup startAmpIntakeCommand() {
+    return new ParallelCommandGroup(
+            elevator.goToBottomCommand(),
+            intake.flipToGround(),
+            intake.intakeUntilBeamBreak()
+    );
+}
 
-  public ParallelCommandGroup startShooterIntakeCommand = new ParallelCommandGroup(
-    elevator.goToBottomCommand(),
-    intake.flipToGround(),
-    intake.intakeCommand(),
-    transfer.intakeToShooterCommand()
-  );
+public ParallelCommandGroup startShooterIntakeCommand() {
+    return new ParallelCommandGroup(
+            elevator.goToBottomCommand(),
+            intake.flipToGround(),
+            intake.intakeCommand(),
+            transfer.intakeToShooterCommand()
+    );
+}
 
-    public ParallelCommandGroup startMiddleIntakeCommand = new ParallelCommandGroup(
-    elevator.goToBottomCommand(),
-    intake.flipToGround(),
-    intake.intakeCommand(),
-    intake.intakeToMiddleCommand()
-    
-  );
+public ParallelCommandGroup startMiddleIntakeCommand() {
+    return new ParallelCommandGroup(
+            elevator.goToBottomCommand(),
+            intake.flipToGround(),
+            intake.intakeCommand(),
+            intake.intakeToMiddleCommand()
+    );
+}
 
-  public ParallelCommandGroup stopIntakeCommand = new ParallelCommandGroup(
-   // groundIntake.stopRollersCommand(),
-   // groundIntake.flipUp()
-  );
+public ParallelCommandGroup stopIntakeCommand() {
+    return new ParallelCommandGroup(
+      intake.stopRollersCommand(),
+      intake.flipToStow()
+    );
+}
 
-  public SequentialCommandGroup ampCommands =  new ParallelCommandGroup(
-    elevator.goToAmpCommand(),
-    intake.flipToAmp()
-  ).andThen(intake.ejectCommand());
+public SequentialCommandGroup ampCommands() {
+    return new ParallelCommandGroup(
+            elevator.goToAmpCommand(),
+            intake.flipToAmp()
+    ).andThen(intake.ejectCommand());
+}
 
-   public SequentialCommandGroup noteTransferToShooter =  new ParallelCommandGroup(
-    elevator.goToBottomCommand(),
-    intake.flipToGround()
-  ).andThen(intake.intakeCommand()
-  .alongWith(transfer.intakeToShooterCommand()));
+public SequentialCommandGroup noteTransferToShooter() {
+    return new ParallelCommandGroup(
+            elevator.goToBottomCommand(),
+            intake.flipToGround()
+    ).andThen(intake.intakeCommand().alongWith(transfer.intakeToShooterCommand()));
+}
 
-   public SequentialCommandGroup noteTransferToIntake =  new ParallelCommandGroup(
-    elevator.goToBottomCommand(),
-    intake.flipToGround()
-  ).andThen(transfer.shooterToIntakeCommand(()->intake.outerIntakeFull()));
+public SequentialCommandGroup noteTransferToIntake() {
+    return new ParallelCommandGroup(
+            elevator.goToBottomCommand(),
+            intake.flipToGround()
+    ).andThen(transfer.shooterToIntakeCommand(() -> intake.outerIntakeFull()));
+}
+
+
 
 
  
