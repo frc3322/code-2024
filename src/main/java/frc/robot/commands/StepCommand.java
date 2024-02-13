@@ -4,13 +4,15 @@
 
 package frc.robot.commands;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 public class StepCommand extends Command {
   
   private Runnable toRun;
-  private boolean condition;
+  private BooleanSupplier condition;
 
   private boolean hasRun = false;
   
@@ -20,7 +22,7 @@ public class StepCommand extends Command {
    * @param condition The condition to wait for.
    * @param requirements The subsystems required by this command
    */
-  public StepCommand(Runnable toRun, boolean condition, Subsystem... requirements) {
+  public StepCommand(Runnable toRun, BooleanSupplier condition, Subsystem... requirements) {
     this.toRun = toRun;
     
     addRequirements(requirements);
@@ -35,7 +37,7 @@ public class StepCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (condition){
+    if (condition.getAsBoolean()){
       toRun.run();
       hasRun = true;
     }
