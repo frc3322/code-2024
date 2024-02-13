@@ -58,10 +58,10 @@ public final class Constants {
     public static final int kTransferCanId = 15;
 
     // Shooter IDs
-    public static final int kShooterTopCanId = 16;
-    public static final int kShooterBottomCanId = 17;
-    public static final int kShooterPivotCanId = 18;
-    public static final int kShooterTransferCanId = 19;
+    public static final int kShooterTopCanId = 17;
+    public static final int kShooterBottomCanId = 16;
+    public static final int kShooterPivotCanId = 63;
+    public static final int kShooterTransferCanId = 18;
   }
 
   public final class DIOids {
@@ -181,29 +181,29 @@ public final class Constants {
     public static final double shooterI = 0;
     public static final double shooterD = 0;
 
-    public static final double shooterV = 0;
+    public static final double shooterV = 0.00009;
 
-    public static final double shootingRMPAutoLine = 4000;
+    public static final double shootingRMPAutoLine = 1000;
   }
 
   public static final class IntakeConstants {
     //PID Constants
-    public static final double intakeP = 0;
+    public static final double intakeP = 3;
     public static final double intakeI = 0;
     public static final double intakeD = 0;
-    public static final double velocityConstraint = 0;
-    public static final double accelerationConstraint = 0;
+    public static final double velocityConstraint = 30;
+    public static final double accelerationConstraint = 30;
 
-    public static final int bottomZonePosition = 7;
-    public static final int topZonePosition = 0;
-    public static final int ampZonePosition = 11;
+    public static final double intakePosition = 0.385;
+    public static final double stowPosition = 0;
+    public static final double ampZonePosition = 11;
 
-    public static final double groundIntakeSpeed = .2;
+    public static final double groundIntakeSpeed = 20;
 
     public static final double kTurnToleranceDeg = 0.5;
     public static final double kTurnRateToleranceDegPerS = 5;
 
-    public static final double kIntakeArmGearRatio = 60.714;
+    public static final double kIntakeArmGearRatio = 1/60.714;
   }
 
   public static final class OIConstants {

@@ -35,6 +35,7 @@ public class Intake extends SubsystemBase implements Loggable {
 
   // Creates encoder for intakeArm
   private final RelativeEncoder armLeftEncoder = intakeArmLeft.getEncoder();
+  private final RelativeEncoder armRightEncoder = intakeArmRight.getEncoder();
 
   // Creates the intake beam sensor objects
   private final DigitalInput intakeOuterBeamBreak = new DigitalInput(0);
@@ -62,6 +63,10 @@ public class Intake extends SubsystemBase implements Loggable {
 
     armLeftEncoder.setPositionConversionFactor(IntakeConstants.kIntakeArmGearRatio);
     armLeftEncoder.setVelocityConversionFactor(IntakeConstants.kIntakeArmGearRatio);
+
+    
+    armRightEncoder.setPositionConversionFactor(IntakeConstants.kIntakeArmGearRatio);
+    armRightEncoder.setVelocityConversionFactor(IntakeConstants.kIntakeArmGearRatio);
 
     intakeArmLeft.setInverted(true);
     intakeArmRight.follow(intakeArmLeft, true);
@@ -177,11 +182,11 @@ public class Intake extends SubsystemBase implements Loggable {
    * A command that sets the PID goal to the flipped up position and moves to it.
    * @return A sequential command group that moves the intake arm to the flipped up position.
    */
-  public Command flipUp(){
+  public Command flipToStow(){
     //set flipper to correct setting until it is true that the flipper is at the top.
     return new SequentialCommandGroup (
       new InstantCommand(
-        () -> setIntakeSetpoint(IntakeConstants.topZonePosition),
+        () -> setIntakeSetpoint(IntakeConstants.stowPosition),
         this
       ),
       flipToSetpoint()
@@ -196,7 +201,7 @@ public class Intake extends SubsystemBase implements Loggable {
     //flips to bottom, does not spin. may be able to delete
     return new SequentialCommandGroup (
       new InstantCommand(
-        () -> setIntakeSetpoint(IntakeConstants.bottomZonePosition),
+        () -> setIntakeSetpoint(IntakeConstants.intakePosition),
         this
       ),
       flipToSetpoint()
