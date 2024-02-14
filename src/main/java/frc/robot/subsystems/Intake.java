@@ -71,6 +71,8 @@ public class Intake extends SubsystemBase implements Loggable {
     intakeArmLeft.setInverted(true);
     intakeArmRight.follow(intakeArmLeft, true);
 
+    wheelsMotor.setInverted(true);
+
     wheelsMotor.burnFlash();
     intakeArmLeft.burnFlash();
     intakeArmRight.burnFlash();
@@ -118,6 +120,10 @@ public class Intake extends SubsystemBase implements Loggable {
   @Log
   public Boolean outerIntakeFull() {
     return intakeOuterBeamBreak.get();
+  }
+
+  @Log public boolean innerIntakeFull() {
+    return intakeInnerBeamBreak.get();
   }
 
   /*◇─◇──◇─◇
@@ -222,7 +228,7 @@ public class Intake extends SubsystemBase implements Loggable {
       flipToSetpoint()
     );
   }
-
+  
   /**
    * An instant command that stops the intake arm. Can be used to return to manual control.
    * @return An instant command that stops the intake arm's movement
@@ -249,7 +255,7 @@ public class Intake extends SubsystemBase implements Loggable {
       () -> {
         spinRollers(0);
       }, this)
-      .until(this::intakeFull);
+      .until(this::innerIntakeFull);
   }
 
     /**
@@ -314,7 +320,7 @@ public class Intake extends SubsystemBase implements Loggable {
   // This method will be called once per scheduler run
   @Override
   public void periodic() {
-    wheelsMotor.set(-.7);
+
   }
 
 
