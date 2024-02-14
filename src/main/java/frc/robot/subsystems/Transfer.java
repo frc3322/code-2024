@@ -175,6 +175,7 @@ public class Transfer extends SubsystemBase implements Loggable {
 
   @Override
   public void periodic() {
-    
+    transferMotor.set(TransferConstants.transferSpeed);
+    shooterTransferMotor.set(TransferConstants.transferSpeed);
   }
 }

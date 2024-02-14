@@ -33,13 +33,20 @@ public class Shooter extends SubsystemBase implements Loggable {
   private final RelativeEncoder shooterTopEncoder = shooterTopMotor.getEncoder();
   private final RelativeEncoder shooterBottomEncoder = shooterBottomMotor.getEncoder();
 
-  private final PIDController shooterRPMController = new PIDController(
-    ShooterConstants.shooterP,
-    ShooterConstants.shooterI, 
-    ShooterConstants.shooterD
+  private final PIDController shooterTopRPMController = new PIDController(
+    ShooterConstants.shooterTopP,
+    ShooterConstants.shooterTopI, 
+    ShooterConstants.shooterTopD
   );
 
-  private final SimpleMotorFeedforward shooterRPMFeedforward = new SimpleMotorFeedforward(0, ShooterConstants.shooterV);
+   private final PIDController shooterBottomRPMController = new PIDController(
+    ShooterConstants.shooterBottomP,
+    ShooterConstants.shooterBottomI, 
+    ShooterConstants.shooterBottomD
+  );
+
+  private final SimpleMotorFeedforward shooterTopRPMFeedforward = new SimpleMotorFeedforward(0, ShooterConstants.shooterTopV);
+  private final SimpleMotorFeedforward shooterBottomRPMFeedforward = new SimpleMotorFeedforward(0, ShooterConstants.shooterBottomV);
 
   @Log
   private double shooterTopSetpoint = 0;
@@ -60,7 +67,7 @@ public class Shooter extends SubsystemBase implements Loggable {
     shooterTopMotor.burnFlash();
     shooterBottomMotor.burnFlash();
 
-    SmartDashboard.putData("Shooter pid", shooterRPMController);
+    SmartDashboard.putData("Shooter top pid", shooterTopRPMController);
   }
 
   /*◇─◇──◇─◇
@@ -72,7 +79,7 @@ public class Shooter extends SubsystemBase implements Loggable {
    * @return The PID controller's output.
    */
   public double getTopMotorPIDOutput() {
-    return shooterRPMController.calculate(getTopWheelRPM(), shooterTopSetpoint);
+    return shooterTopRPMController.calculate(getTopWheelRPM(), shooterTopSetpoint);
   }
   
   /**
@@ -80,7 +87,7 @@ public class Shooter extends SubsystemBase implements Loggable {
    * @return The PID controller's output.
    */
   public double getBottomMotorPIDOutput() {
-    return shooterRPMController.calculate(getBottomWheelRPM(), shooterBottomSetpoint);
+    return shooterBottomRPMController.calculate(getBottomWheelRPM(), shooterBottomSetpoint);
   }
 
   /**
@@ -88,7 +95,7 @@ public class Shooter extends SubsystemBase implements Loggable {
    * @return The feedforward controller's output.
    */
   public double getTopMotorFeedforwardOutput() {
-    return shooterRPMFeedforward.calculate(shooterTopSetpoint);
+    return shooterTopRPMFeedforward.calculate(shooterTopSetpoint);
   }
 
   /**
@@ -96,7 +103,7 @@ public class Shooter extends SubsystemBase implements Loggable {
    * @return The feedforward controller's output.
    */
   public double getBottomMotorFeedforwardOutput() {
-    return shooterRPMFeedforward.calculate(shooterBottomSetpoint);
+    return shooterBottomRPMFeedforward.calculate(shooterBottomSetpoint);
   }
 
   /**
@@ -104,7 +111,7 @@ public class Shooter extends SubsystemBase implements Loggable {
    * @return The combined feedfoward and PID controller's output.
    */
   public double getTopCombinedControllers() {
-    return getTopMotorFeedforwardOutput() + getTopMotorFeedforwardOutput();
+    return getTopMotorFeedforwardOutput() + getTopMotorPIDOutput();
   }
 
   /**
@@ -112,7 +119,7 @@ public class Shooter extends SubsystemBase implements Loggable {
    * @return The combined feedfoward and PID controller's output.
    */
   public double getBottomCombinedControllers() {
-    return getBottomMotorFeedforwardOutput() + getBottomMotorFeedforwardOutput();
+    return getBottomMotorFeedforwardOutput() + getBottomMotorPIDOutput();
   }
 
   @Log

@@ -156,6 +156,10 @@ public class RobotContainer {
       intake.flipToStow()
     );
 
+    secondaryController.start().onTrue(new InstantCommand(()-> intake.resetArmEncoder(), intake));
+    secondaryController.a().whileTrue(intake.intakeUntilBeamBreak());
+  
+   
   
             
     //  driverController.b().whileTrue(

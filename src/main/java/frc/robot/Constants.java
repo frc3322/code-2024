@@ -177,11 +177,16 @@ public final class Constants {
   }
 
   public static final class ShooterConstants{
-    public static final double shooterP = 0;
-    public static final double shooterI = 0;
-    public static final double shooterD = 0;
+    public static final double shooterTopP = 0;
+    public static final double shooterTopI = 0;
+    public static final double shooterTopD = 0;
 
-    public static final double shooterV = 0.00009;
+    public static final double shooterBottomP = 0;
+    public static final double shooterBottomI = 0;
+    public static final double shooterBottomD = 0;
+
+    public static final double shooterTopV = 0.0002;
+    public static final double shooterBottomV = 0.00018;
 
     public static final double shootingRMPAutoLine = 3000;
   }

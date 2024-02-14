@@ -37,9 +37,11 @@ public class Intake extends SubsystemBase implements Loggable {
   private final RelativeEncoder armLeftEncoder = intakeArmLeft.getEncoder();
   private final RelativeEncoder armRightEncoder = intakeArmRight.getEncoder();
 
+
   // Creates the intake beam sensor objects
-  private final DigitalInput intakeOuterBeamBreak = new DigitalInput(0);
-  private final DigitalInput intakeInnerBeamBreak = new DigitalInput(1);
+  private final DigitalInput intakeOuterBeamBreak = new DigitalInput(1);
+  private final DigitalInput intakeInnerBeamBreak = new DigitalInput(2);
+
 
   // Creates a new Profiled PID Controller
   public final ProfiledPIDController intakePIDController = new ProfiledPIDController(
@@ -105,7 +107,7 @@ public class Intake extends SubsystemBase implements Loggable {
 
   @Log
   public Boolean intakeEmpty(){
-    return !intakeInnerBeamBreak.get() && !intakeOuterBeamBreak.get();
+    return intakeInnerBeamBreak.get() && intakeOuterBeamBreak.get();
   }
 
   /**
@@ -114,16 +116,16 @@ public class Intake extends SubsystemBase implements Loggable {
    */
   @Log
   public Boolean intakeFull() {
-    return intakeInnerBeamBreak.get() && intakeOuterBeamBreak.get();
+    return !intakeInnerBeamBreak.get() && !intakeOuterBeamBreak.get();
   }
 
   @Log
   public Boolean outerIntakeFull() {
-    return intakeOuterBeamBreak.get();
+    return !intakeOuterBeamBreak.get();
   }
 
   @Log public boolean innerIntakeFull() {
-    return intakeInnerBeamBreak.get();
+    return !intakeInnerBeamBreak.get();
   }
 
   /*◇─◇──◇─◇
@@ -250,7 +252,7 @@ public class Intake extends SubsystemBase implements Loggable {
   public Command intakeUntilBeamBreak() {
     return new StartEndCommand(
       () ->{
-        spinRollers(-IntakeConstants.groundIntakeSpeed);
+        spinRollers(IntakeConstants.groundIntakeSpeed);
       }, 
       () -> {
         spinRollers(0);
@@ -265,12 +267,12 @@ public class Intake extends SubsystemBase implements Loggable {
   public Command intakeToMiddleCommand(){
     return new RunCommand(
         () -> {
-          spinRollers(-IntakeConstants.groundIntakeSpeed);
+          spinRollers(IntakeConstants.groundIntakeSpeed);
         }, this)
         .until(this::intakeFull)
         .andThen(new StartEndCommand(
         () -> {
-          spinRollers(-IntakeConstants.groundIntakeSpeed);
+          spinRollers(IntakeConstants.groundIntakeSpeed);
         },
         () -> {
           spinRollers(0);
@@ -320,7 +322,7 @@ public class Intake extends SubsystemBase implements Loggable {
   // This method will be called once per scheduler run
   @Override
   public void periodic() {
-
+    wheelsMotor.set(.7);
   }
 
 

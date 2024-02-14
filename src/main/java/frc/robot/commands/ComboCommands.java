@@ -27,7 +27,7 @@ public class ComboCommands{
 
   public ParallelCommandGroup startAmpIntakeCommand() {
     return new ParallelCommandGroup(
-            elevator.goToBottomCommand(),
+           elevator.goToBottomCommand(),
             intake.flipToGround(),
             intake.intakeUntilBeamBreak()
     );
@@ -35,7 +35,7 @@ public class ComboCommands{
 
 public ParallelCommandGroup startShooterIntakeCommand() {
     return new ParallelCommandGroup(
-            elevator.goToBottomCommand(),
+          //  elevator.goToBottomCommand(),
             intake.flipToGround(),
             intake.intakeCommand(),
             transfer.intakeToShooterCommand()
@@ -44,7 +44,7 @@ public ParallelCommandGroup startShooterIntakeCommand() {
 
 public ParallelCommandGroup startMiddleIntakeCommand() {
     return new ParallelCommandGroup(
-            elevator.goToBottomCommand(),
+        //    elevator.goToBottomCommand(),
             intake.flipToGround(),
             intake.intakeCommand(),
             intake.intakeToMiddleCommand()
