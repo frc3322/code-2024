@@ -17,13 +17,11 @@ import frc.robot.subsystems.LimeLightVision;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Transfer;
-import frc.robot.Constants.*;
 import io.github.oblarg.oblog.Logger;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -161,7 +159,7 @@ public class RobotContainer {
   
    
   
-            
+            // hehehhheheehehhe  emmmie was here mwah ahhahahahapenis ()
     //  driverController.b().whileTrue(
     //   robotDrive.AmpLineupDynamicTrajectory()
     // );
