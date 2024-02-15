@@ -64,11 +64,6 @@ public final class Constants {
     public static final int kShooterTransferCanId = 18;
   }
 
-  public final class DIOids {
-    public static final int transferBeamBreakDIO = 0;
-    public static final int shooterBeamBreakDIO = 1;
-  }
-
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
@@ -168,7 +163,7 @@ public final class Constants {
     public static final double elevatorBottomThreshold = 0;
     public static final double elevatorTopThreshold = 0;
 
-    public static final double elevatorGearRatio = 3 * .14;
+    public static final double elevatorGearRatio = 1 / (3 * .14);
   }
 
   public static final class TransferConstants {

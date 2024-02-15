@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -31,7 +32,7 @@ public class Transfer extends SubsystemBase implements Loggable {
   private final CANSparkMax transferMotor = new CANSparkMax(CANIds.kTransferCanId, MotorType.kBrushless);
   private final CANSparkMax shooterTransferMotor = new CANSparkMax(CANIds.kShooterTransferCanId, MotorType.kBrushless);
 
-  //private final DigitalInput shooterBeamBreak = new DigitalInput(DIOids.shooterBeamBreakDIO);
+  private final DigitalInput shooterBeamBreak = new DigitalInput(5);
   
   /** Creates a new Transfer. */
   public Transfer() {
