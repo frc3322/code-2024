@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import org.w3c.dom.css.ElementCSSInlineStyle;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -31,7 +33,7 @@ public class Elevator extends SubsystemBase implements Loggable {
   private final CANSparkMax elevatorLeftMotor = new CANSparkMax(CANIds.kElevatorLeftCanId, MotorType.kBrushless);
   private final CANSparkMax elevatorRightMotor = new CANSparkMax(CANIds.kElevatorRightCanId, MotorType.kBrushless);
 
-  private final RelativeEncoder elevatorLeftEncoder = elevatorLeftMotor.getEncoder();
+  private final RelativeEncoder elevatorRightEncoder = elevatorRightMotor.getEncoder();
   
   private final ProfiledPIDController elevatorPidController = new ProfiledPIDController(
     ElevatorConstants.elevatorP,
@@ -51,9 +53,10 @@ public class Elevator extends SubsystemBase implements Loggable {
     elevatorLeftMotor.setIdleMode(IdleMode.kBrake);
     elevatorRightMotor.setIdleMode(IdleMode.kBrake);
 
+    elevatorLeftMotor.setInverted(true);
     elevatorRightMotor.follow(elevatorLeftMotor, true);
 
-    elevatorLeftEncoder.setPositionConversionFactor(ElevatorConstants.elevatorGearRatio);
+    elevatorRightEncoder.setPositionConversionFactor(ElevatorConstants.elevatorGearRatio);
 
     elevatorLeftMotor.burnFlash();
     elevatorRightMotor.burnFlash();
@@ -81,7 +84,7 @@ public class Elevator extends SubsystemBase implements Loggable {
    */
   @Log
   public double getElevatorEncoderPosition() {
-    return elevatorLeftEncoder.getPosition();
+    return elevatorRightEncoder.getPosition();
   }
 
   /**

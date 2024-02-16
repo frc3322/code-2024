@@ -13,6 +13,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -66,12 +67,12 @@ public class Transfer extends SubsystemBase implements Loggable {
    */
   @Log
   public boolean shooterFull() {
-    return true;//shooterBeamBreak.get();
+    return !shooterBeamBreak.get();
   }
 
   @Log
   public boolean shooterNotFull() {
-    return true;//!shooterBeamBreak.get();
+    return shooterBeamBreak.get();
   }
 
   /*◇─◇──◇─◇
@@ -172,9 +173,10 @@ public class Transfer extends SubsystemBase implements Loggable {
     ));
   }
 
+
+
   @Override
   public void periodic() {
-    transferMotor.set(TransferConstants.transferSpeed);
-    shooterTransferMotor.set(TransferConstants.transferSpeed);
+    //transferMotor.set(.7);
   }
 }
