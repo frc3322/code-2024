@@ -150,20 +150,20 @@ public final class Constants {
   }
 
   public static final class ElevatorConstants{
-    public static final double elevatorP = 0;
-    public static final double elevatorI = 0;
+    public static final double elevatorP = 0.1;
+    public static final double elevatorI = 0.002;
     public static final double elevatorD = 0;
-    public static final double velocityConstraint = 0;
-    public static final double accelerationConstraint = 0;
+    public static final double velocityConstraint = 500;
+    public static final double accelerationConstraint = 500;
 
-    public static final double elevatorBottomPosition = 0;
+    public static final double elevatorBottomPosition = .2;
     public static final double elevatorAmpPosition = 0;
-    public static final double elevatorTopPosition = 0;
+    public static final double elevatorTopPosition = 18.5;
     
     public static final double elevatorBottomThreshold = 0;
     public static final double elevatorTopThreshold = 0;
 
-    public static final double elevatorGearRatio = 1 / (3 * .14);
+    public static final double elevatorGearRatio = 1 / (12 * .14);
   }
 
   public static final class TransferConstants {

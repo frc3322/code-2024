@@ -94,7 +94,7 @@ public class RobotContainer {
       new RunCommand(
         () -> { 
 
-          double powerIn = MathUtil.applyDeadband(secondaryController.getRightY(), .1);
+          double powerIn = MathUtil.applyDeadband(-secondaryController.getRightY(), .1);
           // Booleans to limit elevator movment
           boolean goingDown = -secondaryController.getRightY() < 0;
           boolean goingUp = -secondaryController.getRightY() > 0;
@@ -139,12 +139,15 @@ public class RobotContainer {
 
     driverController.start().onTrue(new InstantCommand(()->robotDrive.zeroHeading()));
 
-    secondaryController.leftBumper().onTrue(
+    driverController.b().onTrue(
       shooter.stopShooterCommand()
     );
 
-    secondaryController.rightBumper().onTrue(
+    driverController.y().onTrue(
       shooter.shooterAutoLineRevUpCommand()
+    );
+    driverController.a().onTrue(
+      transfer.shootCommand()
     );
 
     secondaryController.povDown().onTrue(
@@ -154,6 +157,8 @@ public class RobotContainer {
     secondaryController.povUp().onTrue(
       intake.runPayload(intake.flipToStowCommand())
     );
+
+    
 
     secondaryController.start().onTrue(new InstantCommand(()-> intake.resetArmEncoder(), intake));
   
@@ -186,6 +191,9 @@ public class RobotContainer {
     driverController.rightBumper()
     .onTrue(comboCommands.startAmpIntakeCommand())
     .onFalse(comboCommands.stopIntakeCommand());
+    driverController.rightBumper()
+    .onTrue(comboCommands.startAmpIntakeCommand())
+    .onFalse(comboCommands.stopIntakeCommand());
 
     driverController.a()
     .onTrue(comboCommands.startMiddleIntakeCommand())
@@ -202,6 +210,8 @@ public class RobotContainer {
     // }, intake));
 
     // secondaryController.leftStick().onTrue(intake.stopIntakeArmCommand());
+
+    secondaryController.y().onTrue(elevator.goToSetpoint());
 
     //auto amp controls go heeeeeerreeeeeeeeee (on right trigger)
     //button box levels
