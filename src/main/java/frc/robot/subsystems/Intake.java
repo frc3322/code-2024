@@ -202,13 +202,15 @@ public class Intake extends SubsystemBase implements Loggable {
    */
   public Command intakeToMiddle(){
     return new SequentialCommandGroup(
-      new StartEndCommand(
-        ()-> setWheelSpeed(IntakeConstants.groundIntakeSpeed), 
-        ()-> intakeFull()),
+      new RunCommand(
+        ()-> setWheelSpeed(IntakeConstants.groundIntakeSpeed))
+        .until(this::innerIntakeFull), 
       new StartEndCommand(
         ()-> setWheelSpeed(IntakeConstants.groundIntakeSpeed),
-        ()-> intakeEmpty()
-      ));
+        ()-> stopSpin()
+      )
+        .until(this::intakeEmpty)
+      );
 
   
     }

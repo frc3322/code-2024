@@ -200,7 +200,7 @@ public class RobotContainer {
     .onFalse(comboCommands.stopIntakeCommand());
 
     // driverController.y()
-    // manuals hoot
+    // manuals shoot
     
     driverController.b()
     .whileTrue(intake.runPayload(intake.ejectCommand()));

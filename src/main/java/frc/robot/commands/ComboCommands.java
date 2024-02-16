@@ -23,6 +23,9 @@ public class ComboCommands{
     this.shooter = shooter;
     }
 
+    /**
+     * @return Command group to flip, put elevator down, and start intake to first beam break
+     */
     public ParallelCommandGroup startAmpIntakeCommand() {
         return new ParallelCommandGroup(
             elevator.goToBottomCommand(),
@@ -34,6 +37,9 @@ public class ComboCommands{
         );
     }
 
+     /**
+     * @return Command group to flip, put elevator down, and start intake to the shooter beam break
+     */
     public ParallelCommandGroup startShooterIntakeCommand() {
         return new ParallelCommandGroup(
             elevator.goToBottomCommand(),
@@ -46,6 +52,9 @@ public class ComboCommands{
         );
     } 
 
+     /**
+     * @return Command group to flip, put elevator down, and start intake to middle
+     */
     public ParallelCommandGroup startMiddleIntakeCommand() {
         return new ParallelCommandGroup(
             elevator.goToBottomCommand(),
@@ -57,6 +66,9 @@ public class ComboCommands{
         );
     }
 
+     /**
+     * @return Command group to stop rollers and flip to stow
+     */
     public ParallelCommandGroup stopIntakeCommand() {
         return new ParallelCommandGroup(
             intake.flipToStowAndRunPayloadCommand(
@@ -67,6 +79,9 @@ public class ComboCommands{
         );
     }
 
+     /**
+     * @return Command group to move elevator to amp position, flip to amp position, and eject note
+     */
     public ParallelCommandGroup ampCommands() {
         return new ParallelCommandGroup(
             elevator.goToAmpCommand(),
@@ -78,7 +93,10 @@ public class ComboCommands{
         );
     }
 
-    public ParallelCommandGroup noteTransferToShooter() {
+     /**
+     * @return Command group to move elevator down, flip intake down, and transfer to shooter beam break
+     */
+    public SequentialCommandGroup noteTransferToShooter() {
         return new ParallelCommandGroup(
             elevator.goToBottomCommand(),
             intake.flipToGroundAndRunPayloadCommand(
@@ -87,18 +105,21 @@ public class ComboCommands{
                 0
             ),
             transfer.intakeToShooterCommand()
-        );
+        ).andThen(stopIntakeCommand());
     }
 
+     /**
+     * @return Command group to move elevator down, flip intake down, and transfer to intake beam break
+     */
     public SequentialCommandGroup noteTransferToIntake() {
         return new ParallelCommandGroup(
             elevator.goToBottomCommand(),
             intake.flipToGroundAndRunPayloadCommand(
                 intake.ejectCommand().until(intake::outerIntakeFull), 
                 .5, 
-                .5
-            )
-        )
-        .andThen(transfer.shooterToIntakeCommand(intake::outerIntakeFull));
+                .0
+            ),
+            transfer.shooterToIntakeCommand(intake::outerIntakeFull)
+       ).andThen(stopIntakeCommand());
     }
 }
