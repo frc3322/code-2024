@@ -194,7 +194,7 @@ public final class Constants {
     public static final double velocityConstraint = 30;
     public static final double accelerationConstraint = 30;
 
-    public static final double intakePosition = 0.385;
+    public static final double groundPosition = 0.385;
     public static final double stowPosition = 0;
     public static final double ampZonePosition = 11;
 

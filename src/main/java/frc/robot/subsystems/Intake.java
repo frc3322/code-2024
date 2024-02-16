@@ -15,10 +15,12 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 import io.github.oblarg.oblog.Loggable;
@@ -128,6 +130,7 @@ public class Intake extends SubsystemBase implements Loggable {
     return !intakeInnerBeamBreak.get();
   }
 
+
   /*◇─◇──◇─◇
   ✨Setters✨
   ◇─◇──◇─◇*/
@@ -137,7 +140,7 @@ public class Intake extends SubsystemBase implements Loggable {
    * Unit is Rotations?
    * @param setpoint The setpoint of the PID controller.
    */
-  public void setIntakeSetpoint(double setpoint) {
+  public void setArmSetpoint(double setpoint) {
     intakePIDController.setGoal(setpoint);
   }
 
@@ -150,7 +153,7 @@ public class Intake extends SubsystemBase implements Loggable {
     intakeArmRight.set(speed);
   }
 
-  public void spinRollers(double power) {
+  public void setWheelSpeed(double power) {
     wheelsMotor.set(power);
   }
 
@@ -181,150 +184,172 @@ public class Intake extends SubsystemBase implements Loggable {
     return new RunCommand(
       () -> {
         setArmSpeed((intakePIDController.calculate(getIntakeEncoderPosition())));
-      }, 
-      this
+      }
     );
   }
 
-  /**
-   * A command that sets the PID goal to the flipped up position and moves to it.
-   * @return A sequential command group that moves the intake arm to the flipped up position.
-   */
-  public Command flipToStow(){
-    //set flipper to correct setting until it is true that the flipper is at the top.
-    return new SequentialCommandGroup (
-      new InstantCommand(
-        () -> setIntakeSetpoint(IntakeConstants.stowPosition),
-        this
-      ),
-      flipToSetpoint()
-    );
+  // intake to beam break 
+  public Command intakeToBeamBreak(){
+    return new StartEndCommand(
+      ()-> setWheelSpeed(IntakeConstants.groundIntakeSpeed),
+      ()-> setWheelSpeed(0)
+    ).until(this::innerIntakeFull);
   }
 
   /**
-   * A command that sets the PID goal to the ground position and moves to it.
-   * @return A sequential command group that moves the intake arm to the ground position.
+   * Runs continuously until it is holding a note, then runs until the note is out of the intake and in the transfer
+   * @return A sequential Command Group
    */
-  public Command flipToGround(){
-    //flips to bottom, does not spin. may be able to delete
-    return new SequentialCommandGroup (
-      new InstantCommand(
-        () -> setIntakeSetpoint(IntakeConstants.intakePosition),
-        this
-      ),
-      flipToSetpoint()
-    );
-  }
+  public Command intakeToMiddle(){
+    return new SequentialCommandGroup(
+      new StartEndCommand(
+        ()-> setWheelSpeed(IntakeConstants.groundIntakeSpeed), 
+        ()-> intakeFull()),
+      new StartEndCommand(
+        ()-> setWheelSpeed(IntakeConstants.groundIntakeSpeed),
+        ()-> intakeEmpty()
+      ));
 
-
+  
+    }
   /**
-   * A command that sets the PID goal to the AMP position and moves to it.
-   * @return A sequential command group that moves the intake arm to the AMP position.
+   * Starts spinning continuously with normal intake speed.
+   * @return an InstantCommand
    */
-  public Command flipToAmp() {
-    return new SequentialCommandGroup (
-      new InstantCommand(
-        () -> setIntakeSetpoint(IntakeConstants.ampZonePosition),
-        this
-      ),
-      flipToSetpoint()
+  public Command startSpin(){
+    return new InstantCommand(
+      ()-> setWheelSpeed(IntakeConstants.groundIntakeSpeed)
     );
   }
   
-  /**
-   * An instant command that stops the intake arm. Can be used to return to manual control.
-   * @return An instant command that stops the intake arm's movement
-   */
-  public Command stopIntakeArmCommand() {
+/**
+ * Stops intaking.
+ * @return an InstantCommand
+ */
+  public Command stopSpin(){
     return new InstantCommand(
-      () -> {
-        stopArm();
-      },
-      this
+      ()-> setWheelSpeed(0)
     );
   }
 
   /**
-   * A run command that keeps spinning the intake rollers until the beam sensors detect a ring
-   * @return A run command that spins the intake's rollers until it ring is detected
-   */
-
-  public Command intakeUntilBeamBreak() {
-    return new StartEndCommand(
-      () ->{
-        spinRollers(IntakeConstants.groundIntakeSpeed);
-      }, 
-      () -> {
-        spinRollers(0);
-      }, this)
-      .until(this::innerIntakeFull);
-  }
-
-    /**
-   * A command that keeps spinning the intake rollers until the beam sensors detect a ring, then run them again until its empty
-   * @return A run command that spins the intake's rollers until it ring is detected
-   */
-  public Command intakeToMiddleCommand(){
-    return new RunCommand(
-        () -> {
-          spinRollers(IntakeConstants.groundIntakeSpeed);
-        }, this)
-        .until(this::intakeFull)
-        .andThen(new StartEndCommand(
-        () -> {
-          spinRollers(IntakeConstants.groundIntakeSpeed);
-        },
-        () -> {
-          spinRollers(0);
-        }, this).until(this::intakeEmpty));
-      
-  }
-
-  /**
-   * An instant command that stops the intake rollers
-   * @return An instant command that stops the intake rollers
-   */
-  public Command stopRollersCommand(){
-    return new InstantCommand(
-      () -> {
-        spinRollers(0);
-      }
-    );
-  }
-  /**
-   * An instant command that spins the intake rollers at a constant speed
-   * @return An instant command that spins the intake's rollers
-   */
-    public Command intakeCommand(){
-    return new InstantCommand(
-      () -> {
-        spinRollers(IntakeConstants.groundIntakeSpeed);
-      }
-    );
-  }
-
-  /**
-   * A StartEndCommand that spins the intake rollers until the intake is empty, where the rollers stop spinning
-   * @return A StartEndCommand that spins the intake's rollers until a ring is inside it
+   * Ejects piece from intake.
+   * @return a StartEndCommand
    */
   public Command ejectCommand(){
     return new StartEndCommand(
-      () ->{
-        spinRollers(-IntakeConstants.groundIntakeSpeed);
-      }, 
-      () -> {
-        spinRollers(0);
-      }, this)
+      ()->setWheelSpeed(-IntakeConstants.groundIntakeSpeed),
+      ()->setWheelSpeed(0))
       .until(this::intakeEmpty);
-      
   }
+
+  /**
+   * Brings the intake to the stow position.
+   * @return A sequential command group
+   */
+  public Command flipToStowCommand(){
+    return new SequentialCommandGroup(
+      new InstantCommand(
+        () -> setArmSetpoint(IntakeConstants.stowPosition)
+      ),
+      flipToSetpoint()
+    );
+  }
+
+  /**
+   * Brings the intake to the ground position.
+   * @return A sequential command group
+   */
+      
+  public Command flipToGroundCommand(){
+    return new SequentialCommandGroup(
+      new InstantCommand(
+        () -> setArmSetpoint(IntakeConstants.groundPosition)
+      ),
+      flipToSetpoint()
+    );
+  }
+/**
+ * Runs a "payload" (eject or run intake) and brings the arm to the stow position with a set amount of delay on each.
+ * @param payload Command to run
+ * @param payloadDelay Delay on payload command
+ * @param armDelay Delay before moving intake to stow position
+ * @return A parallel command group
+ */
+  public Command flipToStowAndRunPayloadCommand(Command payload, double payloadDelay, double armDelay) {
+    Command command = new ParallelCommandGroup(
+    new SequentialCommandGroup(
+        new WaitCommand(payloadDelay),
+        payload
+      ),
+      new SequentialCommandGroup(
+        new WaitCommand(armDelay),
+        flipToStowCommand()
+      )
+    );
+    command.addRequirements(this);
+    return command;
+  }
+
+/**
+ * Runs a "payload" (eject or run intake) and brings the arm to the ground with a set amount of delay on each.
+ * @param payload Command to run
+ * @param payloadDelay Delay on payload command
+ * @param armDelay Delay before moving intake to ground
+ * @return A parallel command group
+ */
+  public Command flipToGroundAndRunPayloadCommand(Command payload, double payloadDelay, double armDelay) {
+    Command command = new ParallelCommandGroup(
+      new SequentialCommandGroup(
+        new WaitCommand(payloadDelay),
+        payload
+      ),
+      new SequentialCommandGroup(
+        new WaitCommand(armDelay),
+        flipToGroundCommand()
+      )
+    );
+    command.addRequirements(this);
+    return command;
+  }
+
+  /**
+   * Run a command requiring intake.
+   * @param payload The command that needs requirements.
+   * @return The command with requirements added.
+   */
+  public Command runPayload(Command payload){
+    Command command = payload;
+    payload.addRequirements(this);
+    return command;
+  }
+
+  public Command flipToGroundAndRunPayloadCommandAlternate(Command payload, double payloadDelay, double armDelay) {
+    Command command = new ParallelCommandGroup(
+      new SequentialCommandGroup(
+        new WaitCommand(payloadDelay),
+        payload
+      ),
+      new SequentialCommandGroup(
+        new WaitCommand(armDelay),
+        new InstantCommand(()-> setArmSetpoint(IntakeConstants.groundPosition)),
+        new  RunCommand( ()->
+          setArmSpeed(intakePIDController.calculate(getIntakeEncoderPosition())
+          )
+        )
+      )
+    );
+    command.addRequirements(this);
+    return command;
+  }
+  
+  
+
+  //flip stow, flip to ground, flips down and spins untill beam break, flip down and spin without limits, start spin, stop spin
 
   // This method will be called once per scheduler run
   @Override
   public void periodic() {
-    wheelsMotor.set(.7);
+   
   }
-
-
-
 }

@@ -8,6 +8,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.ComboCommands;
@@ -147,19 +148,18 @@ public class RobotContainer {
     );
 
     secondaryController.povDown().onTrue(
-      intake.flipToGround()
+      intake.runPayload(intake.flipToGroundCommand())
     );
 
     secondaryController.povUp().onTrue(
-      intake.flipToStow()
+      intake.runPayload(intake.flipToStowCommand())
     );
 
     secondaryController.start().onTrue(new InstantCommand(()-> intake.resetArmEncoder(), intake));
-    secondaryController.a().whileTrue(intake.intakeUntilBeamBreak());
   
    
   
-            // hehehhheheehehhe  emmmie was here mwah ahhahahahapenis ()
+            // hehehhheheehehhe  emmmie was here mwah ahhahahaha ()
     //  driverController.b().whileTrue(
     //   robotDrive.AmpLineupDynamicTrajectory()
     // );
@@ -168,47 +168,34 @@ public class RobotContainer {
     //  Transfer
     // ◇─◇──◇─◇*/
 
-    // driverController.povLeft().onTrue(comboCommands.noteTransferToShooter());
-    // driverController.povRight().onTrue(comboCommands.noteTransferToIntake());
+    driverController.povLeft().onTrue(comboCommands.noteTransferToShooter());
+    driverController.povRight().onTrue(comboCommands.noteTransferToIntake());
 
-    // secondaryController.leftBumper().whileTrue(new StartEndCommand(() -> {
-    //   transfer.setTransferSpeeds(TransferConstants.transferSpeed);
-    //   transfer.setShooterTransferSpeeds(TransferConstants.transferSpeed);
-    // }, () -> {
-    //   transfer.stopTransfer();
-    //   transfer.stopShooterTransfer();
-    // }, transfer));
-
-    // secondaryController.rightBumper().whileTrue(new StartEndCommand(() -> {
-    //   transfer.setTransferSpeeds(-TransferConstants.transferSpeed);
-    //   transfer.setShooterTransferSpeeds(-TransferConstants.transferSpeed);
-    // }, () -> {
-    //   transfer.stopTransfer();
-    //   transfer.stopShooterTransfer();
-    // }, transfer));
+    secondaryController.leftBumper().whileTrue(transfer.runTransferCommand(true));
+    secondaryController.rightBumper().whileTrue(transfer.runTransferCommand(false));
 
 
     // /*◇─◇──◇─◇
     //  Intake
     // ◇─◇──◇─◇*/
 
-    // driverController.leftBumper()
-    // .onTrue(comboCommands.startShooterIntakeCommand())
-    // .onFalse(comboCommands.stopIntakeCommand());
+    driverController.leftBumper()
+    .onTrue(comboCommands.startShooterIntakeCommand())
+    .onFalse(comboCommands.stopIntakeCommand().andThen(new InstantCommand(()-> driverController.getHID().setRumble(RumbleType.kBothRumble, 1))));
 
-    // driverController.rightBumper()
-    // .onTrue(comboCommands.startAmpIntakeCommand())
-    // .onFalse(comboCommands.stopIntakeCommand());
+    driverController.rightBumper()
+    .onTrue(comboCommands.startAmpIntakeCommand())
+    .onFalse(comboCommands.stopIntakeCommand());
 
-    // driverController.a()
-    // .onTrue(comboCommands.startMiddleIntakeCommand())
-    // .onFalse(comboCommands.stopIntakeCommand());
+    driverController.a()
+    .onTrue(comboCommands.startMiddleIntakeCommand())
+    .onFalse(comboCommands.stopIntakeCommand());
 
     // driverController.y()
-    // .onTrue(comboCommands.startAmpIntakeCommand())
-    // .onFalse(comboCommands.stopIntakeCommand());
+    // manuals hoot
     
-    //driverController.b().whileTrue(intake.ejectCommand());
+    driverController.b()
+    .whileTrue(intake.runPayload(intake.ejectCommand()));
 
     // intake.setDefaultCommand(new RunCommand(() -> {
     //   intake.setArmSpeed(-secondaryController.getLeftY());    

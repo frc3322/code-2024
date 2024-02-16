@@ -114,22 +114,33 @@ public class Transfer extends SubsystemBase implements Loggable {
   ◇─◇──◇─◇*/
 
   /**
+   * Runs the transfer in a direction dependent on the paramater
+   * @param in True if towards shooter, false if away from shooter
+   * @return A command to run the transfer
+   */
+  public Command runTransferCommand(boolean in){
+    return new StartEndCommand(
+      ()-> {
+        double speed = in ? TransferConstants.transferSpeed : -TransferConstants.transferSpeed;
+        setTransferSpeeds(speed);
+        setShooterTransferSpeeds(speed);
+        },
+      ()-> {
+        stopTransfer();
+        stopShooterTransfer();
+      },
+      this
+    );
+  }
+
+  /**
    * Returns a command that moves a game piece from the intake to the shooter.
    * @return A start end command.
    */
   public Command intakeToShooterCommand() {
-    return new StartEndCommand(
-      () -> {
-        setTransferSpeeds(TransferConstants.transferSpeed);
-        setShooterTransferSpeeds(TransferConstants.transferSpeed);
-      }, 
-      () -> {
-        stopTransfer();
-        stopShooterTransfer();
-      }, 
-      this
-    )
-    .until(this::shooterFull);
+    Command command = runTransferCommand(true).until(this::shooterFull);
+    command.addRequirements(this);
+    return command;
   }
 
   /**
@@ -138,17 +149,7 @@ public class Transfer extends SubsystemBase implements Loggable {
    * @return A start end command.
    */
   public Command shooterToIntakeCommand(BooleanSupplier intakeFull) {
-    return new StartEndCommand(
-      () -> {
-        setTransferSpeeds(-TransferConstants.transferSpeed);
-        setShooterTransferSpeeds(-TransferConstants.transferSpeed);
-      }, 
-      () -> {
-        stopTransfer();
-        stopShooterTransfer();
-      }, 
-      this
-    ).until(intakeFull);
+    return runTransferCommand(false).until(intakeFull);
   }
 
   /**
@@ -174,7 +175,6 @@ public class Transfer extends SubsystemBase implements Loggable {
 
   @Override
   public void periodic() {
-    transferMotor.set(TransferConstants.transferSpeed);
-    shooterTransferMotor.set(TransferConstants.transferSpeed);
+   
   }
 }
