@@ -169,9 +169,9 @@ public class RobotContainer {
     //   robotDrive.AmpLineupDynamicTrajectory()
     // );
 
-    // /*◇─◇──◇─◇
-    //  Transfer
-    // ◇─◇──◇─◇*/
+    /*◇─◇──◇─◇
+      Transfer
+    ◇─◇──◇─◇*/
 
     driverController.povLeft().onTrue(comboCommands.noteTransferToShooter());
     driverController.povRight().onTrue(comboCommands.noteTransferToIntake());
@@ -180,9 +180,9 @@ public class RobotContainer {
     secondaryController.rightBumper().whileTrue(transfer.runTransferCommand(false));
 
 
-    // /*◇─◇──◇─◇
-    //  Intake
-    // ◇─◇──◇─◇*/
+    /*◇─◇──◇─◇
+       Intake
+    ◇─◇──◇─◇*/
 
     driverController.leftBumper()
     .onTrue(comboCommands.startShooterIntakeCommand())
