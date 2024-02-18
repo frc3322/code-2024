@@ -184,6 +184,8 @@ public final class Constants {
     public static final double shooterBottomV = 0.00018;
 
     public static final double shootingRMPAutoLine = 3000;
+
+    public static final double shooterRPMThreshold = 50;
   }
 
   public static final class IntakeConstants {

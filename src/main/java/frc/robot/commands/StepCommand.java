@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 
 public class StepCommand extends Command {
   
-  private Runnable toRun;
+  private Command toRun;
   private BooleanSupplier condition;
 
   private boolean hasRun = false;
@@ -22,7 +22,7 @@ public class StepCommand extends Command {
    * @param condition The condition to wait for.
    * @param requirements The subsystems required by this command
    */
-  public StepCommand(Runnable toRun, BooleanSupplier condition, Subsystem... requirements) {
+  public StepCommand(Command toRun, BooleanSupplier condition, Subsystem... requirements) {
     this.toRun = toRun;
     
     addRequirements(requirements);
@@ -38,7 +38,7 @@ public class StepCommand extends Command {
   @Override
   public void execute() {
     if (condition.getAsBoolean()){
-      toRun.run();
+      toRun.schedule();
       hasRun = true;
     }
   }
