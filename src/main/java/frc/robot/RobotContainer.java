@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -139,24 +140,12 @@ public class RobotContainer {
 
     driverController.start().onTrue(new InstantCommand(()->robotDrive.zeroHeading()));
 
-    driverController.b().onTrue(
-      shooter.stopShooterCommand()
-    );
+    driverController.leftBumper()
+    .onTrue(comboCommands.ampCommands())
+    .onFalse(comboCommands.stowCommandGroup());
 
-    driverController.y().onTrue(
-      shooter.shooterAutoLineRevUpCommand()
-    );
-    driverController.a().onTrue(
-      transfer.shootCommand()
-    );
-
-    secondaryController.povDown().onTrue(
-      intake.runPayload(intake.flipToGroundCommand())
-    );
-
-    secondaryController.povUp().onTrue(
-      intake.runPayload(intake.flipToStowCommand())
-    );
+    driverController.rightBumper()
+    .onTrue(transfer.shootCommand());
 
     
 
@@ -184,20 +173,20 @@ public class RobotContainer {
        Intake
     ◇─◇──◇─◇*/
 
-    driverController.leftBumper()
+    driverController.rightTrigger(0.1)
     .onTrue(comboCommands.startShooterIntakeCommand())
-    .onFalse(comboCommands.stopIntakeCommand().andThen(new InstantCommand(()-> driverController.getHID().setRumble(RumbleType.kBothRumble, 1))));
+    .onFalse(comboCommands.stopIntakeWithTransferRunningCommand());
 
-    driverController.rightBumper()
+    driverController.leftTrigger(0.1)
     .onTrue(comboCommands.startAmpIntakeCommand())
     .onFalse(comboCommands.stopIntakeCommand());
-    driverController.rightBumper()
-    .onTrue(comboCommands.startAmpIntakeCommand())
-    .onFalse(comboCommands.stopIntakeCommand());
+
 
     driverController.a()
     .onTrue(comboCommands.startMiddleIntakeCommand())
     .onFalse(comboCommands.stopIntakeCommand());
+
+    secondaryController.leftStick().onTrue(new InstantCommand(()->intake.stopArm(), intake));
 
     // driverController.y()
     // manuals shoot
@@ -209,14 +198,38 @@ public class RobotContainer {
     //   intake.setArmSpeed(-secondaryController.getLeftY());    
     // }, intake));
 
-    // secondaryController.leftStick().onTrue(intake.stopIntakeArmCommand());
+    secondaryController.povUp().onTrue(shooter.shooterAutoLineRevUpCommand());
+    secondaryController.povDown().onTrue(shooter.stopShooterCommand());
 
-    secondaryController.y().onTrue(elevator.goToSetpoint());
+    // secondaryController.leftStick().onTrue(intake.stopIntakeArmCommand());
 
     //auto amp controls go heeeeeerreeeeeeeeee (on right trigger)
     //button box levels
 
+    // Feedback
+    driverController.leftTrigger(0.1).whileTrue(
+      new RunCommand(
+        () -> {
+          if (intake.innerIntakeFull() || transfer.shooterFull()){
+            driverController.getHID().setRumble(RumbleType.kBothRumble, 1);
+          }
+        }
+    ))
+    .whileFalse(new InstantCommand(
+      () -> driverController.getHID().setRumble(RumbleType.kBothRumble, 0)
+    ));
 
+    driverController.rightTrigger(0.1).whileTrue(
+      new RunCommand(
+        () -> {
+          if (intake.innerIntakeFull() || transfer.shooterFull()){
+            driverController.getHID().setRumble(RumbleType.kBothRumble, 1);
+          }
+        }
+      ))
+      .whileFalse(new InstantCommand(
+        () -> driverController.getHID().setRumble(RumbleType.kBothRumble, 0)
+      ));
   }
   public void updateLogger() {
     Logger.updateEntries();

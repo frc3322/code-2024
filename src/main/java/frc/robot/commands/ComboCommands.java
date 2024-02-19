@@ -4,8 +4,12 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.TransferConstants;
 import frc.robot.subsystems.*;
 
 
@@ -17,10 +21,10 @@ public class ComboCommands{
     Shooter shooter;
 
     public ComboCommands(Elevator elevator, Intake groundIntake, Transfer transfer, Shooter shooter){
-    this.elevator = elevator;
-    this.intake = groundIntake;
-    this.transfer = transfer;
-    this.shooter = shooter;
+        this.elevator = elevator;
+        this.intake = groundIntake;
+        this.transfer = transfer;
+        this.shooter = shooter;
     }
 
     /**
@@ -44,7 +48,7 @@ public class ComboCommands{
         return new ParallelCommandGroup(
             elevator.goToBottomCommand(),
             intake.flipToGroundAndRunPayloadCommand(
-                intake.startSpin(), 
+                intake.startSpin(IntakeConstants.groundIntakeSpeed), 
                 0, 
                 0
             ),
@@ -79,16 +83,40 @@ public class ComboCommands{
         );
     }
 
+    /**
+     * @return Command group to stop rollers and flip to stow
+     */
+    public ParallelCommandGroup stopIntakeWithTransferRunningCommand() {
+        return new ParallelCommandGroup(
+            intake.flipToGroundAndRunPayloadCommand(
+                intake.startSpin(IntakeConstants.groundIntakeSpeed), 
+                0, 
+                0
+            ).until(intake::intakeEmpty)
+            .andThen(
+            intake.flipToStowAndRunPayloadCommand(
+                intake.stopSpin(), 
+                0, 
+                0
+            )),
+            transfer.intakeToShooterCommand()
+        );
+    }
+
      /**
      * @return Command group to move elevator to amp position, flip to amp position, and eject note
      */
     public ParallelCommandGroup ampCommands() {
         return new ParallelCommandGroup(
             elevator.goToAmpCommand(),
-            intake.flipToGroundAndRunPayloadCommand(
-                intake.ejectCommand(), 
-                .5, 
-                .5
+            intake.runPayload(intake.flipToAmpCommand())
+            .until(elevator::atSetpoint)
+            .andThen(
+                intake.flipToAmpAndRunPayloadCommand(
+                    intake.startSpin(IntakeConstants.groundIntakeSpeed),
+                    0,
+                    0
+                )
             )
         );
     }
@@ -100,26 +128,43 @@ public class ComboCommands{
         return new ParallelCommandGroup(
             elevator.goToBottomCommand(),
             intake.flipToGroundAndRunPayloadCommand(
-                intake.startSpin().until(intake::intakeEmpty), 
+                intake.startSpin(IntakeConstants.groundIntakeSpeed).until(intake::intakeEmpty), 
                 .5, 
                 0
             ),
             transfer.intakeToShooterCommand()
-        ).andThen(stopIntakeCommand());
+        ).until(transfer::shooterFull)
+        .andThen(this.stowCommandGroup());
     }
 
      /**
      * @return Command group to move elevator down, flip intake down, and transfer to intake beam break
      */
-    public SequentialCommandGroup noteTransferToIntake() {
+    public Command noteTransferToIntake() {
         return new ParallelCommandGroup(
             elevator.goToBottomCommand(),
             intake.flipToGroundAndRunPayloadCommand(
-                intake.ejectCommand().until(intake::outerIntakeFull), 
-                .5, 
-                .0
+                intake.reverseIntakeToBeamBreak(),
+                0, 
+                0
             ),
-            transfer.shooterToIntakeCommand(intake::outerIntakeFull)
-       ).andThen(stopIntakeCommand());
+            new SequentialCommandGroup(
+                new WaitCommand(TransferConstants.transferWaitTimeToIntake),
+                transfer.shooterToIntakeCommand(intake::outerIntakeFull)
+            )
+            
+       ).until(intake::outerIntakeFull)
+        .andThen(this.stowCommandGroup());
+    }
+
+    public Command stowCommandGroup(){
+        return new ParallelCommandGroup(
+            elevator.goToBottomCommand(),
+            intake.flipToStowAndRunPayloadCommand(
+                intake.stopSpin(), 
+                0, 
+                0
+            )
+        );
     }
 }

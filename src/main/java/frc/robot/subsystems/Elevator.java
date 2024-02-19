@@ -95,6 +95,10 @@ public class Elevator extends SubsystemBase implements Loggable {
     return getElevatorEncoderPosition() < ElevatorConstants.elevatorBottomThreshold;
   }
 
+  public boolean atSetpoint() {
+    return Math.abs(getElevatorEncoderPosition() - getSetpoint()) < ElevatorConstants.elevatorPositionThreshold;
+  }
+
   /**
    * Returns a boolean representing if the elevator position is above the top threshold
    * @return A boolean represening if the elevator is at the top

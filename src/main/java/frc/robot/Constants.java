@@ -70,8 +70,8 @@ public final class Constants {
     public static final double kMaxSpeedMetersPerSecond = 4.8;
     public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
 
-    public static final double kDirectionSlewRate = 3; // radians per second //old is 9
-    public static final double kMagnitudeSlewRate = 2.6; // percent per second (1 = 100%) //old is 2.6
+    public static final double kDirectionSlewRate = 9; // radians per second //old is 9
+    public static final double kMagnitudeSlewRate = 5; // percent per second (1 = 100%) //old is 2.6
     public static final double kRotationalSlewRate = 3.0; // percent per second (1 = 100%) //0ld is 2.0
 
     // Chassis configuration
@@ -157,30 +157,33 @@ public final class Constants {
     public static final double accelerationConstraint = 500;
 
     public static final double elevatorBottomPosition = .2;
-    public static final double elevatorAmpPosition = 0;
+    public static final double elevatorAmpPosition = 15.5;
     public static final double elevatorTopPosition = 18.5;
     
     public static final double elevatorBottomThreshold = 0;
     public static final double elevatorTopThreshold = 0;
 
     public static final double elevatorGearRatio = 1 / (12 * .14);
+    public static final double elevatorPositionThreshold = 1;
   }
 
   public static final class TransferConstants {
-    public static final double transferSpeed = 0.7;
-    public static double shootWaitTime = 0.1;
+    public static final double transferSpeed = 1;
+    public static final double shootWaitTime = 0.1;
+
+    public static final double transferWaitTimeToIntake = .05;
   }
 
   public static final class ShooterConstants{
-    public static final double shooterTopP = 0;
+    public static final double shooterTopP = 0.0002;
     public static final double shooterTopI = 0;
     public static final double shooterTopD = 0;
 
-    public static final double shooterBottomP = 0;
+    public static final double shooterBottomP = 0.000001;
     public static final double shooterBottomI = 0;
     public static final double shooterBottomD = 0;
 
-    public static final double shooterTopV = 0.0002;
+    public static final double shooterTopV = 0.00018;
     public static final double shooterBottomV = 0.00018;
 
     public static final double shootingRMPAutoLine = 3000;
@@ -196,9 +199,9 @@ public final class Constants {
 
     public static final double groundPosition = 0.385;
     public static final double stowPosition = 0;
-    public static final double ampZonePosition = 11;
+    public static final double ampPosition = .07;
 
-    public static final double groundIntakeSpeed = 20;
+    public static final double groundIntakeSpeed = 1;
 
     public static final double kTurnToleranceDeg = 0.5;
     public static final double kTurnRateToleranceDegPerS = 5;

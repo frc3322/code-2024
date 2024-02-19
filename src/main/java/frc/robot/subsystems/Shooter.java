@@ -68,6 +68,7 @@ public class Shooter extends SubsystemBase implements Loggable {
     shooterBottomMotor.burnFlash();
 
     SmartDashboard.putData("Shooter top pid", shooterTopRPMController);
+    SmartDashboard.putData("Shooter bottom PID", shooterBottomRPMController);
   }
 
   /*◇─◇──◇─◇

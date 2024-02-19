@@ -196,6 +196,13 @@ public class Intake extends SubsystemBase implements Loggable {
     ).until(this::innerIntakeFull);
   }
 
+  public Command reverseIntakeToBeamBreak(){
+    return new StartEndCommand(
+      ()-> setWheelSpeed(-IntakeConstants.groundIntakeSpeed),
+      ()-> setWheelSpeed(0)
+    ).until(this::outerIntakeFull);
+  }
+
   /**
    * Runs continuously until it is holding a note, then runs until the note is out of the intake and in the transfer
    * @return A sequential Command Group
@@ -204,12 +211,12 @@ public class Intake extends SubsystemBase implements Loggable {
     return new SequentialCommandGroup(
       new RunCommand(
         ()-> setWheelSpeed(IntakeConstants.groundIntakeSpeed))
-        .until(this::innerIntakeFull), 
+      .until(this::innerIntakeFull), 
       new StartEndCommand(
         ()-> setWheelSpeed(IntakeConstants.groundIntakeSpeed),
         ()-> stopSpin()
       )
-        .until(this::intakeEmpty)
+      .until(this::intakeEmpty)
       );
 
   
@@ -218,9 +225,9 @@ public class Intake extends SubsystemBase implements Loggable {
    * Starts spinning continuously with normal intake speed.
    * @return an InstantCommand
    */
-  public Command startSpin(){
+  public Command startSpin(double power){
     return new InstantCommand(
-      ()-> setWheelSpeed(IntakeConstants.groundIntakeSpeed)
+      ()-> setWheelSpeed(power)
     );
   }
   
@@ -271,6 +278,15 @@ public class Intake extends SubsystemBase implements Loggable {
       flipToSetpoint()
     );
   }
+
+  public Command flipToAmpCommand(){
+    return new SequentialCommandGroup(
+      new InstantCommand(
+        () -> setArmSetpoint(IntakeConstants.ampPosition)
+      ),
+      flipToSetpoint()
+    );
+  }
 /**
  * Runs a "payload" (eject or run intake) and brings the arm to the stow position with a set amount of delay on each.
  * @param payload Command to run
@@ -309,6 +325,21 @@ public class Intake extends SubsystemBase implements Loggable {
       new SequentialCommandGroup(
         new WaitCommand(armDelay),
         flipToGroundCommand()
+      )
+    );
+    command.addRequirements(this);
+    return command;
+  }
+
+  public Command flipToAmpAndRunPayloadCommand(Command payload, double payloadDelay, double armDelay) {
+    Command command = new ParallelCommandGroup(
+    new SequentialCommandGroup(
+        new WaitCommand(payloadDelay),
+        payload
+      ),
+      new SequentialCommandGroup(
+        new WaitCommand(armDelay),
+        flipToAmpCommand()
       )
     );
     command.addRequirements(this);
