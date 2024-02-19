@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
@@ -28,16 +29,19 @@ public class AutoCommmands {
 
     public Command shootOnStart() {
         return new SequentialCommandGroup(
-            shooter.shooterAutoLineRevUpCommand(),
-            new StepCommand(transfer.shootCommand(), shooter::bothAtSetpointRPM, transfer)
+            new ParallelCommandGroup(
+                shooter.shooterAutoLineRevUpCommand(),
+                new StepCommand(transfer.shootCommand(), shooter::bothAtSetpointRPM, transfer)
+            ).until(transfer::shooterNotFull),
+            shooter.stopShooterCommand()
         );
     }
     
-    // public Command autoIntake() {
-    //     return new SequentialCommandGroup(
-    //         combo.startShooterIntakeCommand()
-    //         .until(transfer::shooterFull)
-    //         .andThen(combo.stowCommandGroup())
-    //     );
-    // }
+    public Command autoIntakeToShooter() {
+        return new SequentialCommandGroup(
+            combo.startShooterIntakeCommand()
+            .until(transfer::shooterFull)
+            .andThen(combo.stowCommandGroup())
+        );
+    }
 }

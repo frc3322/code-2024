@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.AutoCommmands;
 import frc.robot.commands.ComboCommands;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
@@ -49,6 +50,8 @@ public class RobotContainer {
 
   //combination commands class
   ComboCommands comboCommands = new ComboCommands(elevator, intake, transfer, shooter);
+
+  AutoCommmands autoCommmands = new AutoCommmands(robotDrive, intake, elevator, transfer, shooter, comboCommands);
 
   // Auton selector for dashboard
   SendableChooser<SequentialCommandGroup> autoSelector = new SendableChooser<>();
@@ -249,7 +252,7 @@ public class RobotContainer {
      * https://github.com/mjansen4857/pathplanner
      */
 
-     return new PathPlannerAuto("SegmentedTopFour");
+     return autoCommmands.shootOnStart();
   }
 
   /*◇─◇──◇─◇

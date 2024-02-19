@@ -135,12 +135,14 @@ public class Shooter extends SubsystemBase implements Loggable {
 
   @Log
   public boolean topAtSetpointRPM() {
-    return Math.abs(getTopWheelRPM() - shooterTopSetpoint) < ShooterConstants.shooterRPMThreshold;
+    //return Math.abs(getTopWheelRPM() - shooterTopSetpoint) < ShooterConstants.shooterRPMThreshold;
+    return getTopWheelRPM() > 2000;
   }
 
   @Log
   public boolean bottomAtSetpointRPM() {
-    return Math.abs(getBottomWheelRPM() - shooterBottomSetpoint) < ShooterConstants.shooterRPMThreshold;
+    //return Math.abs(getBottomWheelRPM() - shooterBottomSetpoint) < ShooterConstants.shooterRPMThreshold;
+    return getTopWheelRPM() > 2000;
   }
 
   @Log public boolean bothAtSetpointRPM() {

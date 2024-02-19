@@ -24,6 +24,7 @@ public class StepCommand extends Command {
    */
   public StepCommand(Command toRun, BooleanSupplier condition, Subsystem... requirements) {
     this.toRun = toRun;
+    this.condition = condition;
     
     addRequirements(requirements);
   }
@@ -41,6 +42,7 @@ public class StepCommand extends Command {
       toRun.schedule();
       hasRun = true;
     }
+    
   }
 
   // Called once the command ends or is interrupted.
