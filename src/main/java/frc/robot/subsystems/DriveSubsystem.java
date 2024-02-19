@@ -96,6 +96,12 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
   // Path strings
   private String ampLineupPathName = "AmpLineup";
 
+
+  //Goal states for position Step Commands.
+  public double goalAngle;
+  public double goalX;
+  public double goalY;
+
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
     estimatedPose = new SwerveDrivePoseEstimator(
@@ -391,6 +397,8 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     m_gyro.reset();
   }
 
+
+
   /*◇─◇──◇─◇
      Getters
   ◇─◇──◇─◇*/
@@ -443,6 +451,67 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     SwerveModulePosition rr = m_rearRight.getPosition();
     return new SwerveModulePosition[] {fl, fr, rl, rr};
   }
+
+
+
+  /*◇─◇──◇─◇
+  Pose in Range
+  ◇─◇──◇─◇*/
+  /**
+   * Checks if angle is within angle threshold of goal. (Used for position-based stepCommands)
+  */
+  public boolean angleInRange() {
+    return Math.abs(goalAngle - getAngle()) <= DriveConstants.kAngleThreshold;
+  }
+  /**
+   * Checks if x is within distance threshold of goal. (Used for position-based stepCommands)
+  */
+  public boolean xInRange() {
+    return Math.abs(goalX - getPose().getX()) <= DriveConstants.kDistanceThreshold;
+  }
+  /**
+   * Checks if y is within distance threshold of goal. (Used for position-based stepCommands)
+  */
+  public boolean yInRange() {
+    return Math.abs(goalAngle - getPose().getY()) <= DriveConstants.kDistanceThreshold;
+  }
+
+  /**
+   * Checks if x, y, and rotation are within threshold of goal. (Used for position-based stepCommands)
+  */
+  public boolean inRange() {
+    return angleInRange() && yInRange() && xInRange();
+  }
+
+  /**
+   * Sets goal angle. (Used for position-based stepCommands)
+   * @param goal The goal angle for the position.
+   */
+  public void setGoalAngle(double goal){
+    goalAngle = goal;
+  }
+  /**
+   * Sets goal x position. (Used for position-based stepCommands)
+   * @param goal The x-value the goal position.
+   */
+  public void setGoalX(double goal){
+    goalX = goal;
+  }
+  /**
+   * Sets goal y position. (Used for position-based stepCommands)
+   * @param goal The y-value the goal position.
+   */
+  public void setGoalY(double goal){
+    goalY = goal;
+  }
+  public Boolean stepCommandBooleanSupplier(double x, double y, double angle){
+    setGoalAngle(angle);
+    setGoalX(x);
+    setGoalY(y);
+    return inRange();
+
+  }
+
   
   @Override
   public void periodic() {

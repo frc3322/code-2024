@@ -96,6 +96,10 @@ public final class Constants {
 
     // Works now, reverses gyro everywhere in drivetrain
     public static final boolean kGyroReversed = true;
+
+
+    public static double kDistanceThreshold = 0.075;
+    public static double kAngleThreshold = Math.PI/32;
   }
 
   public static final class ModuleConstants {
@@ -147,6 +151,7 @@ public final class Constants {
 
     public static final int kDrivingMotorCurrentLimit = 50; // amps
     public static final int kTurningMotorCurrentLimit = 20; // amps
+
   }
 
   public static final class ElevatorConstants{
