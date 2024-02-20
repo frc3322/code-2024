@@ -14,6 +14,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -95,12 +96,6 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
 
   // Path strings
   private String ampLineupPathName = "AmpLineup";
-
-
-  //Goal states for position Step Commands.
-  public double goalAngle;
-  public double goalX;
-  public double goalY;
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
@@ -452,6 +447,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     double yaw = DriveConstants.kGyroReversed ? -m_gyro.getAngle() : m_gyro.getAngle();
     return yaw;
   }
+
   public SwerveModulePosition[] getModulePositions(){
     SwerveModulePosition fl = m_frontLeft.getPosition();
     SwerveModulePosition fr = m_frontRight.getPosition();
@@ -460,64 +456,31 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     return new SwerveModulePosition[] {fl, fr, rl, rr};
   }
 
+  public boolean atPose(Pose2d pose){
+    boolean translationInThreshold = atTranslation(pose.getTranslation());
+    boolean rotationInThreshold = atRotation(pose.getRotation());
 
-
-  /*◇─◇──◇─◇
-  Pose in Range
-  ◇─◇──◇─◇*/
-  /**
-   * Checks if angle is within angle threshold of goal. (Used for position-based stepCommands)
-  */
-  public boolean angleInRange() {
-    return Math.abs(goalAngle - getAngle()) <= DriveConstants.kAngleThreshold;
-  }
-  /**
-   * Checks if x is within distance threshold of goal. (Used for position-based stepCommands)
-  */
-  public boolean xInRange() {
-    return Math.abs(goalX - getPose().getX()) <= DriveConstants.kDistanceThreshold;
-  }
-  /**
-   * Checks if y is within distance threshold of goal. (Used for position-based stepCommands)
-  */
-  public boolean yInRange() {
-    return Math.abs(goalAngle - getPose().getY()) <= DriveConstants.kDistanceThreshold;
+    return translationInThreshold && rotationInThreshold;
   }
 
-  /**
-   * Checks if x, y, and rotation are within threshold of goal. (Used for position-based stepCommands)
-  */
-  public boolean inRange() {
-    return angleInRange() && yInRange() && xInRange();
+  public boolean atTranslation(Translation2d translation){
+    Translation2d robotTranslation = getPose().getTranslation();
+
+    double xOffset = robotTranslation.getX() - translation.getX();
+    double yOffset = robotTranslation.getY() - translation.getY();
+
+    boolean xInThreshold = Math.abs(xOffset) < DriveConstants.kDistanceThreshold;
+    boolean yInThreshold = Math.abs(yOffset) < DriveConstants.kDistanceThreshold;
+
+    return xInThreshold && yInThreshold;
   }
 
-  /**
-   * Sets goal angle. (Used for position-based stepCommands)
-   * @param goal The goal angle for the position.
-   */
-  public void setGoalAngle(double goal){
-    goalAngle = goal;
-  }
-  /**
-   * Sets goal x position. (Used for position-based stepCommands)
-   * @param goal The x-value the goal position.
-   */
-  public void setGoalX(double goal){
-    goalX = goal;
-  }
-  /**
-   * Sets goal y position. (Used for position-based stepCommands)
-   * @param goal The y-value the goal position.
-   */
-  public void setGoalY(double goal){
-    goalY = goal;
-  }
-  public Boolean stepCommandBooleanSupplier(double x, double y, double angle){
-    setGoalAngle(angle);
-    setGoalX(x);
-    setGoalY(y);
-    return inRange();
+  public boolean atRotation(Rotation2d rotation){
+    Rotation2d robotRotation = getPose().getRotation();
+    
+    double rotOffset = robotRotation.getDegrees() - rotation.getDegrees();
 
+    return Math.abs(rotOffset) < DriveConstants.kAngleThreshold;
   }
 
   

@@ -98,8 +98,8 @@ public final class Constants {
     public static final boolean kGyroReversed = true;
 
 
-    public static double kDistanceThreshold = .3;
-    public static double kAngleThreshold = 10;
+    public static final double kDistanceThreshold = .3;
+    public static final double kAngleThreshold = 30;
   }
 
   public static final class ModuleConstants {

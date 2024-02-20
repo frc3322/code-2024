@@ -1,14 +1,13 @@
 package frc.robot.commands;
 
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.path.PathPlannerPath;
 
+import com.pathplanner.lib.path.PathPlannerPath;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
@@ -36,11 +35,14 @@ public class AutoCommmands {
 
     public Command shootOnStart() {
         return new SequentialCommandGroup( 
-            new ParallelRaceGroup(
-                shooter.shooterAutoLineRevUpCommand(),
-                new StepCommand(transfer.shootCommand(), shooter::bothAtSetpointRPM, transfer)
-            )
-            //shooter.stopShooterCommand()
+            new ParallelDeadlineGroup(
+                new SequentialCommandGroup(
+                    new WaitUntilCondition(shooter::bothAtSetpointRPM),
+                    transfer.shootCommand()
+                ),
+                shooter.shooterAutoLineRevUpCommand()
+            ),
+            shooter.stopShooterCommand()
         );
     }
     
@@ -63,7 +65,7 @@ public class AutoCommmands {
                 intake.flipToGroundAndRunPayloadCommand(intake.intakeToMiddle(), 0, 0),
                 
                 //this should work now?
-                new StepCommand(transfer.intakeToShooterCommand(), ()->robotDrive.stepCommandBooleanSupplier(1.29, 5.48, 0), transfer)
+                new StepCommand(transfer.intakeToShooterCommand(), ()->robotDrive.atPose(new Pose2d(1.29, 5.48, new Rotation2d(Math.toRadians(0)))), transfer)
                 //new StepCommand(intake.flipToGroundAndRunPayloadCommand(intake.intakeToMiddle(), 0, 0), ()->true/*()->robotDrive.stepCommandBooleanSupplier(2.01, 6.85, -160)*/, intake)
 
             );
@@ -90,20 +92,20 @@ public class AutoCommmands {
             //sequence of stepCommands to run along with path. Add position stuff later.
             new SequentialCommandGroup(
                 new ParallelDeadlineGroup(
-                    new StepCommand(transfer.intakeToShooterCommand(), ()->robotDrive.stepCommandBooleanSupplier(1.50, 5.86, Math.toRadians(180)), transfer),
-                    new StepCommand(intake.intakeToMiddle(), ()->robotDrive.stepCommandBooleanSupplier(1.86, 7.03, Math.toRadians(-175)), intake)),
+                    new StepCommand(transfer.intakeToShooterCommand(), ()->robotDrive.atPose(new Pose2d(1.50, 5.86, new Rotation2d(Math.toRadians(180)))), transfer),
+                    new StepCommand(intake.intakeToMiddle(), ()->robotDrive.atPose(new Pose2d(1.86, 7.03, new Rotation2d(Math.toRadians(-175)))), intake)),
                 new ParallelCommandGroup(
                     new InstantCommand(()->transfer.stopShooterTransfer()),
                     new InstantCommand(()->transfer.stopTransfer())),
                 new ParallelDeadlineGroup(
-                    new StepCommand(transfer.intakeToShooterCommand(), ()->robotDrive.stepCommandBooleanSupplier(1.50, 5.68, Math.toRadians(180)), transfer),
-                    new StepCommand(intake.intakeToMiddle(), ()->robotDrive.stepCommandBooleanSupplier(2.09, 5.42, Math.toRadians(180)), intake)),
+                    new StepCommand(transfer.intakeToShooterCommand(), ()->robotDrive.atPose(new Pose2d(1.50, 5.68, new Rotation2d(Math.toRadians(180)))), transfer),
+                    new StepCommand(intake.intakeToMiddle(), ()->robotDrive.atPose(new Pose2d(2.09, 5.42, new Rotation2d(Math.toRadians(180)))), intake)),
                 new ParallelCommandGroup(
                     new InstantCommand(()->transfer.stopShooterTransfer()),
                     new InstantCommand(()->transfer.stopTransfer())),
                 new ParallelDeadlineGroup(
-                    new StepCommand(transfer.intakeToShooterCommand(), ()->robotDrive.stepCommandBooleanSupplier(1.50, 5.48, Math.toRadians(180)), transfer),
-                    new StepCommand(intake.intakeToMiddle(), ()->robotDrive.stepCommandBooleanSupplier(1.50, 5.48, Math.toRadians(180)), intake)),
+                    new StepCommand(transfer.intakeToShooterCommand(), ()->robotDrive.atPose(new Pose2d(1.50, 5.48, new Rotation2d(Math.toRadians(180)))), transfer),
+                    new StepCommand(intake.intakeToMiddle(), ()->robotDrive.atPose(new Pose2d(1.50, 5.48, new Rotation2d(Math.toRadians(180)))), intake)),
                 new ParallelCommandGroup(
                     new InstantCommand(()->transfer.stopShooterTransfer()),
                     new InstantCommand(()->transfer.stopTransfer()))
