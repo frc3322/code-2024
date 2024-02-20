@@ -8,14 +8,14 @@ import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
-public class WaitUntilCondition extends Command {
+public class WaitUntilConditionCommand extends Command {
   /** Creates a new WaitUntilCondition. */
 
   BooleanSupplier condition;
 
   boolean conditionMet = false;
 
-  public WaitUntilCondition(BooleanSupplier condition) {
+  public WaitUntilConditionCommand(BooleanSupplier condition) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.condition = condition;
   }

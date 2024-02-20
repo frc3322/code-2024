@@ -31,6 +31,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.LimeLightConstants;
 import frc.utils.SwerveUtils;
 import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Config;
 import io.github.oblarg.oblog.annotations.Log;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -456,25 +457,36 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     return new SwerveModulePosition[] {fl, fr, rl, rr};
   }
 
-  public boolean atPose(Pose2d pose){
-    boolean translationInThreshold = atTranslation(pose.getTranslation());
-    boolean rotationInThreshold = atRotation(pose.getRotation());
+  public boolean atPose(Pose2d pose, double translationThreshold, double rotationThreshold){
+    boolean translationInThreshold = atTranslation(pose.getTranslation(), translationThreshold);
+    boolean rotationInThreshold = atRotation(pose.getRotation(), rotationThreshold);
 
     return translationInThreshold && rotationInThreshold;
   }
 
-  public boolean atTranslation(Translation2d translation){
+
+  public boolean atTranslation(Translation2d translation, double threshold){
     Translation2d robotTranslation = getPose().getTranslation();
 
-    return robotTranslation.getDistance(translation) < DriveConstants.kDistanceThreshold;
+    return robotTranslation.getDistance(translation) < threshold;
   }
+  
 
-  public boolean atRotation(Rotation2d rotation){
+  public boolean atRotation(Rotation2d rotation, double threshold){
     Rotation2d robotRotation = getPose().getRotation();
     
     double rotOffset = robotRotation.getDegrees() - rotation.getDegrees();
 
-    return Math.abs(rotOffset) < DriveConstants.kAngleThreshold;
+    return Math.abs(rotOffset) < threshold;
+  }
+
+  @Log
+  public boolean atShootPose(){
+    return atPose(AutoConstants.centerShootPose, 0.3, 10);
+  }
+  @Log
+  public boolean atPickUpPose(){
+    return atPose(AutoConstants.blueTopNotePose, 1, 10);
   }
 
   
@@ -507,5 +519,8 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     
     field.setRobotPose(estimatedPose.getEstimatedPosition());
     this.resetOdometry(estimatedPose.getEstimatedPosition());
+
+    // atShootPose = atPose(new Pose2d(1.29, 5.48, new Rotation2d(Math.toRadians(0))), 0.15, 5);
+    // atPickUpPose = atPose(new Pose2d(2.01, 6.85, new Rotation2d(Math.toRadians(20))), );
   }
 }

@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
@@ -37,7 +39,7 @@ public class AutoCommmands {
         return new SequentialCommandGroup( 
             new ParallelDeadlineGroup(
                 new SequentialCommandGroup(
-                    new WaitUntilCondition(shooter::bothAtSetpointRPM),
+                    new WaitUntilConditionCommand(shooter::bothAtSetpointRPM),
                     transfer.shootCommand()
                 ),
                 shooter.shooterAutoLineRevUpCommand()
@@ -62,10 +64,18 @@ public class AutoCommmands {
             return new ParallelCommandGroup(
                 shooter.shooterAutoLineRevUpCommand(),
                 robotDrive.followAutonPath(path),
-                intake.flipToGroundAndRunPayloadCommand(intake.intakeToMiddle(), 0, 0),
                 
-                //this should work now?
-                new StepCommand(transfer.intakeToShooterCommand(), ()->robotDrive.atPose(new Pose2d(1.29, 5.48, new Rotation2d(Math.toRadians(0)))), transfer)
+                new SequentialCommandGroup(
+                    new SequentialCommandGroup(
+                        new WaitUntilConditionCommand(()->robotDrive.atPose(new Pose2d(2.01, 6.85, new Rotation2d(Math.toRadians(20))), 1, 10)),
+                        autoIntakeToShooter()
+                    ),
+                    new SequentialCommandGroup(
+                        new WaitUntilConditionCommand(()->robotDrive.atPose(AutoConstants.centerShootPose, 0.3, 10)),
+                        transfer.shootCommand()
+                    )
+                )
+
                 //new StepCommand(intake.flipToGroundAndRunPayloadCommand(intake.intakeToMiddle(), 0, 0), ()->true/*()->robotDrive.stepCommandBooleanSupplier(2.01, 6.85, -160)*/, intake)
 
             );
@@ -82,35 +92,35 @@ public class AutoCommmands {
      * 
      * @return
      */
-    public SequentialCommandGroup threePlusOneTopAuto() {
-        return new SequentialCommandGroup(
-        //start shooter--need more time to rev up.    
-        shootOnStart(),
-        new ParallelCommandGroup(
-            //start following path. The auto will end when it is completed
-            robotDrive.followAutonPath(PathPlannerPath.fromPathFile("CloseTopFixed")),
-            //sequence of stepCommands to run along with path. Add position stuff later.
-            new SequentialCommandGroup(
-                new ParallelDeadlineGroup(
-                    new StepCommand(transfer.intakeToShooterCommand(), ()->robotDrive.atPose(new Pose2d(1.50, 5.86, new Rotation2d(Math.toRadians(180)))), transfer),
-                    new StepCommand(intake.intakeToMiddle(), ()->robotDrive.atPose(new Pose2d(1.86, 7.03, new Rotation2d(Math.toRadians(-175)))), intake)),
-                new ParallelCommandGroup(
-                    new InstantCommand(()->transfer.stopShooterTransfer()),
-                    new InstantCommand(()->transfer.stopTransfer())),
-                new ParallelDeadlineGroup(
-                    new StepCommand(transfer.intakeToShooterCommand(), ()->robotDrive.atPose(new Pose2d(1.50, 5.68, new Rotation2d(Math.toRadians(180)))), transfer),
-                    new StepCommand(intake.intakeToMiddle(), ()->robotDrive.atPose(new Pose2d(2.09, 5.42, new Rotation2d(Math.toRadians(180)))), intake)),
-                new ParallelCommandGroup(
-                    new InstantCommand(()->transfer.stopShooterTransfer()),
-                    new InstantCommand(()->transfer.stopTransfer())),
-                new ParallelDeadlineGroup(
-                    new StepCommand(transfer.intakeToShooterCommand(), ()->robotDrive.atPose(new Pose2d(1.50, 5.48, new Rotation2d(Math.toRadians(180)))), transfer),
-                    new StepCommand(intake.intakeToMiddle(), ()->robotDrive.atPose(new Pose2d(1.50, 5.48, new Rotation2d(Math.toRadians(180)))), intake)),
-                new ParallelCommandGroup(
-                    new InstantCommand(()->transfer.stopShooterTransfer()),
-                    new InstantCommand(()->transfer.stopTransfer()))
-            )
-        ));
-    }
+//     public SequentialCommandGroup threePlusOneTopAuto() {
+//         return new SequentialCommandGroup(
+//         //start shooter--need more time to rev up.    
+//         shootOnStart(),
+//         new ParallelCommandGroup(
+//             //start following path. The auto will end when it is completed
+//             robotDrive.followAutonPath(PathPlannerPath.fromPathFile("CloseTopFixed")),
+//             //sequence of stepCommands to run along with path. Add position stuff later.
+//             new SequentialCommandGroup(
+//                 new ParallelDeadlineGroup(
+//                     new StepCommand(transfer.intakeToShooterCommand(), ()->robotDrive.atPose(new Pose2d(1.50, 5.86, new Rotation2d(Math.toRadians(180)))), transfer),
+//                     new StepCommand(intake.intakeToMiddle(), ()->robotDrive.atPose(new Pose2d(1.86, 7.03, new Rotation2d(Math.toRadians(-175)))), intake)),
+//                 new ParallelCommandGroup(
+//                     new InstantCommand(()->transfer.stopShooterTransfer()),
+//                     new InstantCommand(()->transfer.stopTransfer())),
+//                 new ParallelDeadlineGroup(
+//                     new StepCommand(transfer.intakeToShooterCommand(), ()->robotDrive.atPose(new Pose2d(1.50, 5.68, new Rotation2d(Math.toRadians(180)))), transfer),
+//                     new StepCommand(intake.intakeToMiddle(), ()->robotDrive.atPose(new Pose2d(2.09, 5.42, new Rotation2d(Math.toRadians(180)))), intake)),
+//                 new ParallelCommandGroup(
+//                     new InstantCommand(()->transfer.stopShooterTransfer()),
+//                     new InstantCommand(()->transfer.stopTransfer())),
+//                 new ParallelDeadlineGroup(
+//                     new StepCommand(transfer.intakeToShooterCommand(), ()->robotDrive.atPose(new Pose2d(1.50, 5.48, new Rotation2d(Math.toRadians(180)))), transfer),
+//                     new StepCommand(intake.intakeToMiddle(), ()->robotDrive.atPose(new Pose2d(1.50, 5.48, new Rotation2d(Math.toRadians(180)))), intake)),
+//                 new ParallelCommandGroup(
+//                     new InstantCommand(()->transfer.stopShooterTransfer()),
+//                     new InstantCommand(()->transfer.stopTransfer()))
+//             )
+//         ));
+//     }
 
 }

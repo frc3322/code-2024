@@ -99,7 +99,7 @@ public final class Constants {
 
 
     public static final double kDistanceThreshold = .3;
-    public static final double kAngleThreshold = 30;
+    public static final double kAngleThreshold = 15;
   }
 
   public static final class ModuleConstants {
@@ -255,6 +255,10 @@ public final class Constants {
       Units.radiansToDegrees(kMaxAngularSpeedRadiansPerSecond), 
       Units.radiansToDegrees(kMaxAngularSpeedRadiansPerSecondSquared)
     );
+
+    public static final Pose2d centerShootPose = new Pose2d(1.29, 5.48, new Rotation2d(Math.toRadians(0)));
+
+    public static final Pose2d blueTopNotePose = new Pose2d(2.01, 6.85, new Rotation2d(Math.toRadians(20)));
   }
 
   public static final class NeoMotorConstants {
