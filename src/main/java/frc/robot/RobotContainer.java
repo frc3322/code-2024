@@ -53,6 +53,7 @@ public class RobotContainer {
 
   AutoCommmands autoCommmands = new AutoCommmands(robotDrive, intake, elevator, transfer, shooter, comboCommands);
 
+
   // Auton selector for dashboard
   SendableChooser<SequentialCommandGroup> autoSelector = new SendableChooser<>();
 
@@ -252,7 +253,7 @@ public class RobotContainer {
      * https://github.com/mjansen4857/pathplanner
      */
 
-     return autoCommmands.shootOnStart();
+     return autoCommmands.twoPieceTopAuto();
   }
 
   /*◇─◇──◇─◇

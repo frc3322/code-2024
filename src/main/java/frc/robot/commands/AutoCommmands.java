@@ -1,7 +1,14 @@
 package frc.robot.commands;
 
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
+
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
@@ -28,12 +35,12 @@ public class AutoCommmands {
     }
 
     public Command shootOnStart() {
-        return new SequentialCommandGroup(
-            new ParallelCommandGroup(
+        return new SequentialCommandGroup( 
+            new ParallelRaceGroup(
                 shooter.shooterAutoLineRevUpCommand(),
                 new StepCommand(transfer.shootCommand(), shooter::bothAtSetpointRPM, transfer)
-            ).until(transfer::shooterNotFull),
-            shooter.stopShooterCommand()
+            )
+            //shooter.stopShooterCommand()
         );
     }
     
@@ -44,4 +51,64 @@ public class AutoCommmands {
             .andThen(combo.stowCommandGroup())
         );
     }
+    public ParallelCommandGroup twoPieceTopAuto() {
+        PathPlannerPath path = PathPlannerPath.fromPathFile("TwoPieceTop");
+        robotDrive.resetOdometry(path.getPreviewStartingHolonomicPose());
+        //robotDrive.setYawToAngle(-path.getPreviewStartingHolonomicPose().getRotation().getDegrees());
+        //return new SequentialCommandGroup(
+            //shootOnStart(),
+            return new ParallelCommandGroup(
+                //shooter.shooterAutoLineRevUpCommand(),
+                robotDrive.followAutonPath(path),
+                intake.flipToGroundAndRunPayloadCommand(intake.intakeToMiddle(), 0, 0),
+                transfer.intakeToShooterCommand()
+                
+                //new StepCommand(transfer.intakeToShooterCommand(), ()->true/*()->robotDrive.stepCommandBooleanSupplier(1.29, 5.48, 180)*/, transfer),
+                //new StepCommand(intake.flipToGroundAndRunPayloadCommand(intake.intakeToMiddle(), 0, 0), ()->true/*()->robotDrive.stepCommandBooleanSupplier(2.01, 6.85, -160)*/, intake)
+
+            );
+            
+            //new ParallelCommandGroup(
+                
+                
+            //)
+        //);
+    }
+
+
+    /**
+     * 
+     * @return
+     */
+    public SequentialCommandGroup threePlusOneTopAuto() {
+        return new SequentialCommandGroup(
+        //start shooter--need more time to rev up.    
+        shootOnStart(),
+        new ParallelCommandGroup(
+            //start following path. The auto will end when it is completed
+            robotDrive.followAutonPath(PathPlannerPath.fromPathFile("CloseTopFixed")),
+            //sequence of stepCommands to run along with path. Add position stuff later.
+            new SequentialCommandGroup(
+                new ParallelDeadlineGroup(
+                    new StepCommand(transfer.intakeToShooterCommand(), ()->robotDrive.stepCommandBooleanSupplier(1.50, 5.86, Math.toRadians(180)), transfer),
+                    new StepCommand(intake.intakeToMiddle(), ()->robotDrive.stepCommandBooleanSupplier(1.86, 7.03, Math.toRadians(-175)), intake)),
+                new ParallelCommandGroup(
+                    new InstantCommand(()->transfer.stopShooterTransfer()),
+                    new InstantCommand(()->transfer.stopTransfer())),
+                new ParallelDeadlineGroup(
+                    new StepCommand(transfer.intakeToShooterCommand(), ()->robotDrive.stepCommandBooleanSupplier(1.50, 5.68, Math.toRadians(180)), transfer),
+                    new StepCommand(intake.intakeToMiddle(), ()->robotDrive.stepCommandBooleanSupplier(2.09, 5.42, Math.toRadians(180)), intake)),
+                new ParallelCommandGroup(
+                    new InstantCommand(()->transfer.stopShooterTransfer()),
+                    new InstantCommand(()->transfer.stopTransfer())),
+                new ParallelDeadlineGroup(
+                    new StepCommand(transfer.intakeToShooterCommand(), ()->robotDrive.stepCommandBooleanSupplier(1.50, 5.48, Math.toRadians(180)), transfer),
+                    new StepCommand(intake.intakeToMiddle(), ()->robotDrive.stepCommandBooleanSupplier(1.50, 5.48, Math.toRadians(180)), intake)),
+                new ParallelCommandGroup(
+                    new InstantCommand(()->transfer.stopShooterTransfer()),
+                    new InstantCommand(()->transfer.stopTransfer()))
+            )
+        ));
+    }
+
 }

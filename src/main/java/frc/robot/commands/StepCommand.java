@@ -26,6 +26,7 @@ public class StepCommand extends Command {
   public StepCommand(Command toRun, BooleanSupplier condition, Subsystem... requirements) {
     this.toRun = toRun;
     this.condition = condition;
+    hasRun = false;
     
     addRequirements(requirements);
   }

@@ -262,7 +262,7 @@ public class Shooter extends SubsystemBase implements Loggable {
    * An instant command that sets the shooter setpoint to zero and stops both shooter wheels.
    * @return An instant command
    */
-  public Command stopShooterCommand() {
+  public InstantCommand stopShooterCommand() {
     return new InstantCommand(
       () ->{
         setShooterSetpoint(0);

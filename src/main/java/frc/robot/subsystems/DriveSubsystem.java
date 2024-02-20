@@ -396,6 +396,13 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
   public void zeroHeading() {
     m_gyro.reset();
   }
+  
+
+  public void setYawToAngle(double angle){
+    m_gyro.setAngleAdjustment(angle);
+
+  }
+  
 
 
 
@@ -440,6 +447,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     *
     * @return The current yaw of the robot, in degrees
   */
+  @Log
   public double getAngle() {
     double yaw = DriveConstants.kGyroReversed ? -m_gyro.getAngle() : m_gyro.getAngle();
     return yaw;
@@ -541,6 +549,6 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     }
     
     field.setRobotPose(estimatedPose.getEstimatedPosition());
-    this.resetOdometry(estimatedPose.getEstimatedPosition());
+    this.resetOdometry(getPose());
   }
 }
