@@ -53,17 +53,17 @@ public class AutoCommmands {
     }
     public ParallelCommandGroup twoPieceTopAuto() {
         PathPlannerPath path = PathPlannerPath.fromPathFile("TwoPieceTop");
-        robotDrive.resetOdometry(path.getPreviewStartingHolonomicPose());
+        robotDrive.resetEstimatedPose(path.getPreviewStartingHolonomicPose());
         //robotDrive.setYawToAngle(-path.getPreviewStartingHolonomicPose().getRotation().getDegrees());
         //return new SequentialCommandGroup(
             //shootOnStart(),
             return new ParallelCommandGroup(
-                //shooter.shooterAutoLineRevUpCommand(),
+                shooter.shooterAutoLineRevUpCommand(),
                 robotDrive.followAutonPath(path),
                 intake.flipToGroundAndRunPayloadCommand(intake.intakeToMiddle(), 0, 0),
-                transfer.intakeToShooterCommand()
                 
-                //new StepCommand(transfer.intakeToShooterCommand(), ()->true/*()->robotDrive.stepCommandBooleanSupplier(1.29, 5.48, 180)*/, transfer),
+                //this should work now?
+                new StepCommand(transfer.intakeToShooterCommand(), ()->robotDrive.stepCommandBooleanSupplier(1.29, 5.48, 0), transfer)
                 //new StepCommand(intake.flipToGroundAndRunPayloadCommand(intake.intakeToMiddle(), 0, 0), ()->true/*()->robotDrive.stepCommandBooleanSupplier(2.01, 6.85, -160)*/, intake)
 
             );
