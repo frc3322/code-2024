@@ -466,13 +466,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
   public boolean atTranslation(Translation2d translation){
     Translation2d robotTranslation = getPose().getTranslation();
 
-    double xOffset = robotTranslation.getX() - translation.getX();
-    double yOffset = robotTranslation.getY() - translation.getY();
-
-    boolean xInThreshold = Math.abs(xOffset) < DriveConstants.kDistanceThreshold;
-    boolean yInThreshold = Math.abs(yOffset) < DriveConstants.kDistanceThreshold;
-
-    return xInThreshold && yInThreshold;
+    return robotTranslation.getDistance(translation) < DriveConstants.kDistanceThreshold;
   }
 
   public boolean atRotation(Rotation2d rotation){
