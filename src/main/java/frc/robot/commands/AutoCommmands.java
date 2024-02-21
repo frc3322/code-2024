@@ -73,6 +73,26 @@ public class AutoCommmands {
 
     }
 
+    public Command intakeMiddleNote() {
+        Pose2d notePose = robotDrive.isAllianceRed() ? FieldConstants.redMiddleNotePose : FieldConstants.blueMiddleNotePose;
+
+        return new SequentialCommandGroup(
+            new WaitUntilConditionCommand(()->robotDrive.atPose(notePose, 1.5, 0)),
+            autoIntakeToShooter()
+        );
+
+    }
+
+    public Command intakeBottomNote() {
+        Pose2d notePose = robotDrive.isAllianceRed() ? FieldConstants.redBottomNotePose : FieldConstants.blueBottomNotePose;
+
+        return new SequentialCommandGroup(
+            new WaitUntilConditionCommand(()->robotDrive.atPose(notePose, 1.5, 0)),
+            autoIntakeToShooter()
+        );
+
+    }
+
     public Command twoPieceTopAuto() {
         PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.twoPieceTopString);
         robotDrive.resetEstimatedPose(path.getPreviewStartingHolonomicPose());
