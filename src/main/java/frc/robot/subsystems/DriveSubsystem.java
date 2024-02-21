@@ -462,6 +462,13 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     boolean translationInThreshold = atTranslation(pose.getTranslation(), translationThreshold);
     boolean rotationInThreshold = atRotation(pose.getRotation(), rotationThreshold);
 
+    if (rotationThreshold == 0) {
+      return translationInThreshold;
+    }
+    if (translationThreshold == 0) {
+      return rotationInThreshold;
+    }
+
     return translationInThreshold && rotationInThreshold;
   }
 
