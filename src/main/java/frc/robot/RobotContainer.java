@@ -146,7 +146,7 @@ public class RobotContainer {
 
     driverController.leftBumper()
     .onTrue(comboCommands.ampCommands())
-    .onFalse(comboCommands.stowCommandGroup());
+    .onFalse(comboCommands.stowCommand());
 
     driverController.rightBumper()
     .onTrue(transfer.shootCommand());

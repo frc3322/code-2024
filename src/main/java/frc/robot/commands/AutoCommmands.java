@@ -52,7 +52,7 @@ public class AutoCommmands {
         return new SequentialCommandGroup(
             combo.startShooterIntakeCommand()
             .until(transfer::shooterFull)
-            .andThen(combo.stopIntakeCommand())
+            .andThen(combo.stowCommand())
             .withTimeout(.5)
         );
     }
@@ -65,7 +65,6 @@ public class AutoCommmands {
             new ParallelCommandGroup(
                 //shooter.shooterAutoLineRevUpCommand(),
                 robotDrive.followAutonPath(path),
-                //elevator.goToBottomCommand(),
                 new SequentialCommandGroup(
                     new SequentialCommandGroup(
                         new WaitUntilConditionCommand(()->robotDrive.atPose(AutoConstants.blueTopNotePose, 1.5, 90)),

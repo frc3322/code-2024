@@ -206,7 +206,7 @@ public final class Constants {
     public static final double velocityConstraint = 30;
     public static final double accelerationConstraint = 30;
 
-    public static final double groundPosition = 0.34;
+    public static final double groundPosition = 0.32;
     public static final double stowPosition = 0;
     public static final double ampPosition = .07;
 
