@@ -61,7 +61,7 @@ public class Intake extends SubsystemBase implements Loggable {
     intakeArmLeft.restoreFactoryDefaults();
     intakeArmRight.restoreFactoryDefaults();
 
-    wheelsMotor.setIdleMode(IdleMode.kBrake);
+    wheelsMotor.setIdleMode(IdleMode.kCoast);
     intakeArmLeft.setIdleMode(IdleMode.kBrake);
     intakeArmRight.setIdleMode(IdleMode.kBrake);
 
@@ -80,6 +80,8 @@ public class Intake extends SubsystemBase implements Loggable {
     wheelsMotor.burnFlash();
     intakeArmLeft.burnFlash();
     intakeArmRight.burnFlash();
+
+    intakePIDController.setTolerance(IntakeConstants.kPosToleranceDeg, IntakeConstants.kTurnRateToleranceDegPerS);
 
     SmartDashboard.putData("intake", intakePIDController);
   }
@@ -130,6 +132,10 @@ public class Intake extends SubsystemBase implements Loggable {
     return !intakeInnerBeamBreak.get();
   }
 
+  @Log
+  public boolean atSetpoint() {
+    return intakePIDController.atGoal();
+  }
 
   /*◇─◇──◇─◇
   ✨Setters✨

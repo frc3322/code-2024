@@ -206,14 +206,14 @@ public final class Constants {
     public static final double velocityConstraint = 30;
     public static final double accelerationConstraint = 30;
 
-    public static final double groundPosition = 0.385;
+    public static final double groundPosition = 0.34;
     public static final double stowPosition = 0;
     public static final double ampPosition = .07;
 
     public static final double groundIntakeSpeed = 1;
 
-    public static final double kTurnToleranceDeg = 0.5;
-    public static final double kTurnRateToleranceDegPerS = 5;
+    public static final double kPosToleranceDeg = 0.05;
+    public static final double kTurnRateToleranceDegPerS = 30;
 
     public static final double kIntakeArmGearRatio = 1/60.714;
   }
@@ -258,7 +258,7 @@ public final class Constants {
 
     public static final Pose2d centerShootPose = new Pose2d(1.29, 5.48, new Rotation2d(Math.toRadians(0)));
 
-    public static final Pose2d blueTopNotePose = new Pose2d(2.01, 6.85, new Rotation2d(Math.toRadians(20)));
+    public static final Pose2d blueTopNotePose = new Pose2d(2.00, 6.50, new Rotation2d(Math.toRadians(0)));
   }
 
   public static final class NeoMotorConstants {

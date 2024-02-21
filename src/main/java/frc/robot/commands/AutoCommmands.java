@@ -43,8 +43,8 @@ public class AutoCommmands {
                     transfer.shootCommand()
                 ),
                 shooter.shooterAutoLineRevUpCommand()
-            ),
-            shooter.stopShooterCommand()
+            )
+            //shooter.stopShooterCommand()
         );
     }
     
@@ -52,33 +52,35 @@ public class AutoCommmands {
         return new SequentialCommandGroup(
             combo.startShooterIntakeCommand()
             .until(transfer::shooterFull)
-            .andThen(combo.stowCommandGroup())
+            .andThen(combo.stopIntakeCommand())
+            .withTimeout(.5)
         );
     }
-    public ParallelCommandGroup twoPieceTopAuto() {
+    public Command twoPieceTopAuto() {
         PathPlannerPath path = PathPlannerPath.fromPathFile("TwoPieceTop");
         robotDrive.resetEstimatedPose(path.getPreviewStartingHolonomicPose());
         //robotDrive.setYawToAngle(-path.getPreviewStartingHolonomicPose().getRotation().getDegrees());
-        //return new SequentialCommandGroup(
-            //shootOnStart(),
-            return new ParallelCommandGroup(
-                shooter.shooterAutoLineRevUpCommand(),
+        return new SequentialCommandGroup(
+            shootOnStart(),
+            new ParallelCommandGroup(
+                //shooter.shooterAutoLineRevUpCommand(),
                 robotDrive.followAutonPath(path),
-                
+                //elevator.goToBottomCommand(),
                 new SequentialCommandGroup(
                     new SequentialCommandGroup(
-                        new WaitUntilConditionCommand(()->robotDrive.atPose(new Pose2d(2.01, 6.85, new Rotation2d(Math.toRadians(20))), 1, 10)),
+                        new WaitUntilConditionCommand(()->robotDrive.atPose(AutoConstants.blueTopNotePose, 1.5, 90)),
                         autoIntakeToShooter()
                     ),
                     new SequentialCommandGroup(
-                        new WaitUntilConditionCommand(()->robotDrive.atPose(AutoConstants.centerShootPose, 0.3, 10)),
+                        new WaitUntilConditionCommand(()->robotDrive.atPose(AutoConstants.centerShootPose, 0.5, 10)),
                         transfer.shootCommand()
                     )
                 )
+                // new StepCommand(transfer.shootCommand(), ()->robotDrive.atPose(AutoConstants.centerShootPose, 0.3, 1, transfer)
 
                 //new StepCommand(intake.flipToGroundAndRunPayloadCommand(intake.intakeToMiddle(), 0, 0), ()->true/*()->robotDrive.stepCommandBooleanSupplier(2.01, 6.85, -160)*/, intake)
 
-            );
+            ));
             
             //new ParallelCommandGroup(
                 

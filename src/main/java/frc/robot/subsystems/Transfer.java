@@ -40,7 +40,7 @@ public class Transfer extends SubsystemBase implements Loggable {
     transferMotor.restoreFactoryDefaults();
     shooterTransferMotor.restoreFactoryDefaults();
 
-    transferMotor.setIdleMode(IdleMode.kBrake);
+    transferMotor.setIdleMode(IdleMode.kCoast);
     shooterTransferMotor.setIdleMode(IdleMode.kBrake);
 
     transferMotor.setInverted(true);
