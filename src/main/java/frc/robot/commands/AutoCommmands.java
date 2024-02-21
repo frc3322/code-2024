@@ -1,6 +1,8 @@
 package frc.robot.commands;
 
 
+import java.lang.reflect.Field;
+
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -11,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
@@ -63,21 +66,17 @@ public class AutoCommmands {
         return new SequentialCommandGroup(
             shootOnStart(),
             new ParallelCommandGroup(
-                //shooter.shooterAutoLineRevUpCommand(),
                 robotDrive.followAutonPath(path),
                 new SequentialCommandGroup(
                     new SequentialCommandGroup(
-                        new WaitUntilConditionCommand(()->robotDrive.atPose(AutoConstants.blueTopNotePose, 1.5, 90)),
+                        new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.blueTopNotePose, 1.5, 90)),
                         autoIntakeToShooter()
                     ),
                     new SequentialCommandGroup(
-                        new WaitUntilConditionCommand(()->robotDrive.atPose(AutoConstants.centerShootPose, 0.5, 10)),
+                        new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerShootPose, 0.5, 10)),
                         transfer.shootCommand()
                     )
                 )
-                // new StepCommand(transfer.shootCommand(), ()->robotDrive.atPose(AutoConstants.centerShootPose, 0.3, 1, transfer)
-
-                //new StepCommand(intake.flipToGroundAndRunPayloadCommand(intake.intakeToMiddle(), 0, 0), ()->true/*()->robotDrive.stepCommandBooleanSupplier(2.01, 6.85, -160)*/, intake)
 
             ));
             

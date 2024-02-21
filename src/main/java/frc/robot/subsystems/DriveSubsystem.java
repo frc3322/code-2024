@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.CANIds;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.LimeLightConstants;
 import frc.utils.SwerveUtils;
 import io.github.oblarg.oblog.Loggable;
@@ -482,11 +483,11 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
 
   @Log
   public boolean atShootPose(){
-    return atPose(AutoConstants.centerShootPose, 0.3, 10);
+    return atPose(FieldConstants.centerShootPose, 0.3, 10);
   }
   @Log
   public boolean atPickUpPose(){
-    return atPose(AutoConstants.blueTopNotePose, 1, 10);
+    return atPose(FieldConstants.blueTopNotePose, 1, 10);
   }
 
   

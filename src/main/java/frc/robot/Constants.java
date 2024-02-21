@@ -256,9 +256,7 @@ public final class Constants {
       Units.radiansToDegrees(kMaxAngularSpeedRadiansPerSecondSquared)
     );
 
-    public static final Pose2d centerShootPose = new Pose2d(1.29, 5.48, new Rotation2d(Math.toRadians(0)));
 
-    public static final Pose2d blueTopNotePose = new Pose2d(2.00, 6.50, new Rotation2d(Math.toRadians(0)));
   }
 
   public static final class NeoMotorConstants {
@@ -286,6 +284,12 @@ public final class Constants {
       new Translation2d(-Units.inchesToMeters(325.625 - 49.5), Units.inchesToMeters(161.625)),
       new Rotation2d(90)
     );
+
+    public static final Pose2d topShootPose = new Pose2d(.82, 6.66, new Rotation2d(Math.toRadians(60)));
+    public static final Pose2d centerShootPose = new Pose2d(1.29, 5.48, new Rotation2d(Math.toRadians(0)));
+    public static final Pose2d bottomShootPose = new Pose2d(.82, 4.46, new Rotation2d(Math.toRadians(-60)));
+
+    public static final Pose2d blueTopNotePose = new Pose2d(2.00, 6.50, new Rotation2d(Math.toRadians(0)));
   }
 
   public static class LimeLightConstants {
