@@ -322,5 +322,8 @@ public final class Constants {
     // offset used to convert lime light field space (0,0 is center of field) to wpilib field space (bottom left is 0,0)
     public static final double fieldLengthOffset = Units.inchesToMeters(651.25 / 2);
     public static final double fieldWidthOffset = Units.inchesToMeters(323.25 / 2);
+
+    public static final String limelightLeftKey = "limelight-left";
+    public static final String limelightRightKey = "limelight-right";
   }
 }

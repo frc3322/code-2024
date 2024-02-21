@@ -29,10 +29,8 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.CANIds;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
-import frc.robot.Constants.LimeLightConstants;
 import frc.utils.SwerveUtils;
 import io.github.oblarg.oblog.Loggable;
-import io.github.oblarg.oblog.annotations.Config;
 import io.github.oblarg.oblog.annotations.Log;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -526,11 +524,12 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     estimatedPose.updateWithTime(Timer.getFPGATimestamp(), Rotation2d.fromDegrees(getAngle()), getModulePositions());
 
     // updates pose with Lime Light positions
-    // if ((vision.hasTarget()) && this.getTurnRate() <= LimeLightConstants.turnRateThreshold){
-    //   averageVisionMeasurement = vision.getLimeLightAverage();
-    //   //averageVisionMeasurement = vision.limelightPose;
-
-    //   estimatedPose.addVisionMeasurement(averageVisionMeasurement, Timer.getFPGATimestamp());
+    // if (vision.hasLeftTarget()){
+    //   estimatedPose.addVisionMeasurement(vision.getLeftPose(), Timer.getFPGATimestamp());
+    // }
+    
+    // if (vision.hasRightTarget()){
+    //   estimatedPose.addVisionMeasurement(vision.getRightPose(), Timer.getFPGATimestamp());
     // }
     
     field.setRobotPose(estimatedPose.getEstimatedPosition());

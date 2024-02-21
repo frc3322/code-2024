@@ -107,7 +107,7 @@ public class AutoCommmands {
                         autoIntakeToShooter()
                     ),
                     new SequentialCommandGroup(
-                        new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerShootPose, 0.5, 10)),
+                        new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.topShootPose, 0.5, 10)),
                         transfer.shootCommand()
                     )
                 )
