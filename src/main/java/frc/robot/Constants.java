@@ -256,6 +256,22 @@ public final class Constants {
       Units.radiansToDegrees(kMaxAngularSpeedRadiansPerSecondSquared)
     );
 
+    //Path strings
+    public static final String twoPieceTopString = "TwoPieceTop";
+    public static final String threePieceTopString = "ThreePieceTop";
+    public static final String fourPieceTopString = "FourPieceTop";
+    public static final String topThreeCenterMiddleString = "TopThreeCenterMiddle";
+
+    public static final String twoPieceMiddleString = "TwoPieceMiddle";
+    public static final String threePieceMiddleTopString = "ThreePieceMiddleTop";
+    public static final String threePieceMiddleBottomString = "ThreePieceMiddleBottom";
+    public static final String fourPieceMiddleString = "FourPieceMiddle";
+    public static final String middleThreeCenterMiddleString = "MiddleThreeCenterMiddle";
+
+    public static final String twoPieceBottomString = "TwoPieceBottom";
+    public static final String threePieceBottomString = "ThreePieceBottom";
+    public static final String fourPieceBottomString = "FourPieceBottom";
+    public static final String bottomThreeCenterMiddleString = "BottomThreeCenterMiddle";
 
   }
 
@@ -286,7 +302,7 @@ public final class Constants {
     );
 
     public static final Pose2d topShootPose = new Pose2d(.82, 6.66, new Rotation2d(Math.toRadians(60)));
-    public static final Pose2d centerShootPose = new Pose2d(1.29, 5.48, new Rotation2d(Math.toRadians(0)));
+    public static final Pose2d centerShootPose = new Pose2d(1.33, 5.56, new Rotation2d(Math.toRadians(0)));
     public static final Pose2d bottomShootPose = new Pose2d(.82, 4.46, new Rotation2d(Math.toRadians(-60)));
 
     public static final Pose2d blueTopNotePose = new Pose2d(2.00, 6.50, new Rotation2d(Math.toRadians(0)));

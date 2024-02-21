@@ -1,7 +1,19 @@
 {
   "NTProvider": {
     "types": {
-      "/FMSInfo": "FMSInfo"
+      "/FMSInfo": "FMSInfo",
+      "/Shuffleboard/DriveSubsystem: Log/field": "Field2d",
+      "/SmartDashboard/ElevatorPID": "ProfiledPIDController",
+      "/SmartDashboard/Shooter bottom PID": "PIDController",
+      "/SmartDashboard/Shooter top pid": "PIDController",
+      "/SmartDashboard/intake": "ProfiledPIDController"
+    }
+  },
+  "NetworkTables": {
+    "transitory": {
+      "PathPlanner": {
+        "open": true
+      }
     }
   },
   "NetworkTables Info": {

@@ -60,7 +60,7 @@ public class AutoCommmands {
         );
     }
     public Command twoPieceTopAuto() {
-        PathPlannerPath path = PathPlannerPath.fromPathFile("TwoPieceTop");
+        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.twoPieceTopString);
         robotDrive.resetEstimatedPose(path.getPreviewStartingHolonomicPose());
         //robotDrive.setYawToAngle(-path.getPreviewStartingHolonomicPose().getRotation().getDegrees());
         return new SequentialCommandGroup(
