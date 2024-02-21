@@ -55,10 +55,24 @@ public class AutoCommmands {
         return new SequentialCommandGroup(
             combo.startShooterIntakeCommand()
             .until(transfer::shooterFull)
-            .andThen(combo.stowCommand())
-            .withTimeout(.5)
+            .andThen(
+                combo.stowCommand()
+                .until(intake::atSetpoint)
+            )
+            
         );
     }
+
+    public Command intakeTopNote() {
+        Pose2d notePose = robotDrive.isAllianceRed() ? FieldConstants.redTopNotePose : FieldConstants.blueTopNotePose;
+
+        return new SequentialCommandGroup(
+            new WaitUntilConditionCommand(()->robotDrive.atPose(notePose, 1.5, 0)),
+            autoIntakeToShooter()
+        );
+
+    }
+
     public Command twoPieceTopAuto() {
         PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.twoPieceTopString);
         robotDrive.resetEstimatedPose(path.getPreviewStartingHolonomicPose());

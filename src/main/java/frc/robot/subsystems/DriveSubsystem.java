@@ -497,6 +497,14 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     return atPose(FieldConstants.blueTopNotePose, 1, 10);
   }
 
+  public boolean isAllianceRed() {
+    var alliance = DriverStation.getAlliance();
+    if (alliance.isPresent()) {
+        return alliance.get() == DriverStation.Alliance.Red;
+    }
+    return false;
+  }
+
   
   @Override
   public void periodic() {

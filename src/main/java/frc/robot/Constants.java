@@ -306,6 +306,8 @@ public final class Constants {
     public static final Pose2d bottomShootPose = new Pose2d(.82, 4.46, new Rotation2d(Math.toRadians(-60)));
 
     public static final Pose2d blueTopNotePose = new Pose2d(2.00, 6.50, new Rotation2d(Math.toRadians(0)));
+    
+    public static final Pose2d redTopNotePose = new Pose2d();
   }
 
   public static class LimeLightConstants {
