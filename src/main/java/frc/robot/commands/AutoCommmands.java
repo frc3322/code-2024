@@ -182,6 +182,62 @@ public class AutoCommmands {
             
     }
 
+    public Command twoPieceMiddleAuto() {
+        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.twoPieceMiddleString);
+        Pose2d shootPose = path.getPreviewStartingHolonomicPose();
+        robotDrive.resetEstimatedPose(shootPose);
+
+        //robotDrive.setYawToAngle(-path.getPreviewStartingHolonomicPose().getRotation().getDegrees());
+        return new SequentialCommandGroup(
+            shootOnStart(),
+            new ParallelCommandGroup(
+                robotDrive.followAutonPath(path),
+                new SequentialCommandGroup(
+                    intakeMiddleNote(),
+                    shoot(shootPose)
+                )
+            ));
+            
+    }
+
+    public Command threePieceMiddleTopAuto() {
+        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.threePieceMiddleTopString);
+        Pose2d shootPose = path.getPreviewStartingHolonomicPose();
+        robotDrive.resetEstimatedPose(shootPose);
+
+        //robotDrive.setYawToAngle(-path.getPreviewStartingHolonomicPose().getRotation().getDegrees());
+        return new SequentialCommandGroup(
+            shootOnStart(),
+            new ParallelCommandGroup(
+                robotDrive.followAutonPath(path),
+                new SequentialCommandGroup(
+                    intakeMiddleNote(),
+                    shoot(shootPose),
+                    intakeTopNote(),
+                    shoot(shootPose)
+                )
+            ));
+            
+    }
+
+    public Command twoPieceBottomAuto() {
+        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.twoPieceBottomString);
+        Pose2d shootPose = path.getPreviewStartingHolonomicPose();
+        robotDrive.resetEstimatedPose(shootPose);
+
+        //robotDrive.setYawToAngle(-path.getPreviewStartingHolonomicPose().getRotation().getDegrees());
+        return new SequentialCommandGroup(
+            shootOnStart(),
+            new ParallelCommandGroup(
+                robotDrive.followAutonPath(path),
+                new SequentialCommandGroup(
+                    intakeBottomNote(),
+                    shoot(shootPose)
+                )
+            ));
+            
+    }
+
 
     /**
      * 

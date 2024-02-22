@@ -206,7 +206,7 @@ public final class Constants {
     public static final double velocityConstraint = 30;
     public static final double accelerationConstraint = 30;
 
-    public static final double groundPosition = 0.36;
+    public static final double groundPosition = 0.37;
     public static final double stowPosition = 0;
     public static final double ampPosition = .07;
 
@@ -300,8 +300,8 @@ public final class Constants {
     public static final Pose2d bottomShootPose = new Pose2d(.82, 4.46, new Rotation2d(Math.toRadians(-60)));
 
     public static final Pose2d blueTopNotePose = new Pose2d(2.00, 6.50, new Rotation2d(Math.toRadians(0)));
-    public static final Pose2d blueMiddleNotePose = new Pose2d();
-    public static final Pose2d blueBottomNotePose = new Pose2d();
+    public static final Pose2d blueMiddleNotePose = new Pose2d(2, 5.55, new Rotation2d(Math.toRadians(0)));
+    public static final Pose2d blueBottomNotePose = new Pose2d(2, 4.1, new Rotation2d(Math.toRadians(0)));
     
     public static final Pose2d redTopNotePose = new Pose2d();
     public static final Pose2d redMiddleNotePose = new Pose2d();
