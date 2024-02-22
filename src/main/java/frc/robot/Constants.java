@@ -282,12 +282,6 @@ public final class Constants {
   }
 
   public static final class FieldConstants {
-    // Starting note transforms - Top is amp. Notes are 5ft 6in apart, with one centered on the line
-    public static final Translation2d centerTopPose = new Translation2d(0, Units.feetToMeters(11));
-    public static final Translation2d centerMidTopPose = new Translation2d(0, Units.feetToMeters(5.5));
-    public static final Translation2d centerMidPose = new Translation2d(0, Units.feetToMeters(11));
-    public static final Translation2d centerMidBottomPose = new Translation2d(0, Units.feetToMeters(-5.5));
-    public static final Translation2d centerBottomPose = new Translation2d(0, Units.feetToMeters(-11));
 
     // Amp poses. Both halves of the field together are 651.25 in long, and amp is 4 ft 1.5 in from the wall.
     // The top wall that the amp is in is 161.625 from the center of the field. Needs to have an offset subtracted from it later
@@ -312,6 +306,14 @@ public final class Constants {
     public static final Pose2d redTopNotePose = new Pose2d();
     public static final Pose2d redMiddleNotePose = new Pose2d();
     public static final Pose2d redBottomNotePose = new Pose2d();
+  
+//centerline note poses
+    public static final Pose2d centerTopPose = new Pose2d(8.29, 7.43, new Rotation2d(0));
+    public static final Pose2d centerMidTopPose = new Pose2d(8.29, 5.79, new Rotation2d(0));
+    public static final Pose2d centerMidPose = new Pose2d(8.29, 4.11, new Rotation2d(0));
+    public static final Pose2d centerMidBottomPose = new Pose2d(8.29, 2.44, new Rotation2d(0));
+    public static final Pose2d centerBottomPose = new Pose2d(8.29, .77, new Rotation2d(0));
+
   }
 
   public static class LimeLightConstants {

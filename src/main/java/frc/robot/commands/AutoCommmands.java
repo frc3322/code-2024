@@ -96,6 +96,14 @@ public class AutoCommmands {
 
     }
 
+    public Command intakeCenterMiddleNote(){
+        return new SequentialCommandGroup(
+            new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerMidPose, 1.5, 0)),
+            autoIntakeToShooter()
+            );
+            
+        }
+        
     public Command shoot(Pose2d shootPose) {
         return new SequentialCommandGroup(
             new WaitUntilConditionCommand(()->robotDrive.atPose(shootPose, 0.5, 10)),
