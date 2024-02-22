@@ -140,6 +140,48 @@ public class AutoCommmands {
         //);
     }
 
+    public Command threePieceTopAuto() {
+        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.twoPieceTopString);
+        Pose2d shootPose = path.getPreviewStartingHolonomicPose();
+        robotDrive.resetEstimatedPose(shootPose);
+
+        //robotDrive.setYawToAngle(-path.getPreviewStartingHolonomicPose().getRotation().getDegrees());
+        return new SequentialCommandGroup(
+            shootOnStart(),
+            new ParallelCommandGroup(
+                robotDrive.followAutonPath(path),
+                new SequentialCommandGroup(
+                    intakeTopNote(),
+                    shoot(FieldConstants.topShootPose),
+                    intakeMiddleNote(),
+                    shoot(FieldConstants.topShootPose)
+                )
+            ));
+            
+    }
+
+    public Command fourPieceTopAuto() {
+        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.twoPieceTopString);
+        Pose2d shootPose = path.getPreviewStartingHolonomicPose();
+        robotDrive.resetEstimatedPose(shootPose);
+
+        //robotDrive.setYawToAngle(-path.getPreviewStartingHolonomicPose().getRotation().getDegrees());
+        return new SequentialCommandGroup(
+            shootOnStart(),
+            new ParallelCommandGroup(
+                robotDrive.followAutonPath(path),
+                new SequentialCommandGroup(
+                    intakeTopNote(),
+                    shoot(FieldConstants.topShootPose),
+                    intakeMiddleNote(),
+                    shoot(FieldConstants.topShootPose),
+                    intakeBottomNote(),
+                    shoot(FieldConstants.topShootPose)
+                )
+            ));
+            
+    }
+
 
     /**
      * 
