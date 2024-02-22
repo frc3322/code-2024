@@ -206,7 +206,7 @@ public final class Constants {
     public static final double velocityConstraint = 30;
     public static final double accelerationConstraint = 30;
 
-    public static final double groundPosition = 0.36;
+    public static final double groundPosition = 0.37;
     public static final double stowPosition = 0;
     public static final double ampPosition = .07;
 
@@ -236,7 +236,7 @@ public final class Constants {
     public static final double kPThetaController = 1;
 
     public static final double kPHoloTranslationController = 5; //old is 5
-    public static final double kPHoloRotationController = 5;
+    public static final double kPHoloRotationController = 10;
 
     // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
