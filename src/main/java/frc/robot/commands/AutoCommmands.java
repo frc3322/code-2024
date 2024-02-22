@@ -3,7 +3,10 @@ package frc.robot.commands;
 
 import java.lang.reflect.Field;
 
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.PathPoint;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -87,15 +90,24 @@ public class AutoCommmands {
         Pose2d notePose = robotDrive.isAllianceRed() ? FieldConstants.redBottomNotePose : FieldConstants.blueBottomNotePose;
 
         return new SequentialCommandGroup(
-            new WaitUntilConditionCommand(()->robotDrive.atPose(notePose, 1.5, 0)),
+            new WaitUntilConditionCommand(()->robotDrive.atPose(notePose, 2, 0)),
             autoIntakeToShooter()
         );
 
     }
 
+    public Command shoot(Pose2d shootPose) {
+        return new SequentialCommandGroup(
+            new WaitUntilConditionCommand(()->robotDrive.atPose(shootPose, 0.5, 10)),
+            transfer.shootCommand()
+        );
+    }
+
     public Command twoPieceTopAuto() {
         PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.twoPieceTopString);
-        robotDrive.resetEstimatedPose(path.getPreviewStartingHolonomicPose());
+        Pose2d shootPose = path.getPreviewStartingHolonomicPose();
+        robotDrive.resetEstimatedPose(shootPose);
+
         //robotDrive.setYawToAngle(-path.getPreviewStartingHolonomicPose().getRotation().getDegrees());
         return new SequentialCommandGroup(
             shootOnStart(),
@@ -111,7 +123,6 @@ public class AutoCommmands {
                         transfer.shootCommand()
                     )
                 )
-
             ));
             
             //new ParallelCommandGroup(
