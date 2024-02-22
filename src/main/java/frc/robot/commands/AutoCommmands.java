@@ -220,6 +220,88 @@ public class AutoCommmands {
             
     }
 
+    public Command topThreeCenterMiddleAuto() {
+        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.topThreeCenterMiddleString);
+        Pose2d shootPose = path.getPreviewStartingHolonomicPose();
+        robotDrive.resetEstimatedPose(shootPose);
+
+        //robotDrive.setYawToAngle(-path.getPreviewStartingHolonomicPose().getRotation().getDegrees());
+        return new SequentialCommandGroup(
+            shootOnStart(),
+            new ParallelCommandGroup(
+                robotDrive.followAutonPath(path),
+                new SequentialCommandGroup(
+                    intakeMiddleNote(),
+                    shoot(shootPose),
+                    intakeCenterMiddleNote(),
+                    shoot(shootPose)
+                )
+            ));
+            
+    }
+
+    public Command threePieceMiddleBottomAuto() {
+        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.threePieceMiddleBottomString);
+        Pose2d shootPose = path.getPreviewStartingHolonomicPose();
+        robotDrive.resetEstimatedPose(shootPose);
+
+        //robotDrive.setYawToAngle(-path.getPreviewStartingHolonomicPose().getRotation().getDegrees());
+        return new SequentialCommandGroup(
+            shootOnStart(),
+            new ParallelCommandGroup(
+                robotDrive.followAutonPath(path),
+                new SequentialCommandGroup(
+                    intakeMiddleNote(),
+                    shoot(shootPose),
+                    intakeBottomNote(),
+                    shoot(shootPose)
+                )
+            ));
+            
+    }
+
+    public Command middleThreeCenterMiddleAuto() {
+        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.middleThreeCenterMiddleString);
+        Pose2d shootPose = path.getPreviewStartingHolonomicPose();
+        robotDrive.resetEstimatedPose(shootPose);
+
+        //robotDrive.setYawToAngle(-path.getPreviewStartingHolonomicPose().getRotation().getDegrees());
+        return new SequentialCommandGroup(
+            shootOnStart(),
+            new ParallelCommandGroup(
+                robotDrive.followAutonPath(path),
+                new SequentialCommandGroup(
+                    intakeMiddleNote(),
+                    shoot(shootPose),
+                    intakeCenterMiddleNote(),
+                    shoot(shootPose)
+                )
+            ));
+            
+    }
+
+    public Command fourPieceMiddleAuto() {
+        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.fourPieceMiddleString);
+        Pose2d shootPose = path.getPreviewStartingHolonomicPose();
+        robotDrive.resetEstimatedPose(shootPose);
+
+        //robotDrive.setYawToAngle(-path.getPreviewStartingHolonomicPose().getRotation().getDegrees());
+        return new SequentialCommandGroup(
+            shootOnStart(),
+            new ParallelCommandGroup(
+                robotDrive.followAutonPath(path),
+                new SequentialCommandGroup(
+                    intakeMiddleNote(),
+                    shoot(shootPose),
+                    intakeTopNote(),
+                    shoot(shootPose),
+                    intakeBottomNote(),
+                    shoot(shootPose)
+                )
+            ));
+            
+    }
+
     public Command twoPieceBottomAuto() {
         PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.twoPieceBottomString);
         Pose2d shootPose = path.getPreviewStartingHolonomicPose();
@@ -232,6 +314,68 @@ public class AutoCommmands {
                 robotDrive.followAutonPath(path),
                 new SequentialCommandGroup(
                     intakeBottomNote(),
+                    shoot(shootPose)
+                )
+            ));
+            
+    }
+
+    public Command threePieceBottomAuto() {
+        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.threePieceBottomString);
+        Pose2d shootPose = path.getPreviewStartingHolonomicPose();
+        robotDrive.resetEstimatedPose(shootPose);
+
+        //robotDrive.setYawToAngle(-path.getPreviewStartingHolonomicPose().getRotation().getDegrees());
+        return new SequentialCommandGroup(
+            shootOnStart(),
+            new ParallelCommandGroup(
+                robotDrive.followAutonPath(path),
+                new SequentialCommandGroup(
+                    intakeBottomNote(),
+                    shoot(shootPose),
+                    intakeMiddleNote(),
+                    shoot(shootPose)
+                )
+            ));
+            
+    }
+
+    public Command bottomThreeCenterMiddleAuto() {
+        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.bottomThreeCenterMiddleString);
+        Pose2d shootPose = path.getPreviewStartingHolonomicPose();
+        robotDrive.resetEstimatedPose(shootPose);
+
+        //robotDrive.setYawToAngle(-path.getPreviewStartingHolonomicPose().getRotation().getDegrees());
+        return new SequentialCommandGroup(
+            shootOnStart(),
+            new ParallelCommandGroup(
+                robotDrive.followAutonPath(path),
+                new SequentialCommandGroup(
+                    intakeBottomNote(),
+                    shoot(shootPose),
+                    intakeCenterMiddleNote(),
+                    shoot(shootPose)
+                )
+            ));
+            
+    }
+
+    public Command fourPieceBottomAuto() {
+        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.fourPieceBottomString);
+        Pose2d shootPose = path.getPreviewStartingHolonomicPose();
+        robotDrive.resetEstimatedPose(shootPose);
+
+        //robotDrive.setYawToAngle(-path.getPreviewStartingHolonomicPose().getRotation().getDegrees());
+        return new SequentialCommandGroup(
+            shootOnStart(),
+            new ParallelCommandGroup(
+                robotDrive.followAutonPath(path),
+                new SequentialCommandGroup(
+                    intakeBottomNote(),
+                    shoot(shootPose),
+                    intakeMiddleNote(),
+                    shoot(shootPose),
+                    intakeTopNote(),
                     shoot(shootPose)
                 )
             ));
