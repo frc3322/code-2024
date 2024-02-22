@@ -235,7 +235,7 @@ public final class Constants {
     public static final double kPYController = 1;
     public static final double kPThetaController = 1;
 
-    public static final double kPHoloTranslationController = 20; //old is 5
+    public static final double kPHoloTranslationController = 5; //old is 5
     public static final double kPHoloRotationController = 5;
 
     // Constraint for the motion profiled robot angle controller

@@ -152,9 +152,9 @@ public class AutoCommmands {
                 robotDrive.followAutonPath(path),
                 new SequentialCommandGroup(
                     intakeTopNote(),
-                    shoot(FieldConstants.topShootPose),
+                    shoot(shootPose),
                     intakeMiddleNote(),
-                    shoot(FieldConstants.topShootPose)
+                    shoot(shootPose)
                 )
             ));
             
@@ -172,11 +172,11 @@ public class AutoCommmands {
                 robotDrive.followAutonPath(path),
                 new SequentialCommandGroup(
                     intakeTopNote(),
-                    shoot(FieldConstants.topShootPose),
+                    shoot(shootPose),
                     intakeMiddleNote(),
-                    shoot(FieldConstants.topShootPose),
+                    shoot(shootPose),
                     intakeBottomNote(),
-                    shoot(FieldConstants.topShootPose)
+                    shoot(shootPose)
                 )
             ));
             
