@@ -206,7 +206,7 @@ public final class Constants {
     public static final double velocityConstraint = 30;
     public static final double accelerationConstraint = 30;
 
-    public static final double groundPosition = 0.32;
+    public static final double groundPosition = 0.36;
     public static final double stowPosition = 0;
     public static final double ampPosition = .07;
 
@@ -235,7 +235,7 @@ public final class Constants {
     public static final double kPYController = 1;
     public static final double kPThetaController = 1;
 
-    public static final double kPHoloTranslationController = 5;
+    public static final double kPHoloTranslationController = 20; //old is 5
     public static final double kPHoloRotationController = 5;
 
     // Constraint for the motion profiled robot angle controller
