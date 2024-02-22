@@ -93,6 +93,14 @@ public class AutoCommmands {
 
     }
 
+    public Command intakeCenterMiddleNote(){
+        return new SequentialCommandGroup(
+            new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerMidPose, 1.5, 0)),
+            autoIntakeToShooter()
+        );
+
+    }
+
     public Command twoPieceTopAuto() {
         PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.twoPieceTopString);
         robotDrive.resetEstimatedPose(path.getPreviewStartingHolonomicPose());
