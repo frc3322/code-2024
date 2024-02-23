@@ -32,18 +32,17 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
 
   public static final class CANIds {
-    // SPARK MAX CAN IDs
-    public static final int kFrontLeftDrivingCanId = 7;
-    public static final int kRearLeftDrivingCanId = 8;
+    
+    public static final int kFrontLeftDrivingCanId = 13; //13
+    public static final int kRearLeftDrivingCanId = 7; //7
+    public static final int kFrontRightDrivingCanId = 40;
+    public static final int kRearRightDrivingCanId = 55;
 
-    public static final int kFrontRightDrivingCanId = 5;
-    public static final int kRearRightDrivingCanId = 3;
+    public static final int kFrontLeftTurningCanId = 20; //20
+    public static final int kRearLeftTurningCanId = 23; //23
+    public static final int kFrontRightTurningCanId = 36;
+    public static final int kRearRightTurningCanId = 12;
 
-    public static final int kFrontLeftTurningCanId = 6;
-    public static final int kRearLeftTurningCanId = 9; 
-
-    public static final int kFrontRightTurningCanId = 4;
-    public static final int kRearRightTurningCanId = 2;
 
     // Elevator CAN IDs - front is shooter side
     public static final int kElevatorLeftCanId = 10;

@@ -5,12 +5,6 @@
 package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.FollowPathHolonomic;
-import com.pathplanner.lib.commands.PathfindThenFollowPathHolonomic;
-import com.pathplanner.lib.path.PathPlannerPath;
-
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -20,23 +14,14 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.WPIUtilJNI;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.CANIds;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.LimeLightConstants;
 import frc.utils.SwerveUtils;
 import io.github.oblarg.oblog.Loggable;
-import io.github.oblarg.oblog.annotations.Log;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-
 public class DriveSubsystem extends SubsystemBase implements Loggable{
-  
   // Create MAXSwerveModules
   private final MAXSwerveModule m_frontLeft = new MAXSwerveModule(
       CANIds.kFrontLeftDrivingCanId,
@@ -60,77 +45,52 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
 
   // The gyro sensor
   private final AHRS m_gyro = new AHRS();
+  // private final ADIS16470_IMU gyro2 = new ADIS16470_IMU();
 
   // Slew rate filter variables for controlling lateral acceleration
   private double m_currentRotation = 0.0;
   private double m_currentTranslationDir = 0.0;
   private double m_currentTranslationMag = 0.0;
   
+  private double lastDir = 0;
+  
+
   private SlewRateLimiter m_magLimiter = new SlewRateLimiter(DriveConstants.kMagnitudeSlewRate);
   private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(DriveConstants.kRotationalSlewRate);
   private double m_prevTime = WPIUtilJNI.now() * 1e-6;
 
-  // Used to store the last movment angle to avoid eccessive rotation of the wheels
-  private double lastDir = 0;
-  public SwerveDrivePoseEstimator estimatedPose;
-
-  public Pose2d averageVisionMeasurement;
-  public Timer time;
-  public LimeLightVision vision;
-
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
-    DriveConstants.kDriveKinematics,
-    Rotation2d.fromDegrees(getAngle()),
-    new SwerveModulePosition[] {
-        m_frontLeft.getPosition(),
-        m_frontRight.getPosition(),
-        m_rearLeft.getPosition(),
-        m_rearRight.getPosition()
-    }
-  );
-
-  @Log
-  public Field2d field = new Field2d();
-
-  // Path strings
-  private String ampLineupPathName = "AmpLineup";
+      DriveConstants.kDriveKinematics,
+      Rotation2d.fromDegrees(getAngle()),
+      new SwerveModulePosition[] {
+          m_frontLeft.getPosition(),
+          m_frontRight.getPosition(),
+          m_rearLeft.getPosition(),
+          m_rearRight.getPosition()
+      });
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
-    estimatedPose = new SwerveDrivePoseEstimator(
-      DriveConstants.kDriveKinematics, 
-      Rotation2d.fromDegrees(getAngle()), 
-      getModulePositions(), getPose()
-      );
-    
-
-    // Configure AutoBuilder last
-    AutoBuilder.configureHolonomic(
-      this::getPose, // Robot pose supplier
-      this::resetEstimatedPose, // Method to reset odometry (will be called if your auto has a starting pose)
-      this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-      this::autoDrive, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-      AutoConstants.holonomicPathFollowerConfig,
-      () -> {
-        // Boolean supplier that controls when the path will be mirrored for the red alliance
-        // This will flip the path being followed to the red side of the field.
-        // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-        var alliance = DriverStation.getAlliance();
-        if (alliance.isPresent()) {
-            return alliance.get() == DriverStation.Alliance.Red;
-        }
-        return false;
-      },
-      this // Reference to this subsystem to set requirements
-    );
-
+   
   }
 
-  /*◇─◇──◇─◇
-    Odometry
-  ◇─◇──◇─◇*/
+  @Override
+  public void periodic() {
+    // Update the odometry in the periodic block
+    m_odometry.update(
+        Rotation2d.fromDegrees(getAngle()),
+        new SwerveModulePosition[] {
+            m_frontLeft.getPosition(),
+            m_frontRight.getPosition(),
+            m_rearLeft.getPosition(),
+            m_rearRight.getPosition()
+        });
+       
+
+
+    SmartDashboard.updateValues();
+  }
 
   /**
    * Returns the currently-estimated pose of the robot.
@@ -139,6 +99,12 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
    */
   public Pose2d getPose() {
     return m_odometry.getPoseMeters();
+  }
+
+  // Returns the corrected yaw for the robot
+  public double getAngle() {
+    double yaw = DriveConstants.kGyroReversed ? -m_gyro.getAngle() : m_gyro.getAngle();
+    return yaw;
   }
 
   /**
@@ -157,22 +123,6 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
         },
         pose);
   }
-
-  public void resetEstimatedPose(Pose2d pose){
-    estimatedPose.resetPosition(
-      Rotation2d.fromDegrees(getAngle()),
-      new SwerveModulePosition[] {
-            m_frontLeft.getPosition(),
-            m_frontRight.getPosition(),
-            m_rearLeft.getPosition(),
-            m_rearRight.getPosition()
-        },
-      pose);
-  }
-
-  /*◇─◇──◇─◇
-      Drive
-  ◇─◇──◇─◇*/
 
   /**
    * Method to drive the robot using joystick info.
@@ -262,98 +212,6 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     m_rearRight.setDesiredState(swerveModuleStates[3]);
   }
 
-  /** Drives the robot relative to the robot when given chassis speeds
-   * 
-   * @param speeds The robot relative desired chassis speeds
-  */
-  public void autoDrive(ChassisSpeeds speeds) {
-    var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(speeds);
-    SwerveDriveKinematics.desaturateWheelSpeeds(
-        swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
-
-
-    m_frontLeft.setDesiredState(swerveModuleStates[0]);
-    m_frontRight.setDesiredState(swerveModuleStates[1]);
-    m_rearLeft.setDesiredState(swerveModuleStates[2]);
-    m_rearRight.setDesiredState(swerveModuleStates[3]);
-  }
-
-  /**
-   * Follows a PathPlanner auton path.
-   * 
-   * @param path The path the robot should follow
-   * @return The command to follow the path
-   */
-  public Command followAutonPath(PathPlannerPath path){
-    return new FollowPathHolonomic(
-      path, //Path from params
-      this::getPose, // Robot pose supplier
-      this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-      this::autoDrive, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-      AutoConstants.holonomicPathFollowerConfig,
-      () -> {
-        // Boolean supplier that controls when the path will be mirrored for the red alliance
-        // This will flip the path being followed to the red side of the field.
-        // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-        var alliance = DriverStation.getAlliance();
-        if (alliance.isPresent()) {
-            return alliance.get() == DriverStation.Alliance.Red;
-        }
-        return false;
-      },
-      this // Reference to this subsystem to set requirements
-    );
-  }
-
-  /**
-   * Pathfinds to the start of the given path, then follows that path.
-   * 
-   * @param path The path to move to and follow
-   * @return The pathfinding and following command
-   */
-  public Command pathfindThenFollowPath(PathPlannerPath path) {
-    return new PathfindThenFollowPathHolonomic(
-        path,
-        AutoConstants.constraints,
-        this::getPose,
-        this::getRobotRelativeSpeeds,
-        this::autoDrive,
-        AutoConstants.holonomicPathFollowerConfig, // HolonomicPathFollwerConfig, see the API or "Follow a single path" example for more info
-        0, // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate. Optional
-        () -> {
-            // Boolean supplier that controls when the path will be mirrored for the red alliance
-            // This will flip the path being followed to the red side of the field.
-            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-            var alliance = DriverStation.getAlliance();
-            if (alliance.isPresent()) {
-                return alliance.get() == DriverStation.Alliance.Red;
-            }
-            return false;
-        },
-        this // Reference to drive subsystem to set requirements
-      );
-  }
-
-  /**
-   * Returns command to drive to amp.
-   * 
-   * @return Dynamic trajectory to drive to amp
-   */
-  public Command AmpLineupDynamicTrajectory() {
-    return pathfindThenFollowPath(
-      PathPlannerPath.fromPathFile(ampLineupPathName)
-    );
-  }
-
-  /*◇─◇──◇─◇
-     Setters
-  ◇─◇──◇─◇*/
-  
-  public void setVisionSystem(LimeLightVision vision){
-    this.vision = vision;
-  }
   /**
    * Sets the wheels into an X formation to prevent movement.
    */
@@ -391,24 +249,6 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     m_gyro.reset();
   }
 
-  /*◇─◇──◇─◇
-     Getters
-  ◇─◇──◇─◇*/
-
-  /** 
-   * Returns the robot relative chassis speeds 
-   * 
-   * @return The chassis speeds object representing the robot relative speed of the chassis
-  */
-  public ChassisSpeeds getRobotRelativeSpeeds(){
-    return DriveConstants.kDriveKinematics.toChassisSpeeds(
-            m_frontLeft.getState(),
-            m_frontRight.getState(),
-            m_rearLeft.getState(),
-            m_rearRight.getState()
-        );
-  }
-  
   /**
    * Returns the heading of the robot.
    *
@@ -425,53 +265,5 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
    */
   public double getTurnRate() {
     return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
-  }
-
-  /** 
-    * Returns the current angle of the robot 
-    *
-    * @return The current yaw of the robot, in degrees
-  */
-  public double getAngle() {
-    double yaw = DriveConstants.kGyroReversed ? -m_gyro.getAngle() : m_gyro.getAngle();
-    return yaw;
-  }
-  public SwerveModulePosition[] getModulePositions(){
-    SwerveModulePosition fl = m_frontLeft.getPosition();
-    SwerveModulePosition fr = m_frontRight.getPosition();
-    SwerveModulePosition rl = m_rearLeft.getPosition();
-    SwerveModulePosition rr = m_rearRight.getPosition();
-    return new SwerveModulePosition[] {fl, fr, rl, rr};
-  }
-  
-  @Override
-  public void periodic() {
-    // Update the odometry in the periodic block
-    m_odometry.update(
-        Rotation2d.fromDegrees(getAngle()),
-        new SwerveModulePosition[] {
-            m_frontLeft.getPosition(),
-            m_frontRight.getPosition(),
-            m_rearLeft.getPosition(),
-            m_rearRight.getPosition()
-        });
-    SmartDashboard.putString("robot pose, just odometry", LimeLightVision.poseAsString(getPose()));
-    SmartDashboard.putString("Limelight in drivetrain", LimeLightVision.poseAsString(vision.getLimeLightAverage()));
-    SmartDashboard.putString("wpilib estimated pose w/ ll", LimeLightVision.poseAsString(estimatedPose.getEstimatedPosition()));
-    SmartDashboard.updateValues();
-    
-    // updates pose with current time, rotation, and module positions.
-    estimatedPose.updateWithTime(Timer.getFPGATimestamp(), Rotation2d.fromDegrees(getAngle()), getModulePositions());
-
-    // updates pose with Lime Light positions
-    if ((vision.hasTarget()) && this.getTurnRate() <= LimeLightConstants.turnRateThreshold){
-      averageVisionMeasurement = vision.getLimeLightAverage();
-      //averageVisionMeasurement = vision.limelightPose;
-
-      estimatedPose.addVisionMeasurement(averageVisionMeasurement, Timer.getFPGATimestamp());
-    }
-    
-    field.setRobotPose(estimatedPose.getEstimatedPosition());
-    this.resetOdometry(estimatedPose.getEstimatedPosition());
   }
 }
