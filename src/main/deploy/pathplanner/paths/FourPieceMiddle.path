@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.1595077424389078,
-        "y": 5.8056735933291685
+        "x": 2.0839653107838645,
+        "y": 5.62923182989641
       },
       "isLocked": false,
       "linkedName": null
@@ -68,12 +68,12 @@
         "y": 5.556066607628711
       },
       "prevControl": {
-        "x": 1.3182397535966242,
-        "y": 5.759450077458713
+        "x": 1.321243568982627,
+        "y": 5.759564400384517
       },
       "nextControl": {
-        "x": 1.3388262971864033,
-        "y": 5.30654611848357
+        "x": 1.334011234191247,
+        "y": 5.343246758276233
       },
       "isLocked": false,
       "linkedName": null
@@ -84,12 +84,12 @@
         "y": 4.243318756907785
       },
       "prevControl": {
-        "x": 2.59004179542214,
-        "y": 4.080407893637966
+        "x": 2.611705794836261,
+        "y": 4.104648209300597
       },
       "nextControl": {
-        "x": 2.8568274766947823,
-        "y": 4.406229620177603
+        "x": 2.8555380743726455,
+        "y": 4.407276925017564
       },
       "isLocked": false,
       "linkedName": null
@@ -100,8 +100,8 @@
         "y": 5.556066607628711
       },
       "prevControl": {
-        "x": 2.0208371948275423,
-        "y": 5.121565558446433
+        "x": 1.9741928020899768,
+        "y": 5.094287259648948
       },
       "nextControl": null,
       "isLocked": false,
@@ -138,7 +138,7 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 4.8,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 1080.0
@@ -149,7 +149,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Final No pivot autos",
+  "folder": null,
   "previewStartingState": {
     "rotation": 0,
     "velocity": 0
