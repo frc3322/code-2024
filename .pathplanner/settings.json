@@ -10,9 +10,9 @@
     "Original Trajectories"
   ],
   "autoFolders": [],
-  "defaultMaxVel": 4.8,
+  "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 360.0,
   "defaultMaxAngAccel": 1080.0,
-  "maxModuleSpeed": 4.5
+  "maxModuleSpeed": 4.8
 }
