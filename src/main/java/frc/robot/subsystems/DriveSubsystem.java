@@ -464,11 +464,14 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     estimatedPose.updateWithTime(Timer.getFPGATimestamp(), Rotation2d.fromDegrees(getAngle()), getModulePositions());
 
     // updates pose with Lime Light positions
-    if ((vision.hasTarget()) && this.getTurnRate() <= LimeLightConstants.turnRateThreshold){
-      averageVisionMeasurement = vision.getLimeLightAverage();
-      //averageVisionMeasurement = vision.limelightPose;
+    if (vision.hasLeftTarget())
+    {
+      estimatedPose.addVisionMeasurement(vision.getLeftPose(), Timer.getFPGATimestamp());
+    }
 
-      estimatedPose.addVisionMeasurement(averageVisionMeasurement, Timer.getFPGATimestamp());
+    if (vision.hasRightTarget())
+    {
+      estimatedPose.addVisionMeasurement(vision.getRightPose(), Timer.getFPGATimestamp());
     }
     
     field.setRobotPose(estimatedPose.getEstimatedPosition());
