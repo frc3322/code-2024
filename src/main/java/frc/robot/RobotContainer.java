@@ -161,6 +161,8 @@ public class RobotContainer {
     //   robotDrive.AmpLineupDynamicTrajectory()
     // );
 
+    secondaryController.rightStick().onTrue(elevator.stopElevatorCommand());
+
     /*◇─◇──◇─◇
       Transfer
     ◇─◇──◇─◇*/
@@ -196,6 +198,12 @@ public class RobotContainer {
     
     driverController.b()
     .whileTrue(intake.runPayload(intake.ejectCommand()));
+
+    secondaryController.b()
+    .whileTrue(intake.runPayload(intake.ejectCommand()));
+
+    secondaryController.x()
+    .whileTrue(intake.runPayload(intake.startSpin(1)));
 
     // intake.setDefaultCommand(new RunCommand(() -> {
     //   intake.setArmSpeed(-secondaryController.getLeftY());    
