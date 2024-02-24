@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -256,6 +258,23 @@ public class Shooter extends SubsystemBase implements Loggable {
    */
   public Command shooterAutoLineRevUpCommand(){
     return shooterRevUpCommand(ShooterConstants.shootingRMPAutoLine);
+  }
+
+  public Command autoRevUp(BooleanSupplier revUp){
+    return new RunCommand(
+      () -> {
+        if (revUp.getAsBoolean()){
+          setShooterSetpoint(ShooterConstants.shootingRMPAutoLine);
+        }
+        else{
+          setShooterSetpoint(ShooterConstants.shooterIdleRPM);
+        }
+
+        setTopShooterSpeed(getTopCombinedControllers());
+        setBottomShooterSpeed(getBottomCombinedControllers());
+      }, 
+      this
+    );
   }
 
   /**
