@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANIds;
 import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.NeoMotorConstants;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Config;
 import io.github.oblarg.oblog.annotations.Log;
@@ -55,6 +56,9 @@ public class Elevator extends SubsystemBase implements Loggable {
 
     elevatorLeftMotor.setInverted(true);
     elevatorRightMotor.follow(elevatorLeftMotor, true);
+
+    elevatorLeftMotor.setSmartCurrentLimit(80);
+    elevatorRightMotor.setSmartCurrentLimit(80);
 
     elevatorRightEncoder.setPositionConversionFactor(ElevatorConstants.elevatorGearRatio);
 

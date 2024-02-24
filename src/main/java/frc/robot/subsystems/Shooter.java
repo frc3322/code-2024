@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANIds;
+import frc.robot.Constants.NeoMotorConstants;
 import frc.robot.Constants.ShooterConstants;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
@@ -65,6 +66,9 @@ public class Shooter extends SubsystemBase implements Loggable {
 
     shooterTopMotor.setInverted(true);
     shooterBottomMotor.setInverted(true);
+
+    shooterTopMotor.setSmartCurrentLimit(NeoMotorConstants.currentLimit);
+    shooterBottomMotor.setSmartCurrentLimit(NeoMotorConstants.currentLimit);
 
     shooterTopMotor.burnFlash();
     shooterBottomMotor.burnFlash();

@@ -23,6 +23,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.NeoMotorConstants;
+import frc.robot.Constants.TransferConstants;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
 
@@ -77,7 +79,11 @@ public class Intake extends SubsystemBase implements Loggable {
 
     wheelsMotor.setInverted(true);
 
+    intakeArmLeft.setSmartCurrentLimit(NeoMotorConstants.currentLimit);
+    intakeArmRight.setSmartCurrentLimit(NeoMotorConstants.currentLimit);
+    wheelsMotor.setSmartCurrentLimit(NeoMotorConstants.neo550CurrentLimitAmps);
     wheelsMotor.burnFlash();
+    
     intakeArmLeft.burnFlash();
     intakeArmRight.burnFlash();
 

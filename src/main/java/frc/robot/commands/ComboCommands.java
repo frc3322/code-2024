@@ -113,7 +113,8 @@ public class ComboCommands{
             .until(elevator::atSetpoint)
             .andThen(
                 intake.flipToAmpAndRunPayloadCommand(
-                    intake.startSpin(IntakeConstants.groundIntakeSpeed),
+                    intake.startSpin(
+                        -IntakeConstants.groundIntakeSpeed),
                     0,
                     0
                 )

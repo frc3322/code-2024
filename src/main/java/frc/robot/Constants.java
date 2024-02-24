@@ -31,6 +31,8 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
 
+  
+
   public static final class CANIds {
     // SPARK MAX CAN IDs
     public static final int kFrontLeftDrivingCanId = 7;
@@ -153,17 +155,17 @@ public final class Constants {
     public static final double elevatorP = 0.1;
     public static final double elevatorI = 0.002;
     public static final double elevatorD = 0;
-    public static final double velocityConstraint = 500;
+    public static final double velocityConstraint = 700;
     public static final double accelerationConstraint = 500;
 
-    public static final double elevatorBottomPosition = .2;
-    public static final double elevatorAmpPosition = 15.5;
-    public static final double elevatorTopPosition = 18.5;
+    public static final double elevatorBottomPosition = .1;
+    public static final double elevatorAmpPosition = 4.3;//aold is 15.5 //good is 4.1
+    public static final double elevatorTopPosition = 18;
     
     public static final double elevatorBottomThreshold = 0;
     public static final double elevatorTopThreshold = 0;
 
-    public static final double elevatorGearRatio = 1 / (12 * .14);
+    public static final double elevatorGearRatio = 1 / (25 * .14);
     public static final double elevatorPositionThreshold = 1;
   }
 
@@ -257,6 +259,7 @@ public final class Constants {
     public static final double kFreeSpeedRpm = 5676;
 
     public static final int neo550CurrentLimitAmps = 20;
+    public static final int currentLimit = 50;
   }
 
   public static final class FieldConstants {
