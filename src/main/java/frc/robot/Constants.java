@@ -33,12 +33,12 @@ public final class Constants {
 
   public static final class CANIds {
     
-    public static final int kFrontLeftDrivingCanId = 13; //13
+    public static final int kFrontLeftDrivingCanId = 20; //20
     public static final int kRearLeftDrivingCanId = 7; //7
     public static final int kFrontRightDrivingCanId = 40;
     public static final int kRearRightDrivingCanId = 55;
 
-    public static final int kFrontLeftTurningCanId = 20; //20
+    public static final int kFrontLeftTurningCanId = 13; //13
     public static final int kRearLeftTurningCanId = 23; //23
     public static final int kFrontRightTurningCanId = 36;
     public static final int kRearRightTurningCanId = 12;
