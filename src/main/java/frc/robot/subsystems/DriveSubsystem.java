@@ -14,6 +14,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -442,6 +443,36 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     SwerveModulePosition rl = m_rearLeft.getPosition();
     SwerveModulePosition rr = m_rearRight.getPosition();
     return new SwerveModulePosition[] {fl, fr, rl, rr};
+  }
+
+  public boolean atPose(Pose2d pose, double translationThreshold, double rotationThreshold){
+    boolean translationInThreshold = atTranslation(pose.getTranslation(), translationThreshold);
+    boolean rotationInThreshold = atRotation(pose.getRotation(), rotationThreshold);
+
+    if (rotationThreshold == 0) {
+      return translationInThreshold;
+    }
+    if (translationThreshold == 0) {
+      return rotationInThreshold;
+    }
+
+    return translationInThreshold && rotationInThreshold;
+  }
+
+
+  public boolean atTranslation(Translation2d translation, double threshold){
+    Translation2d robotTranslation = getPose().getTranslation();
+
+    return robotTranslation.getDistance(translation) < threshold;
+  }
+  
+
+  public boolean atRotation(Rotation2d rotation, double threshold){
+    Rotation2d robotRotation = getPose().getRotation();
+    
+    double rotOffset = robotRotation.getDegrees() - rotation.getDegrees();
+
+    return Math.abs(rotOffset) < threshold;
   }
   
   @Override
