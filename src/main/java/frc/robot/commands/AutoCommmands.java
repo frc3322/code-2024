@@ -58,10 +58,6 @@ public class AutoCommmands {
         return new SequentialCommandGroup(
             combo.startShooterIntakeCommand()
             .until(transfer::shooterFull)
-            .andThen(
-                combo.stowCommand()
-                .until(intake::atSetpoint)
-            )
             
         );
     }
@@ -106,7 +102,7 @@ public class AutoCommmands {
         
     public Command shoot(Pose2d shootPose) {
         return new SequentialCommandGroup(
-            new WaitUntilConditionCommand(()->robotDrive.atPose(shootPose, 0.5, 10)),
+            new WaitUntilConditionCommand(()->robotDrive.atPose(shootPose, 0.3, 10)),
             transfer.shootCommand()
         );
     }

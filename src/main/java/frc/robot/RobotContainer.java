@@ -253,7 +253,7 @@ public class RobotContainer {
      * https://github.com/mjansen4857/pathplanner
      */
 
-     return autoCommmands.threePieceMiddleTopAuto();
+     return autoCommmands.twoPieceBottomAuto();
   }
 
   /*◇─◇──◇─◇
