@@ -145,6 +145,16 @@ public class RobotContainer {
 
     driverController.start().onTrue(new InstantCommand(()->robotDrive.zeroHeading()));
 
+    driverController.leftStick().whileTrue(
+      new RunCommand(
+            () -> robotDrive.drive(
+                -MathUtil.applyDeadband(driverController.getLeftY(), OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(driverController.getLeftX(), OIConstants.kDriveDeadband),
+                robotDrive::getOutputToAngle,
+                true, true),
+            robotDrive)
+    );
+
     driverController.leftBumper()
     .onTrue(comboCommands.ampCommands())
     .onFalse(comboCommands.stowCommandGroup());
