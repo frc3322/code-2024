@@ -118,6 +118,12 @@ public class RobotContainer {
       intake)
     );
 
+    shooter.setDefaultCommand(
+      shooter.autoRevUp(
+        () -> transfer.shooterFull() && robotDrive.atShootPose()
+      )
+    );
+
   }
 
 

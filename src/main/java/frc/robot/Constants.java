@@ -284,6 +284,9 @@ public final class Constants {
       new Rotation2d(90)
     );
 
+    public static final Pose2d blueCenterShootPose = new Pose2d(1.33, 5.56, new Rotation2d(Math.toRadians(0)));
+    public static final Pose2d redCenterShootPose = new Pose2d(15.33, 5.56, new Rotation2d(Math.toRadians(0)));
+
     public static final Translation2d redSpeakerTranslation = new Translation2d(
       Units.inchesToMeters(652.73),
       Units.inchesToMeters(217)

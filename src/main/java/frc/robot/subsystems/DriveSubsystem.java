@@ -451,6 +451,15 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     * @return The current yaw of the robot, in degrees
   */
   
+  public Pose2d getShooterPose(){
+    Pose2d pose = isAllianceRed() ? FieldConstants.redCenterShootPose : FieldConstants.blueCenterShootPose;
+    return pose;
+  }
+
+  public boolean atShootPose(){
+    return atPose(getShooterPose(), 2, 0);
+  }
+
   @Log
   public double getAngle() {
     double yaw = DriveConstants.kGyroReversed ? -m_gyro.getAngle() : m_gyro.getAngle();
