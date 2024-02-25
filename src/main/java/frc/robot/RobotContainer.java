@@ -273,7 +273,7 @@ public class RobotContainer {
 
     public Test4And1Auto(){
       addCommands(
-        new PathPlannerAuto("Test4+1Auto")
+        //new PathPlannerAuto("Test4+1Auto")
       );
     }
   }

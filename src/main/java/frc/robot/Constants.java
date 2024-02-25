@@ -231,7 +231,9 @@ public final class Constants {
 
     public static final double kPXController = 1;
     public static final double kPYController = 1;
-    public static final double kPThetaController = 1;
+    public static final double kPThetaController = 0.02;
+    public static final double kIThetaController = 0.00;
+    public static final double kDThetaController = 0.002;
 
     public static final double kPHoloTranslationController = 5;
     public static final double kPHoloRotationController = 5;
@@ -280,6 +282,16 @@ public final class Constants {
     public static final Pose2d blueAmpPose = new Pose2d(
       new Translation2d(-Units.inchesToMeters(325.625 - 49.5), Units.inchesToMeters(161.625)),
       new Rotation2d(90)
+    );
+
+    public static final Translation2d redSpeakerTranslation = new Translation2d(
+      Units.inchesToMeters(652.73),
+      Units.inchesToMeters(217)
+    );
+
+    public static final Translation2d blueSpeakerTranslation = new Translation2d(
+      Units.inchesToMeters(-1.50),
+      Units.inchesToMeters(217)
     );
   }
 
