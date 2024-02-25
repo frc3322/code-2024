@@ -34,6 +34,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.CANIds;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.LimeLightConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.utils.SwerveUtils;
 import io.github.oblarg.oblog.Loggable;
@@ -457,7 +458,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
   }
 
   public boolean atShootPose(){
-    return atPose(getShooterPose(), 2, 0);
+    return atPose(getShooterPose(), ShooterConstants.shooterRevUpDistance, 0);
   }
 
   @Log

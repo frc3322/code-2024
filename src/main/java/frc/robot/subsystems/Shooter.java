@@ -202,7 +202,7 @@ public class Shooter extends SubsystemBase implements Loggable {
    * @param setpoint The setpoint in RPM.
    */
   public void setBottomShooterSetpoint(double setpoint) {
-    shooterBottomSetpoint = setpoint;
+    shooterBottomSetpoint = setpoint - 50;
   }
   
   /**

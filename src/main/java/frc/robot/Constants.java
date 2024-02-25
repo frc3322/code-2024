@@ -159,7 +159,7 @@ public final class Constants {
     public static final double accelerationConstraint = 500;
 
     public static final double elevatorBottomPosition = .1;
-    public static final double elevatorAmpPosition = 4.3;//aold is 15.5 //good is 4.1
+    public static final double elevatorAmpPosition = 4.7;//aold is 15.5 //good is 4.1
     public static final double elevatorTopPosition = 18;
     
     public static final double elevatorBottomThreshold = 0;
@@ -188,12 +188,14 @@ public final class Constants {
     public static final double shooterTopV = 0.00018;
     public static final double shooterBottomV = 0.00018;
 
-    public static final double shootingRMPAutoLine = 3000;
+    public static final double shootingRMPAutoLine = 4500;
     public static final double shooterIdleRPM = 1000;
 
     public static final double shooterRPMThreshold = 100;
 
     public static final double shooterAutoRPMThreshold = 2000;
+
+    public static final double shooterRevUpDistance = 3;
   }
 
   public static final class IntakeConstants {
