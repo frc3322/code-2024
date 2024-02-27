@@ -79,6 +79,8 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
   public Timer time;
   public LimeLightVision vision;
 
+
+
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
     DriveConstants.kDriveKinematics,
@@ -104,6 +106,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
       Rotation2d.fromDegrees(getAngle()), 
       getModulePositions(), getPose()
       );
+
     
 
     // Configure AutoBuilder last
@@ -448,6 +451,8 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     return yaw;
   }
 
+
+
   public SwerveModulePosition[] getModulePositions(){
     SwerveModulePosition fl = m_frontLeft.getPosition();
     SwerveModulePosition fr = m_frontRight.getPosition();
@@ -503,6 +508,17 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     return false;
   }
 
+  public Pose2d poseByAlliance(Pose2d pose) {
+    if (isAllianceRed()){
+      return new Pose2d(
+        (16.54 - pose.getX()),
+        pose.getY(),
+        new Rotation2d(Math.toRadians(180 - pose.getRotation().getDegrees()))
+      );
+    }
+    return pose;
+  }
+
   
   @Override
   public void periodic() {
@@ -534,6 +550,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     
     field.setRobotPose(estimatedPose.getEstimatedPosition());
     this.resetOdometry(estimatedPose.getEstimatedPosition());
+
 
     // atShootPose = atPose(new Pose2d(1.29, 5.48, new Rotation2d(Math.toRadians(0))), 0.15, 5);
     // atPickUpPose = atPose(new Pose2d(2.01, 6.85, new Rotation2d(Math.toRadians(20))), );
