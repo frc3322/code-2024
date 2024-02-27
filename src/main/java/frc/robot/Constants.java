@@ -195,12 +195,15 @@ public final class Constants {
 
     public static final double shootingRMPAutoLine = 4500;
     public static final double shooterIdleRPM = 1000;
+    public static final double shooterIntakeRPM = -1500;
 
     public static final double shooterRPMThreshold = 100;
 
     public static final double shooterAutoRPMThreshold = 2000;
 
     public static final double shooterRevUpDistance = 3;
+
+
   }
 
   public static final class IntakeConstants {

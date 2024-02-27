@@ -264,6 +264,10 @@ public class Shooter extends SubsystemBase implements Loggable {
     return shooterRevUpCommand(ShooterConstants.shootingRMPAutoLine);
   }
 
+  public Command shooterIntakeCommand(){
+    return shooterRevUpCommand(ShooterConstants.shooterIntakeRPM);
+  }
+
   public Command autoRevUp(BooleanSupplier revUp){
     return new RunCommand(
       () -> {
