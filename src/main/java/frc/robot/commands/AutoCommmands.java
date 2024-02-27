@@ -378,40 +378,29 @@ public class AutoCommmands {
             
     }
 
+    public Command fivePieceMiddleAuto(){
+        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.fivePieceMiddleString);
+        Pose2d shootPose = path.getPreviewStartingHolonomicPose();
+        robotDrive.resetEstimatedPose(shootPose);
 
-    /**
-     * 
-     * @return
-     */
-//     public SequentialCommandGroup threePlusOneTopAuto() {
-//         return new SequentialCommandGroup(
-//         //start shooter--need more time to rev up.    
-//         shootOnStart(),
-//         new ParallelCommandGroup(
-//             //start following path. The auto will end when it is completed
-//             robotDrive.followAutonPath(PathPlannerPath.fromPathFile("CloseTopFixed")),
-//             //sequence of stepCommands to run along with path. Add position stuff later.
-//             new SequentialCommandGroup(
-//                 new ParallelDeadlineGroup(
-//                     new StepCommand(transfer.intakeToShooterCommand(), ()->robotDrive.atPose(new Pose2d(1.50, 5.86, new Rotation2d(Math.toRadians(180)))), transfer),
-//                     new StepCommand(intake.intakeToMiddle(), ()->robotDrive.atPose(new Pose2d(1.86, 7.03, new Rotation2d(Math.toRadians(-175)))), intake)),
-//                 new ParallelCommandGroup(
-//                     new InstantCommand(()->transfer.stopShooterTransfer()),
-//                     new InstantCommand(()->transfer.stopTransfer())),
-//                 new ParallelDeadlineGroup(
-//                     new StepCommand(transfer.intakeToShooterCommand(), ()->robotDrive.atPose(new Pose2d(1.50, 5.68, new Rotation2d(Math.toRadians(180)))), transfer),
-//                     new StepCommand(intake.intakeToMiddle(), ()->robotDrive.atPose(new Pose2d(2.09, 5.42, new Rotation2d(Math.toRadians(180)))), intake)),
-//                 new ParallelCommandGroup(
-//                     new InstantCommand(()->transfer.stopShooterTransfer()),
-//                     new InstantCommand(()->transfer.stopTransfer())),
-//                 new ParallelDeadlineGroup(
-//                     new StepCommand(transfer.intakeToShooterCommand(), ()->robotDrive.atPose(new Pose2d(1.50, 5.48, new Rotation2d(Math.toRadians(180)))), transfer),
-//                     new StepCommand(intake.intakeToMiddle(), ()->robotDrive.atPose(new Pose2d(1.50, 5.48, new Rotation2d(Math.toRadians(180)))), intake)),
-//                 new ParallelCommandGroup(
-//                     new InstantCommand(()->transfer.stopShooterTransfer()),
-//                     new InstantCommand(()->transfer.stopTransfer()))
-//             )
-//         ));
-//     }
+        //robotDrive.setYawToAngle(-path.getPreviewStartingHolonomicPose().getRotation().getDegrees());
+        return new SequentialCommandGroup(
+            shootOnStart(),
+            new ParallelCommandGroup(
+                robotDrive.followAutonPath(path),
+                new SequentialCommandGroup(
+                    intakeMiddleNote(),
+                    shoot(shootPose),
+                    intakeCenterMiddleNote(),
+                    shoot(shootPose),
+                    intakeTopNote(),
+                    shoot(shootPose),
+                    intakeBottomNote(),
+                    shoot(shootPose)
+                )
+            )
+        );
+    }
 
 }
+

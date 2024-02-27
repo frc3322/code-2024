@@ -267,6 +267,7 @@ public final class Constants {
     public static final String threePieceMiddleBottomString = "ThreePieceMiddleBottom";
     public static final String fourPieceMiddleString = "FourPieceMiddle";
     public static final String middleThreeCenterMiddleString = "MiddleThreeCenterMiddle";
+    public static final String fivePieceMiddleString = "FivePieceMiddle";
 
     public static final String twoPieceBottomString = "TwoPieceBottom";
     public static final String threePieceBottomString = "ThreePieceBottom";
