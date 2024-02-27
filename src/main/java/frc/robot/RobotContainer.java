@@ -7,6 +7,7 @@ package frc.robot;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -45,6 +46,8 @@ public class RobotContainer {
   private final Intake intake = new Intake();
   private final Shooter shooter = new Shooter();
   private final Forks forks = new Forks();
+  
+  private final DigitalOutput leds = new DigitalOutput(7);
 
   // The driver's controller
   CommandXboxController driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
@@ -256,11 +259,15 @@ public class RobotContainer {
         () -> {
           if (intake.innerIntakeFull() || transfer.shooterFull()){
             driverController.getHID().setRumble(RumbleType.kBothRumble, 1);
+            leds.set(true);
           }
         }
     ))
     .whileFalse(new InstantCommand(
-      () -> driverController.getHID().setRumble(RumbleType.kBothRumble, 0)
+      () -> {
+        driverController.getHID().setRumble(RumbleType.kBothRumble, 0);
+        leds.set(false);
+      }
     ));
 
     driverController.rightTrigger(0.1).whileTrue(
@@ -268,11 +275,15 @@ public class RobotContainer {
         () -> {
           if (intake.innerIntakeFull() || transfer.shooterFull()){
             driverController.getHID().setRumble(RumbleType.kBothRumble, 1);
+            leds.set(true);
           }
         }
       ))
       .whileFalse(new InstantCommand(
-        () -> driverController.getHID().setRumble(RumbleType.kBothRumble, 0)
+        () -> {
+          driverController.getHID().setRumble(RumbleType.kBothRumble, 0);
+          leds.set(false);
+        }
       ));
   }
   public void updateLogger() {
