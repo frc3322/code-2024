@@ -31,6 +31,8 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
 
+  
+
   public static final class CANIds {
     
     public static final int kFrontLeftDrivingCanId = 20; //20
@@ -61,6 +63,11 @@ public final class Constants {
     public static final int kShooterBottomCanId = 16;
     public static final int kShooterPivotCanId = 63;
     public static final int kShooterTransferCanId = 18;
+  }
+
+  public static final class PWMIds {
+    public static final int leftServoID = 0;
+    public static final int rightServoID = 1;
   }
 
   public static final class DriveConstants {
@@ -152,17 +159,17 @@ public final class Constants {
     public static final double elevatorP = 0.1;
     public static final double elevatorI = 0.002;
     public static final double elevatorD = 0;
-    public static final double velocityConstraint = 500;
+    public static final double velocityConstraint = 700;
     public static final double accelerationConstraint = 500;
 
-    public static final double elevatorBottomPosition = .2;
-    public static final double elevatorAmpPosition = 15.5;
-    public static final double elevatorTopPosition = 18.5;
+    public static final double elevatorBottomPosition = .1;
+    public static final double elevatorAmpPosition = 4.7;//aold is 15.5 //good is 4.1
+    public static final double elevatorTopPosition = 18;
     
     public static final double elevatorBottomThreshold = 0;
     public static final double elevatorTopThreshold = 0;
 
-    public static final double elevatorGearRatio = 1 / (12 * .14);
+    public static final double elevatorGearRatio = 1 / (25 * .14);
     public static final double elevatorPositionThreshold = 1;
   }
 
@@ -185,11 +192,14 @@ public final class Constants {
     public static final double shooterTopV = 0.00018;
     public static final double shooterBottomV = 0.00018;
 
-    public static final double shootingRMPAutoLine = 3000;
+    public static final double shootingRMPAutoLine = 4500;
+    public static final double shooterIdleRPM = 1000;
 
     public static final double shooterRPMThreshold = 100;
 
     public static final double shooterAutoRPMThreshold = 2000;
+
+    public static final double shooterRevUpDistance = 3;
   }
 
   public static final class IntakeConstants {
@@ -227,7 +237,9 @@ public final class Constants {
 
     public static final double kPXController = 1;
     public static final double kPYController = 1;
-    public static final double kPThetaController = 1;
+    public static final double kPThetaController = 0.02;
+    public static final double kIThetaController = 0.00;
+    public static final double kDThetaController = 0.002;
 
     public static final double kPHoloTranslationController = 5;
     public static final double kPHoloRotationController = 5;
@@ -255,6 +267,7 @@ public final class Constants {
     public static final double kFreeSpeedRpm = 5676;
 
     public static final int neo550CurrentLimitAmps = 20;
+    public static final int currentLimit = 50;
   }
 
   public static final class FieldConstants {
@@ -275,6 +288,19 @@ public final class Constants {
     public static final Pose2d blueAmpPose = new Pose2d(
       new Translation2d(-Units.inchesToMeters(325.625 - 49.5), Units.inchesToMeters(161.625)),
       new Rotation2d(90)
+    );
+
+    public static final Pose2d blueCenterShootPose = new Pose2d(1.33, 5.56, new Rotation2d(Math.toRadians(0)));
+    public static final Pose2d redCenterShootPose = new Pose2d(15.33, 5.56, new Rotation2d(Math.toRadians(0)));
+
+    public static final Translation2d redSpeakerTranslation = new Translation2d(
+      Units.inchesToMeters(652.73),
+      Units.inchesToMeters(217)
+    );
+
+    public static final Translation2d blueSpeakerTranslation = new Translation2d(
+      Units.inchesToMeters(-1.50),
+      Units.inchesToMeters(217)
     );
   }
 
