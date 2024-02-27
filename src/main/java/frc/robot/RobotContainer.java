@@ -19,6 +19,7 @@ import frc.robot.subsystems.LimeLightVision;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Transfer;
+import frc.robot.subsystems.Forks;
 import io.github.oblarg.oblog.Logger;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -42,6 +43,7 @@ public class RobotContainer {
   private final Transfer transfer = new Transfer();
   private final Intake intake = new Intake();
   private final Shooter shooter = new Shooter();
+  private final Forks forks = new Forks();
 
   // The driver's controller
   CommandXboxController driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
@@ -226,6 +228,12 @@ public class RobotContainer {
     // intake.setDefaultCommand(new RunCommand(() -> {
     //   intake.setArmSpeed(-secondaryController.getLeftY());    
     // }, intake));
+
+    secondaryController.a()
+    .whileTrue(
+      new StartEndCommand(()->forks.spinServosCommand(), ()->forks.stopServosCommand(), elevator)
+    );
+
 
     secondaryController.povUp().onTrue(shooter.shooterAutoLineRevUpCommand());
     secondaryController.povDown().onTrue(shooter.stopShooterCommand());

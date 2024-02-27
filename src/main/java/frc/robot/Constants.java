@@ -66,6 +66,11 @@ public final class Constants {
     public static final int kShooterTransferCanId = 18;
   }
 
+  public static final class PWMIds {
+    public static final int leftServoID = 0;
+    public static final int rightServoID = 1;
+  }
+
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
