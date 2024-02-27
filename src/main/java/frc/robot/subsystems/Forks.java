@@ -43,5 +43,8 @@ public class Forks extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    //for testing:
+    //leftServo.set(1);
+    //rightServo.set(1);
   }
 }

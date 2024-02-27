@@ -230,9 +230,8 @@ public class RobotContainer {
     // }, intake));
 
     secondaryController.a()
-    .whileTrue(
-      new StartEndCommand(()->forks.spinServosCommand(), ()->forks.stopServosCommand(), elevator)
-    );
+    .onTrue(
+      forks.spinServosCommand()).onFalse(forks.stopServosCommand());
 
 
     secondaryController.povUp().onTrue(shooter.shooterAutoLineRevUpCommand());
