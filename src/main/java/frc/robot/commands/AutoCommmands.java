@@ -99,6 +99,18 @@ public class AutoCommmands {
             );
             
         }
+
+    public Command intakeCenterTopNote(){
+        return new SequentialCommandGroup(
+            new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerTopPose, 1.5, 0)),
+            autoIntakeToShooter()
+            );
+            
+        }
+
+    public Command flipIntakeUp() {
+        return combo.stowCommand().withTimeout(0.2);
+    }
         
     public Command shoot(Pose2d shootPose) {
         return new SequentialCommandGroup(
@@ -207,9 +219,9 @@ public class AutoCommmands {
             new ParallelCommandGroup(
                 robotDrive.followAutonPath(path),
                 new SequentialCommandGroup(
-                    intakeMiddleNote(),
-                    shoot(shootPose),
                     intakeTopNote(),
+                    shoot(shootPose),
+                    intakeCenterTopNote(),
                     shoot(shootPose)
                 )
             ));
@@ -249,7 +261,9 @@ public class AutoCommmands {
                 new SequentialCommandGroup(
                     intakeMiddleNote(),
                     shoot(shootPose),
+                    flipIntakeUp(),
                     intakeBottomNote(),
+                    flipIntakeUp(),
                     shoot(shootPose)
                 )
             ));
@@ -291,7 +305,7 @@ public class AutoCommmands {
                     shoot(shootPose),
                     intakeTopNote(),
                     new SequentialCommandGroup(
-                        new WaitUntilConditionCommand(()->robotDrive.atPose(shootPose, 0.1, 10)),
+                        new WaitUntilConditionCommand(()->robotDrive.atPose(shootPose, 0.2, 10)),
                         transfer.shootCommand()
                     ),
                     intakeBottomNote(),

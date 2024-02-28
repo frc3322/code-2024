@@ -10,6 +10,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AutoCommmands;
 import frc.robot.commands.ComboCommands;
@@ -55,7 +56,7 @@ public class RobotContainer {
 
 
   // Auton selector for dashboard
-  SendableChooser<SequentialCommandGroup> autoSelector = new SendableChooser<>();
+  SendableChooser<Command> autoSelector = new SendableChooser<Command>();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -71,6 +72,7 @@ public class RobotContainer {
    //  autoSelector.setDefaultOption("Test", new Test4And1Auto());
 
     autoSelector.addOption("No auto", null);
+    autoSelector.addOption("MiddleFourPiece", autoCommmands.fourPieceMiddleAuto());
 
     // Configure default commands
 
@@ -119,6 +121,8 @@ public class RobotContainer {
       intake)
     );
 
+
+    SmartDashboard.putData(autoSelector);
   }
 
 
@@ -253,7 +257,7 @@ public class RobotContainer {
      * https://github.com/mjansen4857/pathplanner
      */
 
-     return autoCommmands.twoPieceBottomAuto();
+     return autoSelector.getSelected();
   }
 
   /*◇─◇──◇─◇
