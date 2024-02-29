@@ -138,6 +138,13 @@ public class ComboCommands{
         );
     }
 
+    public Command trapCommand() {
+        return new ParallelCommandGroup(
+            elevator.elevatorTrapCommand(),
+            intake.trapCommand(elevator::atTop)
+        );
+    }
+
      /**
      * @return Command group to move elevator down, flip intake down, and transfer to shooter beam break
      */
