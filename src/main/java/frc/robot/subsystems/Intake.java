@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -125,6 +126,10 @@ public class Intake extends SubsystemBase implements Loggable {
     return armLeftEncoder.getPosition();
   }
 
+
+
+
+
   @Log
   public Boolean intakeEmpty(){
     return intakeInnerBeamBreak.get() && intakeOuterBeamBreak.get();
@@ -193,6 +198,17 @@ public class Intake extends SubsystemBase implements Loggable {
   /*◇─◇──◇─◇
   ✨Commands✨
   ◇─◇──◇─◇*/
+
+  public Command intakeDefaultCommand(DoubleSupplier joystickInput, BooleanSupplier elevatorTooHigh){
+    return run(() ->{
+      if (elevatorTooHigh.getAsBoolean()){
+        runPayload(flipToClimbCommand());
+      }
+      else{
+        setArmSpeed(joystickInput.getAsDouble());
+      }
+    });
+  }
 
   /**
    * Returns a command that uses the intake arm PID command to go to its setpoint until interuppted.

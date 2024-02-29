@@ -126,6 +126,10 @@ public class Elevator extends SubsystemBase implements Loggable {
     return getElevatorEncoderPosition() > ElevatorConstants.elevatorTopThreshold;
   }
 
+  public boolean elevatorLimitIntake() {
+    return getElevatorEncoderPosition() > ElevatorConstants.elevatorOnChainPosition;
+  }
+
   /*◇─◇──◇─◇
   ✨Setters✨
   ◇─◇──◇─◇*/

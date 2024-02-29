@@ -118,10 +118,7 @@ public class RobotContainer {
 
 
     intake.setDefaultCommand(
-      new RunCommand((
-        () -> intake.setArmSpeed(secondaryController.getLeftY())
-      ),
-      intake)
+      intake.intakeDefaultCommand(secondaryController::getLeftY, elevator::elevatorLimitIntake)
     );
 
     shooter.setDefaultCommand(
