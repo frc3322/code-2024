@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import frc.robot.Constants.CANIds;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.NeoMotorConstants;
@@ -35,6 +36,8 @@ public class Elevator extends SubsystemBase implements Loggable {
   private final CANSparkMax elevatorRightMotor = new CANSparkMax(CANIds.kElevatorRightCanId, MotorType.kBrushless);
 
   private final RelativeEncoder elevatorRightEncoder = elevatorRightMotor.getEncoder();
+
+  boolean climbUp = false;
   
   private final ProfiledPIDController elevatorPidController = new ProfiledPIDController(
     ElevatorConstants.elevatorP,
@@ -223,6 +226,40 @@ public class Elevator extends SubsystemBase implements Loggable {
       () -> setElevatorPower(elevatorClimbController.calculate(
         getElevatorEncoderPosition(), 
         ElevatorConstants.elevatorTopPosition
+      )), 
+      this);
+  }
+
+  public Command elevatorStartClimbCommand(){
+    
+    return new SequentialCommandGroup(
+      new InstantCommand(() -> climbUp = !climbUp),
+      new RunCommand(
+        () -> {
+          if(climbUp){
+            setElevatorPower(elevatorClimbController.calculate(
+              getElevatorEncoderPosition(), 
+              ElevatorConstants.elevatorTopPosition
+            ));
+          }
+          else{
+            setElevatorPower(elevatorClimbController.calculate(
+              getElevatorEncoderPosition(), 
+              ElevatorConstants.elevatorOnChainPosition
+            ));
+          }
+        },
+        this
+      )
+    )
+    .handleInterrupt(() -> climbUp = false);
+  }
+  
+  public Command elevatorClimbCommand() {
+    return new RunCommand(
+      () -> setElevatorPower(elevatorClimbController.calculate(
+        getElevatorEncoderPosition(), 
+        ElevatorConstants.elevatorBottomPosition
       )), 
       this);
   }
