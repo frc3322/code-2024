@@ -63,7 +63,7 @@ public class AutoCommmands {
     }
 
     public Command intakeTopNote() {
-        Pose2d notePose = robotDrive.isAllianceRed() ? FieldConstants.redTopNotePose : FieldConstants.blueTopNotePose;
+        Pose2d notePose = robotDrive.flipPoseIfRed(FieldConstants.blueTopNotePose);
 
         return new SequentialCommandGroup(
             new WaitUntilConditionCommand(()->robotDrive.atPose(notePose, 1.5, 0)),
@@ -73,7 +73,7 @@ public class AutoCommmands {
     }
 
     public Command intakeMiddleNote() {
-        Pose2d notePose = robotDrive.isAllianceRed() ? FieldConstants.redMiddleNotePose : FieldConstants.blueMiddleNotePose;
+        Pose2d notePose = robotDrive.flipPoseIfRed(FieldConstants.blueMiddleNotePose);
 
         return new SequentialCommandGroup(
             new WaitUntilConditionCommand(()->robotDrive.atPose(notePose, 1.5, 0)),
@@ -83,7 +83,7 @@ public class AutoCommmands {
     }
 
     public Command intakeBottomNote() {
-        Pose2d notePose = robotDrive.isAllianceRed() ? FieldConstants.redBottomNotePose : FieldConstants.blueBottomNotePose;
+        Pose2d notePose = robotDrive.flipPoseIfRed(FieldConstants.blueBottomNotePose);
 
         return new SequentialCommandGroup(
             new WaitUntilConditionCommand(()->robotDrive.atPose(notePose, 2, 0)),
