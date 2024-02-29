@@ -4,6 +4,7 @@
       "/FMSInfo": "FMSInfo",
       "/Shuffleboard/DriveSubsystem: Log/field": "Field2d",
       "/SmartDashboard/ElevatorPID": "ProfiledPIDController",
+      "/SmartDashboard/SendableChooser[0]": "String Chooser",
       "/SmartDashboard/Shooter bottom PID": "PIDController",
       "/SmartDashboard/Shooter top pid": "PIDController",
       "/SmartDashboard/intake": "ProfiledPIDController"

@@ -500,6 +500,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     return atPose(FieldConstants.blueTopNotePose, 1, 10);
   }
 
+  @Log
   public boolean isAllianceRed() {
     var alliance = DriverStation.getAlliance();
     if (alliance.isPresent()) {
@@ -508,7 +509,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     return false;
   }
 
-  public Pose2d poseByAlliance(Pose2d pose) {
+  public Pose2d flipPoseIfRed(Pose2d pose) {
     if (isAllianceRed()){
       return new Pose2d(
         (16.54 - pose.getX()),

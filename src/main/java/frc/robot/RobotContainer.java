@@ -4,9 +4,12 @@
 
 package frc.robot;
 
+import java.util.concurrent.Callable;
+
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -56,7 +59,7 @@ public class RobotContainer {
 
 
   // Auton selector for dashboard
-  SendableChooser<Command> autoSelector = new SendableChooser<Command>();
+  SendableChooser<Callable<Command>> autoSelector = new SendableChooser<Callable<Command>>();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -72,7 +75,7 @@ public class RobotContainer {
    //  autoSelector.setDefaultOption("Test", new Test4And1Auto());
 
     autoSelector.addOption("No auto", null);
-    autoSelector.addOption("MiddleFourPiece", autoCommmands.fourPieceMiddleAuto());
+    autoSelector.addOption("MiddleFourPiece", ()-> autoCommmands.fourPieceMiddleAuto());
 
     // Configure default commands
 
@@ -257,7 +260,17 @@ public class RobotContainer {
      * https://github.com/mjansen4857/pathplanner
      */
 
-     return autoSelector.getSelected();
+    Command command = new InstantCommand();
+
+     try{
+      command = autoSelector.getSelected().call();
+     }
+     catch(Exception e){
+      DriverStation.reportError("Auto be weird", e.getStackTrace());
+     }
+     
+
+     return command;
   }
 
   /*◇─◇──◇─◇
