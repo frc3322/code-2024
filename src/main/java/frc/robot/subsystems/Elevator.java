@@ -37,7 +37,7 @@ public class Elevator extends SubsystemBase implements Loggable {
 
   private final RelativeEncoder elevatorRightEncoder = elevatorRightMotor.getEncoder();
 
-  boolean climbUp = false;
+  //boolean climbUp = false;
   
   private final ProfiledPIDController elevatorPidController = new ProfiledPIDController(
     ElevatorConstants.elevatorP,
@@ -230,39 +230,39 @@ public class Elevator extends SubsystemBase implements Loggable {
       this);
   }
 
-  public Command elevatorStartClimbCommand(){
+  // public Command elevatorStartClimbCommand(){
     
-    return new SequentialCommandGroup(
-      new InstantCommand(() -> climbUp = !climbUp),
-      new RunCommand(
-        () -> {
-          if(climbUp){
-            setElevatorPower(elevatorClimbController.calculate(
-              getElevatorEncoderPosition(), 
-              ElevatorConstants.elevatorTopPosition
-            ));
-          }
-          else{
-            setElevatorPower(elevatorClimbController.calculate(
-              getElevatorEncoderPosition(), 
-              ElevatorConstants.elevatorOnChainPosition
-            ));
-          }
-        },
-        this
-      )
-    )
-    .handleInterrupt(() -> climbUp = false);
-  }
+  //   return new SequentialCommandGroup(
+  //     new InstantCommand(() -> climbUp = !climbUp),
+  //     new RunCommand(
+  //       () -> {
+  //         if(climbUp){
+  //           setElevatorPower(elevatorPidController.calculate(
+  //             getElevatorEncoderPosition(), 
+  //             ElevatorConstants.elevatorTopPosition
+  //           ));
+  //         }
+  //         else{
+  //           setElevatorPower(elevatorPidController.calculate(
+  //             getElevatorEncoderPosition(), 
+  //             ElevatorConstants.elevatorOnChainPosition
+  //           ));
+  //         }
+  //       },
+  //       this
+  //     )
+  //   )
+  //   .handleInterrupt(() -> climbUp = false);
+  // }
   
-  public Command elevatorClimbCommand() {
-    return new RunCommand(
-      () -> setElevatorPower(elevatorClimbController.calculate(
-        getElevatorEncoderPosition(), 
-        ElevatorConstants.elevatorBottomPosition
-      )), 
-      this);
-  }
+  // public Command elevatorClimbCommand() {
+  //   return new RunCommand(
+  //     () -> setElevatorPower(elevatorClimbController.calculate(
+  //       getElevatorEncoderPosition(), 
+  //       ElevatorConstants.elevatorBottomPosition
+  //     )), 
+  //     this);
+  // }
 
   /**
    * An instant command that stops the elevator. Can be used to return to manual control.
