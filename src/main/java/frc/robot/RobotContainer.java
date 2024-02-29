@@ -196,8 +196,8 @@ public class RobotContainer {
       Transfer
     ◇─◇──◇─◇*/
 
-    driverController.povLeft().onTrue(comboCommands.noteTransferToShooter());
-    driverController.povRight().onTrue(comboCommands.noteTransferToIntake());
+    driverController.povRight().onTrue(comboCommands.noteTransferToShooter());
+    driverController.povLeft().onTrue(comboCommands.noteTransferToIntake());
 
     secondaryController.leftBumper().whileTrue(transfer.runTransferCommand(true));
     secondaryController.rightBumper().whileTrue(transfer.runTransferCommand(false));
