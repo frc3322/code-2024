@@ -165,6 +165,7 @@ public final class Constants {
 
     public static final double elevatorBottomPosition = .1;
     public static final double elevatorAmpPosition = 4.7;//aold is 15.5 //good is 4.1
+    public static final double elevatorTopAmpPosition = 15.5;
     public static final double elevatorTopPosition = 18;
     
     public static final double elevatorBottomThreshold = 0;
@@ -217,6 +218,7 @@ public final class Constants {
     public static final double groundPosition = 0.385;
     public static final double stowPosition = 0;
     public static final double ampPosition = .07;
+
 
     public static final double groundIntakeSpeed = 1;
 

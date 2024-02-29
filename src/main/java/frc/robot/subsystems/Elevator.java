@@ -188,6 +188,15 @@ public class Elevator extends SubsystemBase implements Loggable {
     );
   }
 
+   public Command goToTopAmpCommand() {
+    return new SequentialCommandGroup(
+      new InstantCommand( 
+        () -> setElevatorSetpoint(ElevatorConstants.elevatorTopAmpPosition)
+      ),
+      goToSetpoint()
+    );
+  }
+
   /**
    * A command that sets the PID goal to the top position and moves to it.
    * @return A sequential command group that moves the elevator to the top position.

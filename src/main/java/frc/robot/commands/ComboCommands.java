@@ -122,6 +122,22 @@ public class ComboCommands{
         );
     }
 
+    public ParallelCommandGroup topAmpCommands() {
+        return new ParallelCommandGroup(
+            elevator.goToTopAmpCommand(),
+            intake.runPayload(intake.flipToStowCommand())
+            .until(elevator::atSetpoint)
+            .andThen(
+                intake.flipToStowAndRunPayloadCommand(
+                    intake.startSpin(
+                        IntakeConstants.groundIntakeSpeed),
+                    0,
+                    0
+                )
+            )
+        );
+    }
+
      /**
      * @return Command group to move elevator down, flip intake down, and transfer to shooter beam break
      */

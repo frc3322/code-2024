@@ -171,6 +171,11 @@ public class RobotContainer {
     .onTrue(comboCommands.ampCommands())
     .onFalse(comboCommands.stowCommandGroup());
 
+
+    secondaryController.povRight()
+    .onTrue(comboCommands.topAmpCommands())
+    .onFalse(comboCommands.stowCommandGroup());
+
     driverController.rightBumper()
     .onTrue(transfer.shootCommand());
 
@@ -214,6 +219,7 @@ public class RobotContainer {
     driverController.a()
     .onTrue(comboCommands.startMiddleIntakeCommand())
     .onFalse(comboCommands.stopIntakeCommand());
+
 
     secondaryController.leftStick().onTrue(new InstantCommand(()->intake.stopArm(), intake));
 
