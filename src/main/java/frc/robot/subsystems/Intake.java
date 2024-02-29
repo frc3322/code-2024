@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -55,6 +57,16 @@ public class Intake extends SubsystemBase implements Loggable {
     new Constraints(
       IntakeConstants.velocityConstraint, 
       IntakeConstants.accelerationConstraint
+      )
+    );
+
+  public final ProfiledPIDController slowIntakePIDController = new ProfiledPIDController(
+    IntakeConstants.intakeP, 
+    IntakeConstants.intakeI, 
+    IntakeConstants.intakeD, 
+    new Constraints(
+      IntakeConstants.velocityConstraint, 
+      IntakeConstants.slowAccelerationConstraint
       )
     );
 
@@ -293,6 +305,21 @@ public class Intake extends SubsystemBase implements Loggable {
       flipToSetpoint()
     );
   }
+
+  public Command flipToClimbCommand() {
+    return new RunCommand(() -> {
+      setArmSpeed(
+        slowIntakePIDController.calculate(getIntakeEncoderPosition(), IntakeConstants.climbPosition)
+      );
+    });
+  }
+
+  public Command flipToTrapCommand() {
+    return new RunCommand(
+      () -> setArmSpeed(slowIntakePIDController.calculate(getIntakeEncoderPosition(), IntakeConstants.trapPosition))
+    );
+  }
+
 /**
  * Runs a "payload" (eject or run intake) and brings the arm to the stow position with a set amount of delay on each.
  * @param payload Command to run
@@ -352,6 +379,21 @@ public class Intake extends SubsystemBase implements Loggable {
     return command;
   }
 
+  public Command flipToTrapAndRunPayloadCommand(Command payload, double payloadDelay, double armDelay) {
+    Command command = new ParallelCommandGroup(
+    new SequentialCommandGroup(
+        new WaitCommand(payloadDelay),
+        payload
+      ),
+      new SequentialCommandGroup(
+        new WaitCommand(armDelay),
+        flipToTrapCommand()
+      )
+    );
+    command.addRequirements(this);
+    return command;
+  }
+
   /**
    * Run a command requiring intake.
    * @param payload The command that needs requirements.
@@ -363,23 +405,34 @@ public class Intake extends SubsystemBase implements Loggable {
     return command;
   }
 
-  public Command flipToGroundAndRunPayloadCommandAlternate(Command payload, double payloadDelay, double armDelay) {
-    Command command = new ParallelCommandGroup(
-      new SequentialCommandGroup(
-        new WaitCommand(payloadDelay),
-        payload
-      ),
-      new SequentialCommandGroup(
-        new WaitCommand(armDelay),
-        new InstantCommand(()-> setArmSetpoint(IntakeConstants.groundPosition)),
-        new  RunCommand( ()->
-          setArmSpeed(intakePIDController.calculate(getIntakeEncoderPosition())
-          )
-        )
-      )
-    );
-    command.addRequirements(this);
-    return command;
+  // public Command flipToGroundAndRunPayloadCommandAlternate(Command payload, double payloadDelay, double armDelay) {
+  //   Command command = new ParallelCommandGroup(
+  //     new SequentialCommandGroup(
+  //       new WaitCommand(payloadDelay),
+  //       payload
+  //     ),
+  //     new SequentialCommandGroup(
+  //       new WaitCommand(armDelay),
+  //       new InstantCommand(()-> setArmSetpoint(IntakeConstants.groundPosition)),
+  //       new  RunCommand( ()->
+  //         setArmSpeed(intakePIDController.calculate(getIntakeEncoderPosition())
+  //         )
+  //       )
+  //     )
+  //   );
+  //   command.addRequirements(this);
+  //   return command;
+  // }
+
+  public Command trapCommand(BooleanSupplier elevatorAtTop){
+    return runPayload(flipToClimbCommand())
+    .until(elevatorAtTop)
+    .andThen(flipToTrapAndRunPayloadCommand(
+      startSpin(-IntakeConstants.groundIntakeSpeed),
+      IntakeConstants.trapDelay,
+      0
+    ));
+    
   }
   
   

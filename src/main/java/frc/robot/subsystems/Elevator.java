@@ -45,6 +45,14 @@ public class Elevator extends SubsystemBase implements Loggable {
       ElevatorConstants.accelerationConstraint
     )
   );
+
+  private final ProfiledPIDController elevatorClimbController = new ProfiledPIDController(
+    ElevatorConstants.elevatorP, 
+    ElevatorConstants.elevatorI,
+    ElevatorConstants.elevatorD, 
+    new Constraints(
+      ElevatorConstants.velocityConstraint, 
+      ElevatorConstants.slowAccelerationConstraint));
   
   /** Creates a new Elevator. */
   public Elevator() {
@@ -208,6 +216,15 @@ public class Elevator extends SubsystemBase implements Loggable {
       ),
       goToSetpoint()
     );
+  }
+
+  public Command elevatorTrapCommand() {
+    return new RunCommand(
+      () -> setElevatorPower(elevatorClimbController.calculate(
+        getElevatorEncoderPosition(), 
+        ElevatorConstants.elevatorTopPosition
+      )), 
+      this);
   }
 
   /**
