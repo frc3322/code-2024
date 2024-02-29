@@ -4,13 +4,18 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AutoCommmands;
 import frc.robot.commands.ComboCommands;
@@ -72,7 +77,8 @@ public class RobotContainer {
    //  autoSelector.setDefaultOption("Test", new Test4And1Auto());
 
     autoSelector.addOption("No auto", null);
-    autoSelector.addOption("MiddleFourPiece", autoCommmands.fourPieceMiddleAuto());
+    autoSelector.addOption("MiddleFourPieceBlue", autoCommmands.fourPieceMiddleAutoBlue());
+    autoSelector.addOption("MiddleFourPieceRed", autoCommmands.fourPieceMiddleAutoRed());
 
     // Configure default commands
 
@@ -239,6 +245,7 @@ public class RobotContainer {
         () -> driverController.getHID().setRumble(RumbleType.kBothRumble, 0)
       ));
   }
+
   public void updateLogger() {
     Logger.updateEntries();
   }

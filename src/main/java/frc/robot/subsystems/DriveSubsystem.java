@@ -288,7 +288,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
    * @param path The path the robot should follow
    * @return The command to follow the path
    */
-  public Command followAutonPath(PathPlannerPath path){
+  public Command followAutonPath(PathPlannerPath path, boolean red){
     return new FollowPathHolonomic(
       path, //Path from params
       this::getPose, // Robot pose supplier
@@ -300,11 +300,11 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
         // This will flip the path being followed to the red side of the field.
         // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-        var alliance = DriverStation.getAlliance();
-        if (alliance.isPresent()) {
-            return alliance.get() == DriverStation.Alliance.Red;
-        }
-        return false;
+        // var alliance = DriverStation.getAlliance();
+        // if (alliance.isPresent()) {
+        //     return alliance.get() == DriverStation.Alliance.Red;
+        // }
+        return red;
       },
       this // Reference to this subsystem to set requirements
     );
@@ -356,7 +356,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
   ◇─◇──◇─◇*/
   
   public void setVisionSystem(LimeLightVision vision){
-    this.vision = vision;
+  this.vision = vision;
   }
   /**
    * Sets the wheels into an X formation to prevent movement.
@@ -500,7 +500,8 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     return atPose(FieldConstants.blueTopNotePose, 1, 10);
   }
 
-  public boolean isAllianceRed() {
+  @Log
+    public boolean isAllianceRed() {
     var alliance = DriverStation.getAlliance();
     if (alliance.isPresent()) {
         return alliance.get() == DriverStation.Alliance.Red;
@@ -508,8 +509,8 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     return false;
   }
 
-  public Pose2d poseByAlliance(Pose2d pose) {
-    if (isAllianceRed()){
+  public Pose2d flipPoseIfRed(Pose2d pose, boolean red) {
+    if (red){
       return new Pose2d(
         (16.54 - pose.getX()),
         pose.getY(),
