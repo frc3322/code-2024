@@ -176,7 +176,7 @@ public final class Constants {
     public static final double elevatorTopPosition = 18;
     
     public static final double elevatorBottomThreshold = 0;
-    public static final double elevatorTopThreshold = 18;
+    public static final double elevatorTopThreshold = 17.5;
 
     public static final double elevatorGearRatio = 1 / (25 * .14);
     public static final double elevatorPositionThreshold = 1;
@@ -227,9 +227,9 @@ public final class Constants {
     public static final double stowPosition = 0;
     public static final double ampPosition = .07;
     public static final double climbPosition = .1;
-    public static final double trapPosition = 0.2258;
+    public static final double trapPosition = 0.2485; //.2258
 
-    public static final double trapDelay = 0.5;
+    public static final double trapDelay = 0.7;
 
     public static final double groundIntakeSpeed = 1;
 

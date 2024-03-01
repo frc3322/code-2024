@@ -45,7 +45,7 @@ public class AutoCommmands {
         return new SequentialCommandGroup( 
             new ParallelDeadlineGroup(
                 new SequentialCommandGroup(
-                    new WaitUntilConditionCommand(shooter::bothAtSetpointRPM),
+                    new WaitUntilConditionCommand(shooter::bothAtAutoRPM),
                     transfer.shootCommand()
                 ),
                 shooter.shooterAutoLineRevUpCommand()

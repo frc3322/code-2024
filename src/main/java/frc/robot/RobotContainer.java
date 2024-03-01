@@ -26,6 +26,8 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Transfer;
 import frc.robot.subsystems.Forks;
 import io.github.oblarg.oblog.Logger;
+import io.github.oblarg.oblog.annotations.Config;
+import io.github.oblarg.oblog.annotations.Log;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -51,7 +53,7 @@ public class RobotContainer {
   private final Shooter shooter = new Shooter();
   private final Forks forks = new Forks();
   
-  private final DigitalOutput leds = new DigitalOutput(7);
+  
 
   // The driver's controller
   CommandXboxController driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
@@ -121,7 +123,7 @@ public class RobotContainer {
           
           double limitedPower = (elevator.atBottom() && goingDown) || (elevator.atTop() && goingUp) ? 0 : powerIn;
           
-          elevator.setElevatorPower(powerIn); 
+          elevator.setElevatorPower(limitedPower); 
         }, elevator)
     );
 
@@ -199,7 +201,9 @@ public class RobotContainer {
     //   robotDrive.AmpLineupDynamicTrajectory()
     // );
 
-    secondaryController.rightStick().onTrue(elevator.stopElevatorCommand());
+    secondaryController.rightStick().onTrue(
+      elevator.stopElevatorCommand()
+    .andThen(new InstantCommand(() -> intake.stopArm(), intake)));
 
     /*◇─◇──◇─◇
       Transfer
@@ -256,7 +260,9 @@ public class RobotContainer {
     .whileTrue(intake.runPayload(intake.startSpin(1)));
 
     driverController.povUp()
-    .onTrue(elevator.goToTopCommand());
+    .onTrue(new ParallelCommandGroup(
+      elevator.goToTopCommand(),
+      intake.flipToClimbCommand()));
 
     // intake.setDefaultCommand(new RunCommand(() -> {
     //   intake.setArmSpeed(-secondaryController.getLeftY());    
@@ -281,14 +287,14 @@ public class RobotContainer {
         () -> {
           if (intake.innerIntakeFull() || transfer.shooterFull()){
             driverController.getHID().setRumble(RumbleType.kBothRumble, 1);
-            leds.set(true);
+            //leds.set(true);
           }
         }
     ))
     .whileFalse(new InstantCommand(
       () -> {
         driverController.getHID().setRumble(RumbleType.kBothRumble, 0);
-        leds.set(false);
+        //leds.set(false);
       }
     ));
 
@@ -297,20 +303,21 @@ public class RobotContainer {
         () -> {
           if (intake.innerIntakeFull() || transfer.shooterFull()){
             driverController.getHID().setRumble(RumbleType.kBothRumble, 1);
-            leds.set(true);
+            //leds.set(true);
           }
         }
       ))
       .whileFalse(new InstantCommand(
         () -> {
           driverController.getHID().setRumble(RumbleType.kBothRumble, 0);
-          leds.set(false);
+          //leds.set(false);
         }
       ));
   }
   public void updateLogger() {
     Logger.updateEntries();
   }
+
 
 
   /**

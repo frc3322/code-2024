@@ -13,6 +13,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -35,6 +36,8 @@ public class Shooter extends SubsystemBase implements Loggable {
 
   private final RelativeEncoder shooterTopEncoder = shooterTopMotor.getEncoder();
   private final RelativeEncoder shooterBottomEncoder = shooterBottomMotor.getEncoder();
+
+  private final DigitalOutput leds = new DigitalOutput(8);
 
   private final PIDController shooterTopRPMController = new PIDController(
     ShooterConstants.shooterTopP,
@@ -140,19 +143,36 @@ public class Shooter extends SubsystemBase implements Loggable {
   }
 
   @Log
-  public boolean topAtSetpointRPM() {
+  public boolean topAtAutoRPM() {
     //return Math.abs(getTopWheelRPM() - shooterTopSetpoint) < ShooterConstants.shooterRPMThreshold;
     return getTopWheelRPM() > 2000;
   }
 
   @Log
-  public boolean bottomAtSetpointRPM() {
+  public boolean bottomAtAutoRPM() {
     //return Math.abs(getBottomWheelRPM() - shooterBottomSetpoint) < ShooterConstants.shooterRPMThreshold;
     return getBottomWheelRPM() > 2000;
   }
 
-  @Log public boolean bothAtSetpointRPM() {
-    return topAtSetpointRPM() && bottomAtSetpointRPM();
+  @Log public boolean bothAtAutoRPM() {
+    return topAtAutoRPM() && bottomAtAutoRPM();
+  }
+
+  @Log
+  public boolean topAtHighRPM() {
+    //return Math.abs(getTopWheelRPM() - shooterTopSetpoint) < ShooterConstants.shooterRPMThreshold;
+    return getTopWheelRPM() > 3500;
+  }
+
+  @Log
+  public boolean bottomAtHighRPM() {
+    //return Math.abs(getBottomWheelRPM() - shooterBottomSetpoint) < ShooterConstants.shooterRPMThreshold;
+    return getBottomWheelRPM() > 3500;
+  }
+
+  @Log
+  public boolean bothAtHighRPM(){
+    return topAtHighRPM() && bottomAtHighRPM();
   }
 
   /*◇─◇──◇─◇
@@ -302,5 +322,6 @@ public class Shooter extends SubsystemBase implements Loggable {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    leds.set(bothAtHighRPM());
   }
 }
