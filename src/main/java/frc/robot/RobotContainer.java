@@ -83,6 +83,8 @@ public class RobotContainer {
     autoSelector.addOption("No auto", null);
     autoSelector.addOption("Shoot only", () -> autoCommmands.shootOnStart());
     autoSelector.addOption("MiddleFourPiece", ()-> autoCommmands.fourPieceMiddleAuto());
+    autoSelector.addOption("TopTwoPiece", () -> autoCommmands.twoPieceTopAuto());
+    autoSelector.addOption("BottomTwoPiece", () -> autoCommmands.twoPieceBottomAuto());
 
     // Configure default commands
 
