@@ -209,7 +209,7 @@ public final class Constants {
 
     public static final double shooterAutoRPMThreshold = 2000;
 
-    public static final double shooterRevUpDistance = 3;
+    public static final double shooterRevUpDistance = 5;
 
 
   }
