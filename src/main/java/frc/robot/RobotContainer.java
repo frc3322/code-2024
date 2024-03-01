@@ -4,13 +4,17 @@
 
 package frc.robot;
 
+import java.util.concurrent.Callable;
+
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DigitalOutput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AutoCommmands;
 import frc.robot.commands.ComboCommands;
@@ -59,8 +63,9 @@ public class RobotContainer {
 
   AutoCommmands autoCommmands = new AutoCommmands(robotDrive, intake, elevator, transfer, shooter, comboCommands);
 
+
   // Auton selector for dashboard
-  SendableChooser<SequentialCommandGroup> autoSelector = new SendableChooser<>();
+  SendableChooser<Callable<Command>> autoSelector = new SendableChooser<Callable<Command>>();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -76,6 +81,8 @@ public class RobotContainer {
    //  autoSelector.setDefaultOption("Test", new Test4And1Auto());
 
     autoSelector.addOption("No auto", null);
+    autoSelector.addOption("Shoot only", () -> autoCommmands.shootOnStart());
+    autoSelector.addOption("MiddleFourPiece", ()-> autoCommmands.fourPieceMiddleAuto());
 
     // Configure default commands
 
@@ -127,6 +134,8 @@ public class RobotContainer {
       )
     );
 
+
+    SmartDashboard.putData(autoSelector);
   }
 
 
@@ -310,7 +319,17 @@ public class RobotContainer {
      * https://github.com/mjansen4857/pathplanner
      */
 
-     return autoCommmands.shootOnStart();
+    Command command = new InstantCommand();
+
+     try{
+      command = autoSelector.getSelected().call();
+     }
+     catch(Exception e){
+      DriverStation.reportError("Auto be weird", e.getStackTrace());
+     }
+     
+
+     return command;
   }
 
   /*◇─◇──◇─◇

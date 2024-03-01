@@ -158,7 +158,7 @@ public class ComboCommands{
             ),
             transfer.intakeToShooterCommand()
         ).until(transfer::shooterFull)
-        .andThen(this.stowCommandGroup());
+        .andThen(this.stowCommand());
     }
 
      /**
@@ -178,10 +178,10 @@ public class ComboCommands{
             )
             
        ).until(intake::outerIntakeFull)
-        .andThen(this.stowCommandGroup());
+        .andThen(this.stowCommand());
     }
 
-    public Command stowCommandGroup(){
+    public Command stowCommand(){
         return new ParallelCommandGroup(
             elevator.goToBottomCommand(),
             intake.flipToStowAndRunPayloadCommand(
@@ -192,3 +192,4 @@ public class ComboCommands{
         );
     }
 }
+

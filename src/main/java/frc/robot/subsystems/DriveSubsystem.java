@@ -19,6 +19,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -33,9 +34,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.CANIds;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.LimeLightConstants;
-import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.FieldConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.utils.SwerveUtils;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
@@ -86,6 +86,8 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
   public Timer time;
   public LimeLightVision vision;
 
+
+
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
     DriveConstants.kDriveKinematics,
@@ -116,6 +118,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
       Rotation2d.fromDegrees(getAngle()), 
       getModulePositions(), getPose()
       );
+
     
 
     // Configure AutoBuilder last
@@ -409,6 +412,15 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
   public void zeroHeading() {
     m_gyro.reset();
   }
+  
+
+  public void setYawToAngle(double angle){
+    m_gyro.setAngleAdjustment(angle);
+
+  }
+  
+
+
 
   /*◇─◇──◇─◇
      Getters
@@ -541,6 +553,66 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
 
     return output;
   }
+
+  public boolean atPose(Pose2d pose, double translationThreshold, double rotationThreshold){
+    boolean translationInThreshold = atTranslation(pose.getTranslation(), translationThreshold);
+    boolean rotationInThreshold = atRotation(pose.getRotation(), rotationThreshold);
+
+    if (rotationThreshold == 0) {
+      return translationInThreshold;
+    }
+    if (translationThreshold == 0) {
+      return rotationInThreshold;
+    }
+
+    return translationInThreshold && rotationInThreshold;
+  }
+
+
+  public boolean atTranslation(Translation2d translation, double threshold){
+    Translation2d robotTranslation = getPose().getTranslation();
+
+    return robotTranslation.getDistance(translation) < threshold;
+  }
+  
+
+  public boolean atRotation(Rotation2d rotation, double threshold){
+    Rotation2d robotRotation = getPose().getRotation();
+    
+    double rotOffset = robotRotation.getDegrees() - rotation.getDegrees();
+
+    return Math.abs(rotOffset) < threshold;
+  }
+
+  @Log
+  public boolean atShootPose(){
+    return atPose(FieldConstants.centerShootPose, 0.3, 10);
+  }
+  @Log
+  public boolean atPickUpPose(){
+    return atPose(FieldConstants.blueTopNotePose, 1, 10);
+  }
+
+  @Log
+  public boolean isAllianceRed() {
+    var alliance = DriverStation.getAlliance();
+    if (alliance.isPresent()) {
+        return alliance.get() == DriverStation.Alliance.Red;
+    }
+    return false;
+  }
+
+  public Pose2d flipPoseIfRed(Pose2d pose) {
+    if (isAllianceRed()){
+      return new Pose2d(
+        (16.54 - pose.getX()),
+        pose.getY(),
+        new Rotation2d(Math.toRadians(180 - pose.getRotation().getDegrees()))
+      );
+    }
+    return pose;
+  }
+
   
   @Override
   public void periodic() {
@@ -561,16 +633,14 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     // updates pose with current time, rotation, and module positions.
     estimatedPose.updateWithTime(Timer.getFPGATimestamp(), Rotation2d.fromDegrees(getAngle()), getModulePositions());
 
-    // updates pose with Lime Light positions
-    if (vision.hasLeftTarget())
-    {
-      estimatedPose.addVisionMeasurement(vision.getLeftPose(), Timer.getFPGATimestamp());
-    }
-
-    if (vision.hasRightTarget())
-    {
-      estimatedPose.addVisionMeasurement(vision.getRightPose(), Timer.getFPGATimestamp());
-    }
+    // // updates pose with Lime Light positions
+    // if (vision.hasLeftTarget()){
+    //   estimatedPose.addVisionMeasurement(vision.getLeftPose(), Timer.getFPGATimestamp());
+    // }
+    
+    // if (vision.hasRightTarget()){
+    //   estimatedPose.addVisionMeasurement(vision.getRightPose(), Timer.getFPGATimestamp());
+    // }
     
     field.setRobotPose(estimatedPose.getEstimatedPosition());
     this.resetOdometry(estimatedPose.getEstimatedPosition());

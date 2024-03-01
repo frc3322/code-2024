@@ -7,6 +7,7 @@ package frc.robot.commands;
 import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 public class StepCommand extends Command {
@@ -25,6 +26,7 @@ public class StepCommand extends Command {
   public StepCommand(Command toRun, BooleanSupplier condition, Subsystem... requirements) {
     this.toRun = toRun;
     this.condition = condition;
+    hasRun = false;
     
     addRequirements(requirements);
   }
@@ -39,7 +41,7 @@ public class StepCommand extends Command {
   @Override
   public void execute() {
     if (condition.getAsBoolean()){
-      toRun.schedule();
+      new ProxyCommand(toRun);
       hasRun = true;
     }
     
@@ -47,11 +49,13 @@ public class StepCommand extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    toRun.cancel();
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return hasRun;
+    return hasRun && toRun.isFinished();
   }
 }

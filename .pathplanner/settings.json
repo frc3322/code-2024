@@ -4,8 +4,9 @@
   "holonomicMode": true,
   "pathFolders": [
     "Dynamic trajectories",
-    "No pivot autos realistic",
+    "Final No pivot autos",
     "No pivot autos fast",
+    "No pivot autos realistic",
     "Original Trajectories"
   ],
   "autoFolders": [],
@@ -13,5 +14,5 @@
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 360.0,
   "defaultMaxAngAccel": 1080.0,
-  "maxModuleSpeed": 4.5
+  "maxModuleSpeed": 4.8
 }

@@ -103,6 +103,10 @@ public final class Constants {
 
     // Works now, reverses gyro everywhere in drivetrain
     public static final boolean kGyroReversed = true;
+
+
+    public static final double kDistanceThreshold = .3;
+    public static final double kAngleThreshold = 15;
   }
 
   public static final class ModuleConstants {
@@ -154,6 +158,7 @@ public final class Constants {
 
     public static final int kDrivingMotorCurrentLimit = 50; // amps
     public static final int kTurningMotorCurrentLimit = 20; // amps
+
   }
 
   public static final class ElevatorConstants{
@@ -218,7 +223,7 @@ public final class Constants {
     public static final double accelerationConstraint = 30;
     public static final double slowAccelerationConstraint = 7;
 
-    public static final double groundPosition = 0.385;
+    public static final double groundPosition = 0.37;
     public static final double stowPosition = 0;
     public static final double ampPosition = .07;
     public static final double climbPosition = .1;
@@ -228,8 +233,8 @@ public final class Constants {
 
     public static final double groundIntakeSpeed = 1;
 
-    public static final double kTurnToleranceDeg = 0.5;
-    public static final double kTurnRateToleranceDegPerS = 5;
+    public static final double kPosToleranceDeg = 0.05;
+    public static final double kTurnRateToleranceDegPerS = 30;
 
     public static final double kIntakeArmGearRatio = 1/60.714;
   }
@@ -253,8 +258,8 @@ public final class Constants {
     public static final double kIThetaController = 0.00;
     public static final double kDThetaController = 0.002;
 
-    public static final double kPHoloTranslationController = 5;
-    public static final double kPHoloRotationController = 5;
+    public static final double kPHoloTranslationController = 5; //old is 5
+    public static final double kPHoloRotationController = 10;
 
     // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
@@ -263,7 +268,7 @@ public final class Constants {
     public static final HolonomicPathFollowerConfig holonomicPathFollowerConfig = new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
       new PIDConstants(kPHoloTranslationController, 0.0, 0.0), // Translation PID constants
       new PIDConstants(kPHoloRotationController, 0.0, 0.0), // Rotation PID constants
-      4.5, // Max module speed, in m/s
+      4.8, // Max module speed, in m/s //old is 4.5
       DriveConstants.kWheelRadius, // Drive base radius in meters. Distance from robot center to furthest module.
       new ReplanningConfig() // Default path replanning config. See the API for the options here
     );
@@ -273,6 +278,25 @@ public final class Constants {
       Units.radiansToDegrees(kMaxAngularSpeedRadiansPerSecond), 
       Units.radiansToDegrees(kMaxAngularSpeedRadiansPerSecondSquared)
     );
+
+    //Path strings
+    public static final String twoPieceTopString = "TwoPieceTop";
+    public static final String threePieceTopString = "ThreePieceTop";
+    public static final String fourPieceTopString = "FourPieceTop";
+    public static final String topThreeCenterMiddleString = "TopThreeCenterMiddle";
+
+    public static final String twoPieceMiddleString = "TwoPieceMiddle";
+    public static final String threePieceMiddleTopString = "ThreePieceMiddleTop";
+    public static final String threePieceMiddleBottomString = "ThreePieceMiddleBottom";
+    public static final String fourPieceMiddleString = "FourPieceMiddle";
+    public static final String middleThreeCenterMiddleString = "MiddleThreeCenterMiddle";
+    public static final String fivePieceMiddleString = "FivePieceMiddle";
+
+    public static final String twoPieceBottomString = "TwoPieceBottom";
+    public static final String threePieceBottomString = "ThreePieceBottom";
+    public static final String fourPieceBottomString = "FourPieceBottom";
+    public static final String bottomThreeCenterMiddleString = "BottomThreeCenterMiddle";
+
   }
 
   public static final class NeoMotorConstants {
@@ -283,12 +307,6 @@ public final class Constants {
   }
 
   public static final class FieldConstants {
-    // Starting note transforms - Top is amp. Notes are 5ft 6in apart, with one centered on the line
-    public static final Translation2d centerTopPose = new Translation2d(0, Units.feetToMeters(11));
-    public static final Translation2d centerMidTopPose = new Translation2d(0, Units.feetToMeters(5.5));
-    public static final Translation2d centerMidPose = new Translation2d(0, Units.feetToMeters(11));
-    public static final Translation2d centerMidBottomPose = new Translation2d(0, Units.feetToMeters(-5.5));
-    public static final Translation2d centerBottomPose = new Translation2d(0, Units.feetToMeters(-11));
 
     // Amp poses. Both halves of the field together are 651.25 in long, and amp is 4 ft 1.5 in from the wall.
     // The top wall that the amp is in is 161.625 from the center of the field. Needs to have an offset subtracted from it later
@@ -314,6 +332,26 @@ public final class Constants {
       Units.inchesToMeters(-1.50),
       Units.inchesToMeters(217)
     );
+
+    public static final Pose2d topShootPose = new Pose2d(.82, 6.66, new Rotation2d(Math.toRadians(60)));
+    public static final Pose2d centerShootPose = new Pose2d(1.33, 5.56, new Rotation2d(Math.toRadians(0)));
+    public static final Pose2d bottomShootPose = new Pose2d(.82, 4.46, new Rotation2d(Math.toRadians(-60)));
+
+    public static final Pose2d blueTopNotePose = new Pose2d(2.00, 6.50, new Rotation2d(Math.toRadians(0)));
+    public static final Pose2d blueMiddleNotePose = new Pose2d(2, 5.55, new Rotation2d(Math.toRadians(0)));
+    public static final Pose2d blueBottomNotePose = new Pose2d(2, 4.1, new Rotation2d(Math.toRadians(0)));
+    
+    public static final Pose2d redTopNotePose = new Pose2d();
+    public static final Pose2d redMiddleNotePose = new Pose2d();
+    public static final Pose2d redBottomNotePose = new Pose2d();
+  
+//centerline note poses
+    public static final Pose2d centerTopPose = new Pose2d(8.29, 7.43, new Rotation2d(0));
+    public static final Pose2d centerMidTopPose = new Pose2d(8.29, 5.79, new Rotation2d(0));
+    public static final Pose2d centerMidPose = new Pose2d(8.29, 4.11, new Rotation2d(0));
+    public static final Pose2d centerMidBottomPose = new Pose2d(8.29, 2.44, new Rotation2d(0));
+    public static final Pose2d centerBottomPose = new Pose2d(8.29, .77, new Rotation2d(0));
+
   }
 
   public static class LimeLightConstants {
@@ -324,5 +362,8 @@ public final class Constants {
     // offset used to convert lime light field space (0,0 is center of field) to wpilib field space (bottom left is 0,0)
     public static final double fieldLengthOffset = Units.inchesToMeters(651.25 / 2);
     public static final double fieldWidthOffset = Units.inchesToMeters(323.25 / 2);
+
+    public static final String limelightLeftKey = "limelight-left";
+    public static final String limelightRightKey = "limelight-right";
   }
 }
