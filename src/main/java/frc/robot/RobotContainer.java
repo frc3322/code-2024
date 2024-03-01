@@ -85,6 +85,7 @@ public class RobotContainer {
     autoSelector.addOption("MiddleFourPiece", ()-> autoCommmands.fourPieceMiddleAuto());
     autoSelector.addOption("TopTwoPiece", () -> autoCommmands.twoPieceTopAuto());
     autoSelector.addOption("BottomTwoPiece", () -> autoCommmands.twoPieceBottomAuto());
+    autoSelector.addOption("ONLY USE IF EMERGENCY TopCenterThree", () -> autoCommmands.topThreeCenterMiddleAuto());
 
     // Configure default commands
 
@@ -237,6 +238,10 @@ public class RobotContainer {
         transfer.runTransferCommand(false)
       )
     );
+
+    secondaryController.rightTrigger(0.1)
+    .onTrue(comboCommands.trapCommand());
+    
 
     // driverController.y()
     // manuals shoot

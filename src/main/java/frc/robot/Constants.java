@@ -167,7 +167,7 @@ public final class Constants {
     public static final double elevatorD = 0;
     public static final double velocityConstraint = 700;
     public static final double accelerationConstraint = 500;
-    public static final double slowAccelerationConstraint = 200;
+    public static final double slowAccelerationConstraint = 100;
 
     public static final double elevatorBottomPosition = .1;
     public static final double elevatorAmpPosition = 4.7;//aold is 15.5 //good is 4.1
@@ -176,7 +176,7 @@ public final class Constants {
     public static final double elevatorTopPosition = 18;
     
     public static final double elevatorBottomThreshold = 0;
-    public static final double elevatorTopThreshold = 0;
+    public static final double elevatorTopThreshold = 18;
 
     public static final double elevatorGearRatio = 1 / (25 * .14);
     public static final double elevatorPositionThreshold = 1;
@@ -221,13 +221,13 @@ public final class Constants {
     public static final double intakeD = 0;
     public static final double velocityConstraint = 30;
     public static final double accelerationConstraint = 30;
-    public static final double slowAccelerationConstraint = 7;
+    public static final double slowAccelerationConstraint = 5;
 
     public static final double groundPosition = 0.37;
     public static final double stowPosition = 0;
     public static final double ampPosition = .07;
     public static final double climbPosition = .1;
-    public static final double trapPosition = 0.2;
+    public static final double trapPosition = 0.2258;
 
     public static final double trapDelay = 0.5;
 
