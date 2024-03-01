@@ -169,7 +169,7 @@ public class RobotContainer {
     .onFalse(comboCommands.stowCommandGroup());
 
 
-    secondaryController.povRight()
+    secondaryController.leftBumper()
     .onTrue(comboCommands.topAmpCommands())
     .onFalse(comboCommands.stowCommandGroup());
 
@@ -196,8 +196,8 @@ public class RobotContainer {
     driverController.povRight().onTrue(comboCommands.noteTransferToShooter());
     driverController.povLeft().onTrue(comboCommands.noteTransferToIntake());
 
-    secondaryController.leftBumper().whileTrue(transfer.runTransferCommand(true));
-    secondaryController.rightBumper().whileTrue(transfer.runTransferCommand(false));
+    secondaryController.povLeft().whileTrue(transfer.runTransferCommand(true));
+    secondaryController.povRight().whileTrue(transfer.runTransferCommand(false));
 
 
     /*◇─◇──◇─◇
@@ -238,6 +238,9 @@ public class RobotContainer {
 
     secondaryController.x()
     .whileTrue(intake.runPayload(intake.startSpin(1)));
+
+    driverController.povUp()
+    .onTrue(elevator.goToTopCommand());
 
     // intake.setDefaultCommand(new RunCommand(() -> {
     //   intake.setArmSpeed(-secondaryController.getLeftY());    
