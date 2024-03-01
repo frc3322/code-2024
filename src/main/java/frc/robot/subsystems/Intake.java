@@ -202,9 +202,9 @@ public class Intake extends SubsystemBase implements Loggable {
   public Command intakeDefaultCommand(DoubleSupplier joystickInput, BooleanSupplier elevatorTooHigh){
     return run(() ->{
       if (elevatorTooHigh.getAsBoolean()){
-        runPayload(flipToClimbCommand());
+        setArmSpeed(intakePIDController.calculate(getIntakeEncoderPosition(), IntakeConstants.climbPosition));
       }
-      else{
+      else if(!elevatorTooHigh.getAsBoolean()){
         setArmSpeed(joystickInput.getAsDouble());
       }
     });
