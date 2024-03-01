@@ -100,6 +100,13 @@ public class AutoCommmands {
             
         }
 
+    public Command intakeCenterMiddleTopNote() {
+        return new SequentialCommandGroup(
+            new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerMidTopPose, 1.5, 0)),
+            autoIntakeToShooter()
+            );
+    }
+
     public Command intakeCenterTopNote(){
         return new SequentialCommandGroup(
             new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerTopPose, 1.5, 0)),
@@ -109,7 +116,7 @@ public class AutoCommmands {
         }
 
     public Command flipIntakeUp() {
-        return combo.stowCommand().withTimeout(0.2);
+        return combo.stowCommand().withTimeout(.6);
     }
         
     public Command shoot(Pose2d shootPose) {
@@ -230,7 +237,7 @@ public class AutoCommmands {
 
     public Command topThreeCenterMiddleAuto() {
         PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.topThreeCenterMiddleString);
-        Pose2d shootPose = path.getPreviewStartingHolonomicPose();
+        Pose2d shootPose = robotDrive.flipPoseIfRed(path.getPreviewStartingHolonomicPose());
         robotDrive.resetEstimatedPose(shootPose);
 
         //robotDrive.setYawToAngle(-path.getPreviewStartingHolonomicPose().getRotation().getDegrees());
@@ -239,9 +246,11 @@ public class AutoCommmands {
             new ParallelCommandGroup(
                 robotDrive.followAutonPath(path),
                 new SequentialCommandGroup(
-                    intakeMiddleNote(),
+                    intakeCenterTopNote(),
+                    flipIntakeUp(),
                     shoot(shootPose),
-                    intakeCenterMiddleNote(),
+                    intakeCenterMiddleTopNote(),
+                    flipIntakeUp(),
                     shoot(shootPose)
                 )
             ));
