@@ -554,53 +554,11 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     return output;
   }
 
-  public boolean atPose(Pose2d pose, double translationThreshold, double rotationThreshold){
-    boolean translationInThreshold = atTranslation(pose.getTranslation(), translationThreshold);
-    boolean rotationInThreshold = atRotation(pose.getRotation(), rotationThreshold);
-
-    if (rotationThreshold == 0) {
-      return translationInThreshold;
-    }
-    if (translationThreshold == 0) {
-      return rotationInThreshold;
-    }
-
-    return translationInThreshold && rotationInThreshold;
-  }
-
-
-  public boolean atTranslation(Translation2d translation, double threshold){
-    Translation2d robotTranslation = getPose().getTranslation();
-
-    return robotTranslation.getDistance(translation) < threshold;
-  }
-  
-
-  public boolean atRotation(Rotation2d rotation, double threshold){
-    Rotation2d robotRotation = getPose().getRotation();
-    
-    double rotOffset = robotRotation.getDegrees() - rotation.getDegrees();
-
-    return Math.abs(rotOffset) < threshold;
-  }
-
-  @Log
-  public boolean atShootPose(){
-    return atPose(FieldConstants.centerShootPose, 0.3, 10);
-  }
   @Log
   public boolean atPickUpPose(){
     return atPose(FieldConstants.blueTopNotePose, 1, 10);
   }
 
-  @Log
-  public boolean isAllianceRed() {
-    var alliance = DriverStation.getAlliance();
-    if (alliance.isPresent()) {
-        return alliance.get() == DriverStation.Alliance.Red;
-    }
-    return false;
-  }
 
   public Pose2d flipPoseIfRed(Pose2d pose) {
     if (isAllianceRed()){
