@@ -153,7 +153,7 @@ public class ComboCommands{
             elevator.goToBottomCommand(),
             intake.flipToGroundAndRunPayloadCommand(
                 intake.startSpin(IntakeConstants.groundIntakeSpeed).until(intake::intakeEmpty), 
-                .5, 
+                1, 
                 0
             ),
             transfer.intakeToShooterCommand()
@@ -180,6 +180,8 @@ public class ComboCommands{
        ).until(intake::outerIntakeFull)
         .andThen(this.stowCommand());
     }
+
+
 
     public Command stowCommand(){
         return new ParallelCommandGroup(

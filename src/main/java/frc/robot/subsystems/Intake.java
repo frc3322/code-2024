@@ -336,6 +336,15 @@ public class Intake extends SubsystemBase implements Loggable {
     });
   }
 
+  
+  public Command lowFlipToClimbCommand() {
+    return new RunCommand(() -> {
+      setArmSpeed(
+        slowIntakePIDController.calculate(getIntakeEncoderPosition(), IntakeConstants.lowClimbPosition)
+      );
+    });
+  }
+
   public Command flipToTrapCommand() {
     return new RunCommand(
       () -> setArmSpeed(slowIntakePIDController.calculate(getIntakeEncoderPosition(), IntakeConstants.trapPosition))
@@ -380,6 +389,21 @@ public class Intake extends SubsystemBase implements Loggable {
       new SequentialCommandGroup(
         new WaitCommand(armDelay),
         flipToGroundCommand()
+      )
+    );
+    command.addRequirements(this);
+    return command;
+  }
+
+  public Command flipToClimbAndRunPayloadCommand(Command payload, double payloadDelay, double armDelay) {
+    Command command = new ParallelCommandGroup(
+      new SequentialCommandGroup(
+        new WaitCommand(payloadDelay),
+        payload
+      ),
+      new SequentialCommandGroup(
+        new WaitCommand(armDelay),
+        flipToClimbCommand()
       )
     );
     command.addRequirements(this);
@@ -453,7 +477,8 @@ public class Intake extends SubsystemBase implements Loggable {
       startSpin(-IntakeConstants.groundIntakeSpeed),
       IntakeConstants.trapDelay,
       0
-    ));
+    )).withTimeout(1)
+    .andThen(runPayload(lowFlipToClimbCommand()));
     
   }
   

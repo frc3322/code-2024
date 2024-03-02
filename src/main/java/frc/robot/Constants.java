@@ -170,8 +170,8 @@ public final class Constants {
     public static final double slowAccelerationConstraint = 100;
 
     public static final double elevatorBottomPosition = .1;
-    public static final double elevatorAmpPosition = 4.7;//aold is 15.5 //good is 4.1
-    public static final double elevatorTopAmpPosition = 15.5;
+    public static final double elevatorAmpPosition = 4.8;//aold is 15.5 //good is 4.1
+    public static final double elevatorTopAmpPosition = 15.2;
     public static final double elevatorOnChainPosition = 16;
     public static final double elevatorTopPosition = 18;
     
@@ -179,7 +179,7 @@ public final class Constants {
     public static final double elevatorTopThreshold = 17.5;
 
     public static final double elevatorGearRatio = 1 / (25 * .14);
-    public static final double elevatorPositionThreshold = 1;
+    public static final double elevatorPositionThreshold = 1.5;
   }
 
   public static final class TransferConstants {
@@ -227,7 +227,8 @@ public final class Constants {
     public static final double stowPosition = 0;
     public static final double ampPosition = .07;
     public static final double climbPosition = .1;
-    public static final double trapPosition = 0.2485; //.2258
+    public static final double lowClimbPosition = .18;
+    public static final double trapPosition = 0.2485; //.2258  //simran says .
 
     public static final double trapDelay = 0.7;
 

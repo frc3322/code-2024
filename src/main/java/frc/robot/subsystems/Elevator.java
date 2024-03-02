@@ -122,7 +122,8 @@ public class Elevator extends SubsystemBase implements Loggable {
    * Returns a boolean representing if the elevator position is above the top threshold
    * @return A boolean represening if the elevator is at the top
    */
-  public boolean atTop() {
+  @Log
+   public boolean atTop() {
     return getElevatorEncoderPosition() > ElevatorConstants.elevatorTopThreshold;
   }
 
