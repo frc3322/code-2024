@@ -474,11 +474,13 @@ public class Intake extends SubsystemBase implements Loggable {
     return runPayload(flipToClimbCommand())
     .until(elevatorAtTop)
     .andThen(flipToTrapAndRunPayloadCommand(
-      startSpin(-IntakeConstants.groundIntakeSpeed),
+      startSpin(-.7),
       IntakeConstants.trapDelay,
       0
-    )).withTimeout(1)
-    .andThen(runPayload(lowFlipToClimbCommand()));
+    )).withTimeout(4)
+    .andThen(runPayload(lowFlipToClimbCommand())
+    .withTimeout(2)
+    .andThen(runPayload(flipToTrapCommand())));
     
   }
   
