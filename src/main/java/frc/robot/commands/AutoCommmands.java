@@ -226,9 +226,9 @@ public class AutoCommmands {
             new ParallelCommandGroup(
                 robotDrive.followAutonPath(path),
                 new SequentialCommandGroup(
-                    intakeTopNote(),
+                    intakeMiddleNote(),
                     shoot(shootPose),
-                    intakeCenterTopNote(),
+                    intakeTopNote(),
                     shoot(shootPose)
                 )
             ));
@@ -270,9 +270,7 @@ public class AutoCommmands {
                 new SequentialCommandGroup(
                     intakeMiddleNote(),
                     shoot(shootPose),
-                    flipIntakeUp(),
                     intakeBottomNote(),
-                    flipIntakeUp(),
                     shoot(shootPose)
                 )
             ));
@@ -431,5 +429,26 @@ public class AutoCommmands {
         );
     }
 
+    public Command shootAndLeaveTopAuto() {
+        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.topLeaveString);
+        Pose2d shootPose = path.getPreviewStartingHolonomicPose();
+        robotDrive.resetEstimatedPose(shootPose);
+
+        return new SequentialCommandGroup(
+            shootOnStart(),
+            robotDrive.followAutonPath(path)
+        );
+    }
+    
+    public Command shootAndLeaveBottomAuto() {
+        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.bottomLeaveString);
+        Pose2d shootPose = path.getPreviewStartingHolonomicPose();
+        robotDrive.resetEstimatedPose(shootPose);
+
+        return new SequentialCommandGroup(
+            shootOnStart(),
+            robotDrive.followAutonPath(path)
+        );
+    }
 }
 

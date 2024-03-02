@@ -285,6 +285,7 @@ public final class Constants {
     public static final String threePieceTopString = "ThreePieceTop";
     public static final String fourPieceTopString = "FourPieceTop";
     public static final String topThreeCenterMiddleString = "TopThreeCenterMiddle";
+    public static final String topLeaveString = "TopLeave";
 
     public static final String twoPieceMiddleString = "TwoPieceMiddle";
     public static final String threePieceMiddleTopString = "ThreePieceMiddleTop";
@@ -297,6 +298,7 @@ public final class Constants {
     public static final String threePieceBottomString = "ThreePieceBottom";
     public static final String fourPieceBottomString = "FourPieceBottom";
     public static final String bottomThreeCenterMiddleString = "BottomThreeCenterMiddle";
+    public static final String bottomLeaveString = "BottomLeave";
 
   }
 

@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AutoCommmands;
 import frc.robot.commands.ComboCommands;
@@ -84,10 +85,13 @@ public class RobotContainer {
 
     autoSelector.addOption("No auto", null);
     autoSelector.addOption("Shoot only", () -> autoCommmands.shootOnStart());
+    autoSelector.addOption("TopShootAndLeave", () -> autoCommmands.shootAndLeaveTopAuto());
+    autoSelector.addOption("BottomShootAndLeave", () -> autoCommmands.shootAndLeaveBottomAuto());
+    autoSelector.addOption("MiddleThreePieceAmpSide", () -> autoCommmands.threePieceMiddleTopAuto());
+    autoSelector.addOption("MiddleThreePieceStageSide", () -> autoCommmands.threePieceMiddleBottomAuto());
     autoSelector.addOption("MiddleFourPiece", ()-> autoCommmands.fourPieceMiddleAuto());
     autoSelector.addOption("TopTwoPiece", () -> autoCommmands.twoPieceTopAuto());
     autoSelector.addOption("BottomTwoPiece", () -> autoCommmands.twoPieceBottomAuto());
-    autoSelector.addOption("ONLY USE IF EMERGENCY TopCenterThree", () -> autoCommmands.topThreeCenterMiddleAuto());
 
     // Configure default commands
 
@@ -251,10 +255,12 @@ public class RobotContainer {
     // manuals shoot
     
     driverController.b()
-    .whileTrue(intake.runPayload(intake.ejectCommand()));
+    .onTrue(intake.runPayload(intake.startSpin(-IntakeConstants.groundIntakeSpeed)))
+    .onFalse(intake.runPayload(intake.stopSpin()));
 
     secondaryController.b()
-    .whileTrue(intake.runPayload(intake.ejectCommand()));
+    .onTrue(intake.runPayload(intake.startSpin(-IntakeConstants.groundIntakeSpeed)))
+    .onFalse(intake.runPayload(intake.stopSpin()));
 
     secondaryController.x()
     .whileTrue(intake.runPayload(intake.startSpin(1)));

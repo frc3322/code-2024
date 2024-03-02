@@ -101,6 +101,7 @@ public class Intake extends SubsystemBase implements Loggable {
     intakeArmRight.burnFlash();
 
     intakePIDController.setTolerance(IntakeConstants.kPosToleranceDeg, IntakeConstants.kTurnRateToleranceDegPerS);
+    slowIntakePIDController.setTolerance(IntakeConstants.kPosToleranceDeg, IntakeConstants.kTurnRateToleranceDegPerS);
 
     SmartDashboard.putData("intake", intakePIDController);
   }
@@ -158,6 +159,10 @@ public class Intake extends SubsystemBase implements Loggable {
   @Log
   public boolean atSetpoint() {
     return intakePIDController.atGoal();
+  }
+
+  @Log public boolean climbAtSetpoint() {
+    return slowIntakePIDController.atGoal();
   }
 
   /*◇─◇──◇─◇
@@ -329,26 +334,32 @@ public class Intake extends SubsystemBase implements Loggable {
   }
 
   public Command flipToClimbCommand() {
-    return new RunCommand(() -> {
+    
+    return new InstantCommand(() -> slowIntakePIDController.setGoal(IntakeConstants.climbPosition)).andThen(
+    new RunCommand(() -> {
       setArmSpeed(
-        slowIntakePIDController.calculate(getIntakeEncoderPosition(), IntakeConstants.climbPosition)
+        slowIntakePIDController.calculate(getIntakeEncoderPosition())
       );
-    });
+    }));
   }
 
   
   public Command lowFlipToClimbCommand() {
-    return new RunCommand(() -> {
+    return new InstantCommand(() -> slowIntakePIDController.setGoal(IntakeConstants.lowClimbPosition)).andThen(
+    new RunCommand(() -> {
       setArmSpeed(
-        slowIntakePIDController.calculate(getIntakeEncoderPosition(), IntakeConstants.lowClimbPosition)
+        slowIntakePIDController.calculate(getIntakeEncoderPosition())
       );
-    });
+    }));
   }
 
   public Command flipToTrapCommand() {
-    return new RunCommand(
-      () -> setArmSpeed(slowIntakePIDController.calculate(getIntakeEncoderPosition(), IntakeConstants.trapPosition))
-    );
+    return new InstantCommand(() -> slowIntakePIDController.setGoal(IntakeConstants.trapPosition)).andThen(
+    new RunCommand(() -> {
+      setArmSpeed(
+        slowIntakePIDController.calculate(getIntakeEncoderPosition())
+      );
+    }));
   }
 
 /**
@@ -484,6 +495,17 @@ public class Intake extends SubsystemBase implements Loggable {
     
   }
   
+  public Command superFlippyTrapCommand(BooleanSupplier elevatorAtTop){
+    return new SequentialCommandGroup(
+      runPayload(flipToClimbCommand()).until(elevatorAtTop),
+      runPayload(flipToTrapCommand()).until(this::climbAtSetpoint),
+      flipToTrapAndRunPayloadCommand(startSpin(-.3), 0, 0).withTimeout(.5),
+      runPayload(stopSpin()),
+      runPayload(flipToClimbCommand()).until(this::climbAtSetpoint),
+      runPayload(flipToTrapCommand()).until(this::climbAtSetpoint),
+      flipToTrapAndRunPayloadCommand(startSpin(-.3), 0, 0)
+    );
+  }
   
 
   //flip stow, flip to ground, flips down and spins untill beam break, flip down and spin without limits, start spin, stop spin
