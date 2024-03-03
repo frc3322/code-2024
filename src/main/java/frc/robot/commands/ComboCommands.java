@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -27,6 +28,37 @@ public class ComboCommands{
         this.shooter = shooter;
     }
 
+
+    public ParallelCommandGroup ejectTransferShooter(){
+        return new ParallelCommandGroup(
+            intake.startSpin(-IntakeConstants.groundIntakeSpeed),
+            transfer.runTransferCommand(false)
+        );
+    }
+
+    
+//POSSIBLE BACKUP EJECT
+    // public SequentialCommandGroup ejectDownTransferShooter(){
+    //     return intake.flipToGroundCommand().andThen (new ParallelCommandGroup(
+    //         intake.startSpin(-IntakeConstants.groundIntakeSpeed),
+    //         transfer.runTransferCommand(false)
+    //     ));
+    // }
+
+    public ParallelCommandGroup stopEjectTransferShooter(){
+        return new ParallelCommandGroup(
+            intake.stopSpin(),
+            new InstantCommand(()-> transfer.stopTransfer())
+        );
+    }
+
+    
+    // public SequentialCommandGroup stopEjectDownTransferShooter(){
+    //     return new ParallelCommandGroup(
+    //         intake.stopSpin(),
+    //         new InstantCommand(()-> transfer.stopTransfer())
+    //     ).andThen(intake.flipToStowCommand());
+    // }
     /**
      * @return Command group to flip, put elevator down, and start intake to first beam break
      */

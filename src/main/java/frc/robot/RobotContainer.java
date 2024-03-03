@@ -255,12 +255,12 @@ public class RobotContainer {
     // manuals shoot
     
     driverController.b()
-    .onTrue(intake.runPayload(intake.startSpin(-IntakeConstants.groundIntakeSpeed)))
-    .onFalse(intake.runPayload(intake.stopSpin()));
+    .onTrue(comboCommands.ejectTransferShooter())
+    .onFalse(comboCommands.stopEjectTransferShooter());
 
     secondaryController.b()
-    .onTrue(intake.runPayload(intake.startSpin(-IntakeConstants.groundIntakeSpeed)))
-    .onFalse(intake.runPayload(intake.stopSpin()));
+    .onTrue(comboCommands.ejectTransferShooter())
+    .onFalse(comboCommands.stopEjectTransferShooter());
 
     secondaryController.x()
     .whileTrue(intake.runPayload(intake.startSpin(1)));
