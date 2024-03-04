@@ -13,12 +13,10 @@ import com.pathplanner.lib.commands.PathfindThenFollowPathHolonomic;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -84,9 +82,9 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
 
   public Pose2d averageVisionMeasurement;
   public Timer time;
-  public LimeLightVision vision;
-
-
+  
+  public LimeLight limeLightLeft = new LimeLight("limelight-left");
+  public LimeLight limeLightRight = new LimeLight("limelight-right");
 
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
@@ -584,21 +582,23 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
             m_rearRight.getPosition()
         });
     SmartDashboard.putString("robot pose, just odometry", LimeLightVision.poseAsString(getPose()));
-    SmartDashboard.putString("Limelight in drivetrain", LimeLightVision.poseAsString(vision.getLimeLightAverage()));
     SmartDashboard.putString("wpilib estimated pose w/ ll", LimeLightVision.poseAsString(estimatedPose.getEstimatedPosition()));
-    SmartDashboard.updateValues();
   
     // updates pose with current time, rotation, and module positions.
     estimatedPose.updateWithTime(Timer.getFPGATimestamp(), Rotation2d.fromDegrees(getAngle()), getModulePositions());
 
-    // // updates pose with Lime Light positions
-    // if (vision.hasLeftTarget()){
-    //   estimatedPose.addVisionMeasurement(vision.getLeftPose(), Timer.getFPGATimestamp());
-    // }
+    // updates pose with Lime Light positions
+    if (limeLightLeft.hasTarget()){
+      estimatedPose.addVisionMeasurement(limeLightLeft.getPose(), Timer.getFPGATimestamp() - limeLightLeft.getTotalLatency());
+      SmartDashboard.putString("Limelight-Left in drivetrain", LimeLightVision.poseAsString(limeLightLeft.getPose()));
+    }
     
-    // if (vision.hasRightTarget()){
-    //   estimatedPose.addVisionMeasurement(vision.getRightPose(), Timer.getFPGATimestamp());
-    // }
+    if (limeLightRight.hasTarget()){
+      estimatedPose.addVisionMeasurement(limeLightRight.getPose(), Timer.getFPGATimestamp() - limeLightRight.getTotalLatency());
+      SmartDashboard.putString("Limelight-Right in drivetrain", LimeLightVision.poseAsString(limeLightRight.getPose()));
+    }
+
+    SmartDashboard.updateValues();
     
     field.setRobotPose(estimatedPose.getEstimatedPosition());
     this.resetOdometry(estimatedPose.getEstimatedPosition());
