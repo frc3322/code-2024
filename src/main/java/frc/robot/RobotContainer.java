@@ -21,7 +21,6 @@ import frc.robot.commands.AutoCommmands;
 import frc.robot.commands.ComboCommands;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.LimeLightVision;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Transfer;
@@ -48,7 +47,6 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem robotDrive = new DriveSubsystem();
   private final Elevator elevator = new Elevator();
-  private final LimeLightVision vision = new LimeLightVision();
   private final Transfer transfer = new Transfer();
   private final Intake intake = new Intake();
   private final Shooter shooter = new Shooter();
@@ -98,7 +96,6 @@ public class RobotContainer {
     /*◇─◇──◇─◇
      Drivetrain
     ◇─◇──◇─◇*/
-    robotDrive.setVisionSystem(vision);
 
     robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.

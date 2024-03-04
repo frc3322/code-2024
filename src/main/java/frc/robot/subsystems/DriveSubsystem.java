@@ -371,9 +371,6 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
      Setters
   ◇─◇──◇─◇*/
   
-  public void setVisionSystem(LimeLightVision vision){
-    this.vision = vision;
-  }
   /**
    * Sets the wheels into an X formation to prevent movement.
    */
@@ -581,8 +578,8 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
             m_rearLeft.getPosition(),
             m_rearRight.getPosition()
         });
-    SmartDashboard.putString("robot pose, just odometry", LimeLightVision.poseAsString(getPose()));
-    SmartDashboard.putString("wpilib estimated pose w/ ll", LimeLightVision.poseAsString(estimatedPose.getEstimatedPosition()));
+    SmartDashboard.putString("robot pose, just odometry", limeLightLeft.poseAsString(getPose()));
+    SmartDashboard.putString("wpilib estimated pose w/ ll", limeLightLeft.poseAsString(estimatedPose.getEstimatedPosition()));
   
     // updates pose with current time, rotation, and module positions.
     estimatedPose.updateWithTime(Timer.getFPGATimestamp(), Rotation2d.fromDegrees(getAngle()), getModulePositions());
@@ -590,12 +587,12 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     // updates pose with Lime Light positions
     if (limeLightLeft.hasTarget()){
       estimatedPose.addVisionMeasurement(limeLightLeft.getPose(), Timer.getFPGATimestamp() - limeLightLeft.getTotalLatency());
-      SmartDashboard.putString("Limelight-Left in drivetrain", LimeLightVision.poseAsString(limeLightLeft.getPose()));
+      SmartDashboard.putString("Limelight-Left in drivetrain", limeLightLeft.poseAsString());
     }
     
     if (limeLightRight.hasTarget()){
       estimatedPose.addVisionMeasurement(limeLightRight.getPose(), Timer.getFPGATimestamp() - limeLightRight.getTotalLatency());
-      SmartDashboard.putString("Limelight-Right in drivetrain", LimeLightVision.poseAsString(limeLightRight.getPose()));
+      SmartDashboard.putString("Limelight-Right in drivetrain", limeLightRight.poseAsString());
     }
 
     SmartDashboard.updateValues();
