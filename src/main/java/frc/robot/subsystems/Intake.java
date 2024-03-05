@@ -15,6 +15,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Watchdog;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -481,6 +482,20 @@ public class Intake extends SubsystemBase implements Loggable {
   //   return command;
   // }
 
+  // public Command trapCommand(BooleanSupplier elevatorAtTop){
+  //   return runPayload(flipToClimbCommand())
+  //   .until(elevatorAtTop)
+  //   .andThen(flipToTrapAndRunPayloadCommand(
+  //     startSpin(-.7),
+  //     IntakeConstants.trapDelay,
+  //     0
+  //   )).withTimeout(4)
+  //   .andThen(runPayload(lowFlipToClimbCommand())
+  //   .withTimeout(2)
+  //   .andThen(runPayload(flipToTrapCommand())));
+    
+  // }
+
   public Command trapCommand(BooleanSupplier elevatorAtTop){
     return runPayload(flipToClimbCommand())
     .until(elevatorAtTop)
@@ -489,21 +504,26 @@ public class Intake extends SubsystemBase implements Loggable {
       IntakeConstants.trapDelay,
       0
     )).withTimeout(4)
-    .andThen(runPayload(lowFlipToClimbCommand())
-    .withTimeout(2)
-    .andThen(runPayload(flipToTrapCommand())));
+ ;
     
   }
   
   public Command superFlippyTrapCommand(BooleanSupplier elevatorAtTop){
     return new SequentialCommandGroup(
-      runPayload(flipToClimbCommand()).until(elevatorAtTop),
+      
       runPayload(flipToTrapCommand()).until(this::climbAtSetpoint),
       flipToTrapAndRunPayloadCommand(startSpin(-.3), 0, 0).withTimeout(.5),
       runPayload(stopSpin()),
       runPayload(flipToClimbCommand()).until(this::climbAtSetpoint),
       runPayload(flipToTrapCommand()).until(this::climbAtSetpoint),
       flipToTrapAndRunPayloadCommand(startSpin(-.3), 0, 0)
+    );
+  }
+  public Command partialEjectCommand(){
+    return new SequentialCommandGroup(
+      runPayload(startSpin(-0.3)),
+      new WaitCommand(.5),
+      runPayload(stopSpin())
     );
   }
   
