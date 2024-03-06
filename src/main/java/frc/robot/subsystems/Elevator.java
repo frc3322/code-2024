@@ -4,162 +4,288 @@
 
 package frc.robot.subsystems;
 
+import org.w3c.dom.css.ElementCSSInlineStyle;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.*;
-//import io.github.oblarg.oblog.Loggable;
-//import io.github.oblarg.oblog.annotations.Log;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
+import frc.robot.Constants.CANIds;
+import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.NeoMotorConstants;
+import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Config;
+import io.github.oblarg.oblog.annotations.Log;
 
-public class Elevator extends SubsystemBase{
-  private final CANSparkMax elevatorLeft = new CANSparkMax(CANIds.kElevatorLeftId, MotorType.kBrushless);
-  private final CANSparkMax elevatorRight = new CANSparkMax(CANIds.kElevatorRightId, MotorType.kBrushless);
-  private final DigitalInput bottomLimit = new DigitalInput(1);
-  private final RelativeEncoder elevatorLeftEncoder = elevatorLeft.getEncoder();
-  private final RelativeEncoder elevatorRightEncoder = elevatorRight.getEncoder();
+/**
+ * The elevator subsystem for 3322's 2024 robot.
+ */
+public class Elevator extends SubsystemBase implements Loggable {
   
-  public double elevatorLeftEncoderVal;
-  public double elevatorRightEncoderVal;
+  private final CANSparkMax elevatorLeftMotor = new CANSparkMax(CANIds.kElevatorLeftCanId, MotorType.kBrushless);
+  private final CANSparkMax elevatorRightMotor = new CANSparkMax(CANIds.kElevatorRightCanId, MotorType.kBrushless);
 
-  private boolean slowModeOn = false;
+  private final RelativeEncoder elevatorRightEncoder = elevatorRightMotor.getEncoder();
 
+  //boolean climbUp = false;
   
-  private int currentSetpointIndex = 0;
+  private final ProfiledPIDController elevatorPidController = new ProfiledPIDController(
+    ElevatorConstants.elevatorP,
+    ElevatorConstants.elevatorI,
+    ElevatorConstants.elevatorD,
+    new Constraints(
+      ElevatorConstants.velocityConstraint, 
+      ElevatorConstants.accelerationConstraint
+    )
+  );
 
-  private double setpoint = 0;
+  private final ProfiledPIDController elevatorClimbController = new ProfiledPIDController(
+    ElevatorConstants.elevatorP, 
+    ElevatorConstants.elevatorI,
+    ElevatorConstants.elevatorD, 
+    new Constraints(
+      ElevatorConstants.velocityConstraint, 
+      ElevatorConstants.slowAccelerationConstraint));
   
+  /** Creates a new Elevator. */
   public Elevator() {
+    elevatorLeftMotor.restoreFactoryDefaults();
+    elevatorRightMotor.restoreFactoryDefaults();
 
-   
+    elevatorLeftMotor.setIdleMode(IdleMode.kBrake);
+    elevatorRightMotor.setIdleMode(IdleMode.kBrake);
 
-    //not sure which we need to invert. Make up positive though.
-    // left cw up
+    elevatorLeftMotor.setInverted(true);
+    elevatorRightMotor.follow(elevatorLeftMotor, true);
 
-    elevatorRight.restoreFactoryDefaults();
-    elevatorLeft.restoreFactoryDefaults();
-     
-    elevatorLeft.setInverted(false);
-     elevatorRight.follow(elevatorLeft, true);
+    elevatorLeftMotor.setSmartCurrentLimit(80);
+    elevatorRightMotor.setSmartCurrentLimit(80);
+
+    elevatorRightEncoder.setPositionConversionFactor(ElevatorConstants.elevatorGearRatio);
+
+    elevatorLeftMotor.burnFlash();
+    elevatorRightMotor.burnFlash();
+
+    SmartDashboard.putData("ElevatorPID", elevatorPidController);
     
-     
-     elevatorLeft.setIdleMode(IdleMode.kBrake);
-     elevatorRight.setIdleMode(IdleMode.kBrake);
-
-     elevatorRight.burnFlash();
-     elevatorLeft.burnFlash();
-
   }
 
   /*◇─◇──◇─◇
-     Getters
+  ✨Getters✨
   ◇─◇──◇─◇*/
 
-  public double getElevatorLeftEncoder(){
-    return elevatorLeftEncoderVal;
+  /**
+   * Returns the current position goal of the profiled PID.
+   * @return The position goal of the elevator PID.
+   */
+  @Log
+  public double getSetpoint() {
+    return elevatorPidController.getGoal().position;
   }
 
-  
-  public boolean atBottom(){
-    return bottomLimit.get();
+  /**
+   * Get the position of the left elevator motor encoder.
+   * @return The position of the elevator encoder.
+   */
+  @Log
+  public double getElevatorEncoderPosition() {
+    return elevatorRightEncoder.getPosition();
   }
 
-  
-  public double getCurrentCycleSetpoint() {
-    return ElevatorConstants.elevatorSetpoints[currentSetpointIndex];
+  /**
+   * Returns a boolean representing if the elevator position is below the bottom threshold
+   * @return A boolean represening if the elevator is at the bottom
+   */
+  public boolean atBottom() {
+    return getElevatorEncoderPosition() < ElevatorConstants.elevatorBottomThreshold;
   }
 
-  public double getSetpoint(){
-    return setpoint;
+  public boolean atSetpoint() {
+    return Math.abs(getElevatorEncoderPosition() - getSetpoint()) < ElevatorConstants.elevatorPositionThreshold;
   }
 
-  // public double inchesToEncoder(double inches){
-  //   
+  public boolean atAmp() {
+    return Math.abs(getElevatorEncoderPosition() - ElevatorConstants.elevatorAmpPosition) < ElevatorConstants.elevatorPositionThreshold;
+  }
+
+  /**
+   * Returns a boolean representing if the elevator position is above the top threshold
+   * @return A boolean represening if the elevator is at the top
+   */
+  @Log
+   public boolean atTop() {
+    return getElevatorEncoderPosition() > ElevatorConstants.elevatorTopThreshold;
+  }
+
+  @Log
+  public boolean elevatorLimitIntake() {
+    return getElevatorEncoderPosition() > ElevatorConstants.elevatorOnChainPosition;
+  }
+
+  /*◇─◇──◇─◇
+  ✨Setters✨
+  ◇─◇──◇─◇*/
+
+  /**
+   * Set the power of both elevator motors, with one inverted.
+   * @param power The power for both motors.
+   */
+  public void setElevatorPower(double power) {
+    elevatorLeftMotor.set(power);
+  }
+
+  /**
+   * Stop both elevator motors.
+   */
+  public void stopElevator(){
+    elevatorLeftMotor.stopMotor();
+  }
+
+  /**
+   * Set the setpoint of the elevator PID controller.
+   * @param setpoint The setpoint of the PID controller.
+   */
+  @Config
+  public void setElevatorSetpoint(double setpoint) {
+    elevatorPidController.setGoal(setpoint);
+  }
+
+  /*◇─◇──◇─◇
+  ✨Commands✨
+  ◇─◇──◇─◇*/
+
+  /**
+   * Returns a command that uses the elevator PID command to go to its setpoint until interuppeted.
+   * @return A run command that moves the elevator towards its setpoint.
+   */
+  @Config
+  public Command goToSetpoint() {
+    return new RunCommand(
+      () -> {
+        elevatorLeftMotor.set(elevatorPidController.calculate(getElevatorEncoderPosition()));
+        // Not working? Are your PID constants 0? Are your constraints 0? Are your setpoints 0?
+      }, 
+      this
+    );
+  }
+
+  /**
+   * A command that sets the PID goal to the bottom position and moves to it.
+   * @return A sequential command group that moves the elevator to the bottom position.
+   */
+  public Command goToBottomCommand() {
+    return new SequentialCommandGroup(
+      new InstantCommand( 
+        () -> setElevatorSetpoint(ElevatorConstants.elevatorBottomPosition)
+      ),
+      goToSetpoint()
+    );
+  }
+
+  /**
+   * A command that sets the PID goal to the AMP position and moves to it.
+   * @return A sequential command group that moves the elevator to the AMP position.
+   */
+  public Command goToAmpCommand() {
+    return new SequentialCommandGroup(
+      new InstantCommand( 
+        () -> setElevatorSetpoint(ElevatorConstants.elevatorAmpPosition)
+      ),
+      goToSetpoint()
+    );
+  }
+
+   public Command goToTopAmpCommand() {
+    return new SequentialCommandGroup(
+      new InstantCommand( 
+        () -> setElevatorSetpoint(ElevatorConstants.elevatorTopAmpPosition)
+      ),
+      goToSetpoint()
+    );
+  }
+
+  /**
+   * A command that sets the PID goal to the top position and moves to it.
+   * @return A sequential command group that moves the elevator to the top position.
+   */
+  public Command goToTopCommand() {
+    return new SequentialCommandGroup(
+      new InstantCommand( 
+        () -> setElevatorSetpoint(ElevatorConstants.elevatorTopPosition)
+      ),
+      goToSetpoint()
+    );
+  }
+
+  public Command elevatorTrapCommand() {
+    return new RunCommand(
+      () -> setElevatorPower(elevatorClimbController.calculate(
+        getElevatorEncoderPosition(), 
+        ElevatorConstants.elevatorTopPosition
+      )), 
+      this);
+  }
+
+  // public Command elevatorStartClimbCommand(){
+    
+  //   return new SequentialCommandGroup(
+  //     new InstantCommand(() -> climbUp = !climbUp),
+  //     new RunCommand(
+  //       () -> {
+  //         if(climbUp){
+  //           setElevatorPower(elevatorPidController.calculate(
+  //             getElevatorEncoderPosition(), 
+  //             ElevatorConstants.elevatorTopPosition
+  //           ));
+  //         }
+  //         else{
+  //           setElevatorPower(elevatorPidController.calculate(
+  //             getElevatorEncoderPosition(), 
+  //             ElevatorConstants.elevatorOnChainPosition
+  //           ));
+  //         }
+  //       },
+  //       this
+  //     )
+  //   )
+  //   .handleInterrupt(() -> climbUp = false);
   // }
   
-  /*◇─◇──◇─◇
-     Setters
-  ◇─◇──◇─◇*/
+  // public Command elevatorClimbCommand() {
+  //   return new RunCommand(
+  //     () -> setElevatorPower(elevatorClimbController.calculate(
+  //       getElevatorEncoderPosition(), 
+  //       ElevatorConstants.elevatorBottomPosition
+  //     )), 
+  //     this);
+  // }
 
-  public Command exampleCommand(){
-    return new InstantCommand(() -> {});
+  /**
+   * An instant command that stops the elevator. Can be used to return to manual control.
+   * @return An instant command that stops the elevator
+   */
+  public Command stopElevatorCommand() {
+    return new InstantCommand(
+      () -> {
+        stopElevator();
+      },
+      this
+    );
   }
 
-  public void setMotor(double left){
-    elevatorLeft.set(left);
-  }
-
-  public void setpointCycleUp(){
-    if (currentSetpointIndex < ElevatorConstants.elevatorSetpoints.length - 1) currentSetpointIndex++;
-    setpoint = getCurrentCycleSetpoint();
-  }
-
-  public void setpointCycleDown(){
-    
-    if (currentSetpointIndex > 0) currentSetpointIndex--;
-    setpoint = getCurrentCycleSetpoint();
-  }
-
-  public void setSetpoint(double setpoint){
-    this.setpoint = setpoint;
-  }
-
-  public void setSetpointCycleIndex(int index){
-    currentSetpointIndex = index;
-    setpoint = getCurrentCycleSetpoint();
-  }
-
-  public void resetElevatorEncoders(){
-    elevatorLeftEncoder.setPosition(0);
-    elevatorRightEncoder.setPosition(0);
-  }
-
-  public void toggleElevatorSlowMode(){
-    if(slowModeOn){
-      slowModeOn = false;
-    }else{
-      slowModeOn = true;
-    }
-  }
-
-  /*◇─◇──◇─◇
-    Commands
-  ◇─◇──◇─◇*/
-  
-  public Command setpointCycleUpCommand() {
-    return new InstantCommand( () -> setpointCycleUp(), this);
-  }
-
-  public Command setpointCycleDownCommand() {
-    return new InstantCommand( () -> setpointCycleDown(), this);
-  }
-
-  
-  public Command resetElevatorEncodersCommand(){
-    return new InstantCommand( () -> resetElevatorEncoders());
-
-  }
-
-  public Command stopElevator() {
-    return new InstantCommand( () -> elevatorLeft.set(0), this);
-  }
-
+  // This method will be called once per scheduler run
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
-    elevatorLeftEncoderVal = elevatorLeftEncoder.getPosition();
-    elevatorRightEncoderVal = elevatorRightEncoder.getPosition();
-
-    if(atBottom()){
-     resetElevatorEncoders();
-    }
-
+    
   }
-
-  
 }

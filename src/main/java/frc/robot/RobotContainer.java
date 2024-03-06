@@ -4,31 +4,37 @@
 
 package frc.robot;
 
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+import java.util.concurrent.Callable;
+
+import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DigitalOutput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.CANIds;
-import frc.robot.Constants.DriveConstants;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OIConstants;
-import frc.robot.commands.DynamicSwerveControllerCommand;
-import frc.robot.Constants.ElevatorConstants;
-
+import frc.robot.commands.AutoCommmands;
+import frc.robot.commands.ComboCommands;
+import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.drive.DriveSubsystem;
-import frc.robot.subsystems.drive.IO.GyroIO;
-import frc.robot.subsystems.drive.IO.GyroIONavX;
-import frc.robot.subsystems.drive.IO.ModuleIO;
-import frc.robot.subsystems.drive.IO.ModuleIOSim;
-import frc.robot.subsystems.drive.IO.ModuleIOSparkMax;
-//import io.github.oblarg.oblog.Logger;
+import frc.robot.subsystems.LimeLightVision;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Transfer;
+import frc.robot.subsystems.Forks;
+import io.github.oblarg.oblog.Logger;
+import io.github.oblarg.oblog.annotations.Config;
+import io.github.oblarg.oblog.annotations.Log;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -40,82 +46,68 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  */
 public class RobotContainer {
   // The robot's subsystems
-  private final DriveSubsystem robotDrive;
-   
+  private final DriveSubsystem robotDrive = new DriveSubsystem();
   private final Elevator elevator = new Elevator();
+  private final LimeLightVision vision = new LimeLightVision();
+  private final Transfer transfer = new Transfer();
+  private final Intake intake = new Intake();
+  private final Shooter shooter = new Shooter();
+  private final Forks forks = new Forks();
+  
+  
 
   // The driver's controller
   CommandXboxController driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
   // Secondary controller
   CommandXboxController secondaryController = new CommandXboxController(OIConstants.kSecondaryControllerPort);
 
+  //combination commands class
+  ComboCommands comboCommands = new ComboCommands(elevator, intake, transfer, shooter);
+
+  AutoCommmands autoCommmands = new AutoCommmands(robotDrive, intake, elevator, transfer, shooter, comboCommands);
+
+
   // Auton selector for dashboard
-  LoggedDashboardChooser<SequentialCommandGroup> autoSelector = new LoggedDashboardChooser<>("Auto chooser");
+  SendableChooser<Callable<Command>> autoSelector = new SendableChooser<Callable<Command>>();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-
-    /*◇─◇──◇─◇
-     Subsystems
-    ◇─◇──◇─◇*/
-
-    switch (Constants.currentMode) {
-      case REAL:
-        // Real robot, instantiate hardware IO implementations
-        robotDrive = new DriveSubsystem(
-          new ModuleIOSparkMax(CANIds.kFrontLeftDrivingCanId, CANIds.kFrontLeftTurningCanId),
-          new ModuleIOSparkMax(CANIds.kFrontRightDrivingCanId, CANIds.kFrontRightTurningCanId),
-          new ModuleIOSparkMax(CANIds.kRearLeftDrivingCanId, CANIds.kRearLeftTurningCanId),
-          new ModuleIOSparkMax(CANIds.kRearRightDrivingCanId, CANIds.kRearRightTurningCanId),
-          new GyroIONavX(Constants.DriveConstants.kGyroReversed)
-        );
-        break;
-
-      case SIM:
-        // Sim robot, instantiate physics sim IO implementations
-        robotDrive = new DriveSubsystem(
-          new ModuleIOSim(),
-          new ModuleIOSim(),
-          new ModuleIOSim(),
-          new ModuleIOSim(),
-          new GyroIO() {}
-        );
-        break;
-
-      default:
-        // Replayed robot, disable IO implementations
-        robotDrive = new DriveSubsystem(
-          new ModuleIO() {},
-          new ModuleIO() {},
-          new ModuleIO() {},
-          new ModuleIO() {},
-          new GyroIO() {}
-        );
-        break;
-    }
-
     // Configure the button bindings
     configureButtonBindings();
+    
+    // Configure Oblog logger
+    Logger.configureLoggingAndConfig(this, true);
 
     // Auton selector config
-    autoSelector.addDefaultOption("Slow forward 5 meters", new SlowForward5Meters());
+   //  autoSelector.setDefaultOption("Test", new Test4And1Auto());
+
+    autoSelector.addOption("No auto", null);
+    autoSelector.addOption("Shoot only", () -> autoCommmands.shootOnStart());
+    autoSelector.addOption("TopShootAndLeave", () -> autoCommmands.shootAndLeaveTopAuto());
+    autoSelector.addOption("BottomShootAndLeave", () -> autoCommmands.shootAndLeaveBottomAuto());
+    autoSelector.addOption("MiddleThreePieceAmpSide", () -> autoCommmands.threePieceMiddleTopAuto());
+    autoSelector.addOption("MiddleThreePieceStageSide", () -> autoCommmands.threePieceMiddleBottomAuto());
+    autoSelector.addOption("MiddleFourPiece", ()-> autoCommmands.fourPieceMiddleAuto());
+    autoSelector.addOption("TopTwoPiece", () -> autoCommmands.twoPieceTopAuto());
+    autoSelector.addOption("BottomTwoPiece", () -> autoCommmands.twoPieceBottomAuto());
 
     // Configure default commands
 
     /*◇─◇──◇─◇
      Drivetrain
     ◇─◇──◇─◇*/
+    robotDrive.setVisionSystem(vision);
 
     robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
         // Turning is controlled by the X axis of the right stick.
         new RunCommand(
             () -> robotDrive.drive(
-                -MathUtil.applyDeadband(driverController.getLeftY() /2, OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(driverController.getLeftX() /2, OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(driverController.getRightX() /2, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(driverController.getLeftY(), OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(driverController.getLeftX(), OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(driverController.getRightX() / 1.5, OIConstants.kDriveDeadband),
                 true, true),
             robotDrive));
 
@@ -128,18 +120,35 @@ public class RobotContainer {
       new RunCommand(
         () -> { 
 
-          double powerIn = -MathUtil.applyDeadband(secondaryController.getRightY() / 4, .1);
+          double powerIn = MathUtil.applyDeadband(-secondaryController.getRightY(), .1);
           // Booleans to limit elevator movment
           boolean goingDown = -secondaryController.getRightY() < 0;
           boolean goingUp = -secondaryController.getRightY() > 0;
-          boolean aboveLimit = elevator.getElevatorLeftEncoder() > ElevatorConstants.elevatorTopLimit;
           
-          double limitedPower = (elevator.atBottom() && goingDown) || (aboveLimit && goingUp) ? 0 : powerIn;
+          double limitedPower = (elevator.atBottom() && goingDown) || (elevator.atTop() && goingUp) ? 0 : powerIn;
           
-          elevator.setMotor(limitedPower); 
+          elevator.setElevatorPower(limitedPower); 
         }, elevator)
     );
+
+
+
+    intake.setDefaultCommand(
+      intake.intakeDefaultCommand(secondaryController::getLeftY, (elevator::elevatorLimitIntake))
+    );
+
+    shooter.setDefaultCommand(
+      shooter.autoRevUp(
+        () -> transfer.shooterFull() && robotDrive.atShootPose()
+      )
+    );
+
+
+    SmartDashboard.putData(autoSelector);
   }
+
+
+
 
   /**
    * Use this method to define your button->command mappings. Buttons can be
@@ -163,26 +172,158 @@ public class RobotContainer {
 
     driverController.start().onTrue(new InstantCommand(()->robotDrive.zeroHeading()));
 
-    driverController.rightBumper().whileTrue(
-      new DynamicSwerveControllerCommand(
-          robotDrive::ZeroZeroDynamicTrajectory,
-          robotDrive::getPose, // Functional interface to feed supplier
-          DriveConstants.kDriveKinematics,
-
-          // Position controllers
-          new PIDController(AutoConstants.kPXController, 0, 0),
-          new PIDController(AutoConstants.kPYController, 0, 0),
-          Trajectories.getDefaultThetaController(),
-          robotDrive::setModuleStates,
-          robotDrive)
+    driverController.leftStick().whileTrue(
+      new RunCommand(
+            () -> robotDrive.drive(
+                -MathUtil.applyDeadband(driverController.getLeftY(), OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(driverController.getLeftX(), OIConstants.kDriveDeadband),
+                robotDrive::getOutputToAngle,
+                true, true),
+            robotDrive)
     );
-            
+
+    driverController.leftBumper()
+    .onTrue(comboCommands.ampCommands())
+    .onFalse(comboCommands.stowCommand());
+
+
+    secondaryController.leftBumper()
+    .onTrue(comboCommands.topAmpCommands())
+    .onFalse(comboCommands.stowCommand());
+
+    driverController.rightBumper()
+    .onTrue(transfer.shootCommand());
+
+    
+
+    secondaryController.start().onTrue(new InstantCommand(()-> intake.resetArmEncoder(), intake));
   
+   
+  
+            // hehehhheheehehhe  emmmie was here mwah ahhahahaha ()
+    //  driverController.b().whileTrue(
+    //   robotDrive.AmpLineupDynamicTrajectory()
+    // );
+
+    secondaryController.rightStick().onTrue(
+      elevator.stopElevatorCommand()
+    .andThen(new InstantCommand(() -> intake.stopArm(), intake)));
+
+    /*◇─◇──◇─◇
+      Transfer
+    ◇─◇──◇─◇*/
+
+    driverController.povRight().onTrue(comboCommands.noteTransferToShooter());
+    driverController.povLeft().onTrue(comboCommands.noteTransferToIntake());
+
+    secondaryController.povLeft().whileTrue(transfer.runTransferCommand(true));
+    secondaryController.povRight().whileTrue(transfer.runTransferCommand(false));
+
+
+    /*◇─◇──◇─◇
+       Intake
+    ◇─◇──◇─◇*/
+
+    driverController.rightTrigger(0.1)
+    .onTrue(comboCommands.startShooterIntakeCommand())
+    .onFalse(comboCommands.stopIntakeWithTransferRunningCommand());
+
+    driverController.leftTrigger(0.1)
+    .onTrue(comboCommands.startAmpIntakeCommand())
+    .onFalse(comboCommands.stopIntakeCommand());
+
+
+    driverController.a()
+    .onTrue(comboCommands.startMiddleIntakeCommand())
+    .onFalse(comboCommands.stopIntakeCommand());
+
+
+    secondaryController.leftStick().onTrue(new InstantCommand(()->intake.stopArm(), intake));
+
+    secondaryController.y().whileTrue(
+      new ParallelCommandGroup(
+        shooter.shooterIntakeCommand(),
+        transfer.runTransferCommand(false)
+      )
+    );
+
+    secondaryController.rightTrigger(0.1)
+    .onTrue(comboCommands.trapCommand());
+    
+
+    // driverController.y()
+    // manuals shoot
+    
+    driverController.b()
+    .onTrue(comboCommands.ejectTransferShooter())
+    .onFalse(comboCommands.stopEjectTransferShooter());
+
+    secondaryController.b()
+    .onTrue(comboCommands.ejectTransferShooter())
+    .onFalse(comboCommands.stopEjectTransferShooter());
+
+    secondaryController.x()
+    .whileTrue(intake.runPayload(intake.startSpin(1)));
+
+    driverController.povUp()
+    .onTrue(new ParallelCommandGroup(
+      elevator.goToTopCommand(),
+      intake.flipToClimbCommand()));
+
+    // intake.setDefaultCommand(new RunCommand(() -> {
+    //   intake.setArmSpeed(-secondaryController.getLeftY());    
+    // }, intake));
+
+    secondaryController.a()
+    .onTrue(
+      forks.spinServosCommand()).onFalse(forks.stopServosCommand());
+
+
+    secondaryController.povUp().onTrue(shooter.shooterAutoLineRevUpCommand());
+    secondaryController.povDown().onTrue(shooter.stopShooterCommand());
+
+    // secondaryController.leftStick().onTrue(intake.stopIntakeArmCommand());
+
+    //auto amp controls go heeeeeerreeeeeeeeee (on right trigger)
+    //button box levels
+
+    // Feedback
+    driverController.leftTrigger(0.1).whileTrue(
+      new RunCommand(
+        () -> {
+          if (intake.innerIntakeFull() || transfer.shooterFull()){
+            driverController.getHID().setRumble(RumbleType.kBothRumble, 1);
+            //leds.set(true);
+          }
+        }
+    ))
+    .whileFalse(new InstantCommand(
+      () -> {
+        driverController.getHID().setRumble(RumbleType.kBothRumble, 0);
+        //leds.set(false);
+      }
+    ));
+
+    driverController.rightTrigger(0.1).whileTrue(
+      new RunCommand(
+        () -> {
+          if (intake.innerIntakeFull() || transfer.shooterFull()){
+            driverController.getHID().setRumble(RumbleType.kBothRumble, 1);
+            //leds.set(true);
+          }
+        }
+      ))
+      .whileFalse(new InstantCommand(
+        () -> {
+          driverController.getHID().setRumble(RumbleType.kBothRumble, 0);
+          //leds.set(false);
+        }
+      ));
   }
-  
-  // public void updateLogger() {
-  //   Logger.updateEntries();
-  // }
+  public void updateLogger() {
+    Logger.updateEntries();
+  }
+
 
 
   /**
@@ -191,32 +332,35 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return autoSelector.get();
+
+    /*
+     * !! ATTENTION !!
+     * WE USE PATHPLANNER FOR OUR AUTO PATHS
+     * https://github.com/mjansen4857/pathplanner
+     */
+
+    Command command = new InstantCommand();
+
+     try{
+      command = autoSelector.getSelected().call();
+     }
+     catch(Exception e){
+      DriverStation.reportError("Auto be weird", e.getStackTrace());
+     }
+     
+
+     return command;
   }
 
   /*◇─◇──◇─◇
-      Autos
+      Autos\
   ◇─◇──◇─◇*/
   
-  private class SlowForward5Meters extends SequentialCommandGroup {
-    
-    public SlowForward5Meters(){
+  private static class Test4And1Auto extends SequentialCommandGroup{
+
+    public Test4And1Auto(){
       addCommands(
-        new InstantCommand( () -> {
-          robotDrive.resetOdometry(Trajectories.slowForward4Meters().getInitialPose());
-        }),
-
-        new SwerveControllerCommand(
-          Trajectories.slowForward4Meters(),
-          robotDrive::getPose, // Functional interface to feed supplier
-          DriveConstants.kDriveKinematics,
-
-          // Position controllers
-          new PIDController(AutoConstants.kPXController, 0, 0),
-          new PIDController(AutoConstants.kPYController, 0, 0),
-          Trajectories.getDefaultThetaController(),
-          robotDrive::setModuleStates,
-          robotDrive)
+        //new PathPlannerAuto("Test4+1Auto")
       );
     }
   }

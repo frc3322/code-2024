@@ -1,0 +1,18 @@
+{
+  "robotWidth": 0.7112,
+  "robotLength": 0.7112,
+  "holonomicMode": true,
+  "pathFolders": [
+    "Dynamic trajectories",
+    "Final No pivot autos",
+    "No pivot autos fast",
+    "No pivot autos realistic",
+    "Original Trajectories"
+  ],
+  "autoFolders": [],
+  "defaultMaxVel": 3.0,
+  "defaultMaxAccel": 3.0,
+  "defaultMaxAngVel": 360.0,
+  "defaultMaxAngAccel": 1080.0,
+  "maxModuleSpeed": 4.8
+}

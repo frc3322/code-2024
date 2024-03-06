@@ -1,39 +1,23 @@
 {
-  "HALProvider": {
-    "Other Devices": {
-      "SPARK MAX [12]": {
-        "header": {
-          "open": true
-        }
-      },
-      "SPARK MAX [13]": {
-        "header": {
-          "open": true
-        }
-      },
-      "SPARK MAX [20]": {
-        "header": {
-          "open": true
-        }
-      },
-      "navX-Sensor[0]": {
-        "header": {
-          "open": true
-        }
-      }
-    }
-  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
-      "/Shuffleboard/Elevator: Log/resetElevatorEncodersCommand": "Command",
-      "/SmartDashboard/Auto chooser": "String Chooser"
+      "/Shuffleboard/DriveSubsystem: Log/field": "Field2d",
+      "/SmartDashboard/ElevatorPID": "ProfiledPIDController",
+      "/SmartDashboard/SendableChooser[0]": "String Chooser",
+      "/SmartDashboard/Shooter bottom PID": "PIDController",
+      "/SmartDashboard/Shooter top pid": "PIDController",
+      "/SmartDashboard/intake": "ProfiledPIDController"
+    }
+  },
+  "NetworkTables": {
+    "transitory": {
+      "PathPlanner": {
+        "open": true
+      }
     }
   },
   "NetworkTables Info": {
-    "Server": {
-      "open": true
-    },
     "visible": true
   }
 }
