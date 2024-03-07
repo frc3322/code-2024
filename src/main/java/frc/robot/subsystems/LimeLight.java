@@ -7,14 +7,13 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.Constants.LimeLightConstants;
 
 public class LimeLight {
-    public Pose2d limelightPose;
-    public String limeLightID;
+    private String limeLightID;
 
     /**
      * Creates a new LimeLight object.
      * @param limeLightID The ID of the LimeLight. ex. "limelight-left"
      */
-    public LimeLight(String limeLightID) {
+    public LimeLight(String limeLightID){
         this.limeLightID = limeLightID;
     }
 
@@ -31,7 +30,7 @@ public class LimeLight {
      * Gets the field pose from the LimeLight.
      * @return The pose retrieved from LimeLight.
      */
-    public Pose2d getPose() {
+    public Pose2d getPose(){
         double[] limeLightData = getTableEntry("botpose").getDoubleArray(new double[6]);
         return new Pose2d(limeLightData[0] + LimeLightConstants.fieldLengthOffset, limeLightData[1] + LimeLightConstants.fieldWidthOffset, Rotation2d.fromDegrees(limeLightData[5]));
     }
@@ -40,7 +39,7 @@ public class LimeLight {
      * Checks if the LimeLight has a target.
      * @return Whether the LimeLight has a target.
      */
-    public boolean hasTarget() {
+    public boolean hasTarget(){
         return getTableEntry("tv").getDouble(0) == 1;
     }
 
@@ -73,5 +72,13 @@ public class LimeLight {
      */
     public double getTotalLatency(){
         return getTableEntry("tl").getDouble(0) + getTableEntry("cl").getDouble(0);
+    }
+
+    /**
+     * Gets the limelight id of this object
+     * @return The limelight id of this object
+     */
+    public String getLimeLightID(){
+        return this.limeLightID;
     }
 }

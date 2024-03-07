@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import org.w3c.dom.css.ElementCSSInlineStyle;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -19,10 +17,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import frc.robot.Constants.CANIds;
 import frc.robot.Constants.ElevatorConstants;
-import frc.robot.Constants.NeoMotorConstants;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Config;
 import io.github.oblarg.oblog.annotations.Log;
