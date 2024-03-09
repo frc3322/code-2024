@@ -1,20 +1,12 @@
 package frc.robot.commands;
 
 
-import java.lang.reflect.Field;
-
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.path.PathPoint;
-
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.subsystems.DriveSubsystem;
@@ -26,16 +18,12 @@ import frc.robot.subsystems.Transfer;
 public class AutoCommmands {
     
     private final DriveSubsystem robotDrive;
-    private final Elevator elevator;
-    private final Intake intake;
     private final Shooter shooter;
     private final Transfer transfer;
     private final ComboCommands combo;
 
     public AutoCommmands(DriveSubsystem robotDrive, Intake intake, Elevator elevator, Transfer transfer, Shooter shooter, ComboCommands combo) {
         this.robotDrive = robotDrive;
-        this.elevator = elevator;
-        this.intake = intake;
         this.transfer = transfer;
         this.shooter = shooter;
         this.combo = combo;
