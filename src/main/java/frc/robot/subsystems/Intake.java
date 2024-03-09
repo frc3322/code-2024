@@ -212,14 +212,15 @@ public class Intake extends SubsystemBase implements Loggable {
   ◇─◇──◇─◇*/
 
   public Command intakeDefaultCommand(DoubleSupplier joystickInput, BooleanSupplier elevatorTooHigh){
-    return run(() ->{
-      if (elevatorTooHigh.getAsBoolean()){
-        setArmSpeed(intakePIDController.calculate(getIntakeEncoderPosition(), IntakeConstants.climbPosition));
-      }
-      else if(!elevatorTooHigh.getAsBoolean()){
-        setArmSpeed(joystickInput.getAsDouble());
-      }
-    });
+    // return run(() ->{
+    //   if (elevatorTooHigh.getAsBoolean()){
+    //     setArmSpeed(intakePIDController.calculate(getIntakeEncoderPosition(), IntakeConstants.climbPosition));
+    //   }
+    //   else if(!elevatorTooHigh.getAsBoolean()){
+    //     setArmSpeed(joystickInput.getAsDouble());
+    //   }
+    // });
+    return run(()->setArmSpeed(joystickInput.getAsDouble()));
   }
 
   /**
@@ -293,7 +294,7 @@ public class Intake extends SubsystemBase implements Loggable {
    */
   public Command ejectCommand(){
     return new StartEndCommand(
-      ()->setWheelSpeed(-IntakeConstants.groundIntakeSpeed),
+      ()->setWheelSpeed(-.3), //shoule be negative goun
       ()->setWheelSpeed(0))
       .until(this::intakeEmpty);
   }
@@ -363,6 +364,15 @@ public class Intake extends SubsystemBase implements Loggable {
     }));
   }
 
+    public Command flipToTrapRisePositionCommand() {
+    return new InstantCommand(() -> slowIntakePIDController.setGoal(IntakeConstants.trapRisePosition)).andThen(
+    new RunCommand(() -> {
+      setArmSpeed(
+        slowIntakePIDController.calculate(getIntakeEncoderPosition())
+      );
+    }));
+  }
+
 /**
  * Runs a "payload" (eject or run intake) and brings the arm to the stow position with a set amount of delay on each.
  * @param payload Command to run
@@ -401,6 +411,21 @@ public class Intake extends SubsystemBase implements Loggable {
       new SequentialCommandGroup(
         new WaitCommand(armDelay),
         flipToGroundCommand()
+      )
+    );
+    command.addRequirements(this);
+    return command;
+  }
+
+    public Command flipToTrapRisePositionAndRunPayloadCommand(Command payload, double payloadDelay, double armDelay) {
+    Command command = new ParallelCommandGroup(
+      new SequentialCommandGroup(
+        new WaitCommand(payloadDelay),
+        payload
+      ),
+      new SequentialCommandGroup(
+        new WaitCommand(armDelay),
+        flipToTrapRisePositionCommand()
       )
     );
     command.addRequirements(this);
@@ -482,31 +507,44 @@ public class Intake extends SubsystemBase implements Loggable {
   //   return command;
   // }
 
-  // public Command trapCommand(BooleanSupplier elevatorAtTop){
-  //   return runPayload(flipToClimbCommand())
-  //   .until(elevatorAtTop)
-  //   .andThen(flipToTrapAndRunPayloadCommand(
-  //     startSpin(-.7),
-  //     IntakeConstants.trapDelay,
-  //     0
-  //   )).withTimeout(4)
-  //   .andThen(runPayload(lowFlipToClimbCommand())
-  //   .withTimeout(2)
-  //   .andThen(runPayload(flipToTrapCommand())));
+  public Command trapCommand(BooleanSupplier elevatorAtTop){
+    return runPayload(lowFlipToClimbCommand())
+    .until(elevatorAtTop)
+    .andThen(flipToTrapAndRunPayloadCommand(
+      startSpin(-.5),
+      IntakeConstants.trapDelay,
+      0
+    )).withTimeout(3)
+    .andThen(runPayload(lowFlipToClimbCommand())
+    .withTimeout(2)
+    .andThen(runPayload(flipToTrapCommand())));
     
   // }
 
-  public Command trapCommand(BooleanSupplier elevatorAtTop){
-    return runPayload(flipToClimbCommand())
-    .until(elevatorAtTop)
-    .andThen(flipToTrapAndRunPayloadCommand(
-      startSpin(-.7),
-      IntakeConstants.trapDelay,
-      0
-    )).withTimeout(4)
- ;
+//   public Command trapCommand(BooleanSupplier elevatorAtTop){
+//     return runPayload(flipToClimbCommand())
+//     .until(elevatorAtTop)
+//     .andThen(flipToTrapAndRunPayloadCommand(
+//       flipToTrapRisePositionAndRunPayloadCommand(ejectCommand(), IntakeConstants.trapDelay, 0),
+//       0,
+//       2
+//     )).withTimeout(4)
+//  ;
     
   }
+
+
+//     public Command trapCommand(BooleanSupplier elevatorAtTop){
+//     return runPayload(flipToClimbCommand())
+//     .until(elevatorAtTop)
+//     .andThen(flipToTrapAndRunPayloadCommand(
+//       startSpin(-.7),
+//       IntakeConstants.trapDelay,
+//       0
+//     )).withTimeout(4)
+//  ;
+    
+//   }
   
   public Command superFlippyTrapCommand(BooleanSupplier elevatorAtTop){
     return new SequentialCommandGroup(
@@ -521,7 +559,7 @@ public class Intake extends SubsystemBase implements Loggable {
   }
   public Command partialEjectCommand(){
     return new SequentialCommandGroup(
-      runPayload(startSpin(-0.3)),
+      runPayload(startSpin(-0.15)),
       new WaitCommand(.5),
       runPayload(stopSpin())
     );

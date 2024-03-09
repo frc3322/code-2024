@@ -226,8 +226,9 @@ public final class Constants {
     public static final double groundPosition = 0.37;
     public static final double stowPosition = 0;
     public static final double ampPosition = .07;
-    public static final double climbPosition = .26;
-    public static final double lowClimbPosition = .18;
+    public static final double climbPosition = .1;
+    public static final double lowClimbPosition = .12;
+    public static final double trapRisePosition = .17;
     public static final double trapPosition = 0.2485; //.2258  //simran says .
 
 

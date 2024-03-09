@@ -136,12 +136,12 @@ public class RobotContainer {
     intake.setDefaultCommand(
       intake.intakeDefaultCommand(secondaryController::getLeftY, (elevator::elevatorLimitIntake))
     );
-
-    shooter.setDefaultCommand(
-      shooter.autoRevUp(
-        () -> transfer.shooterFull() && robotDrive.atShootPose()
-      )
-    );
+  
+    // shooter.setDefaultCommand(
+    //   shooter.autoRevUp(
+    //     () -> transfer.shooterFull() && robotDrive.atShootPose()
+    //   )
+    // );
 
 
     SmartDashboard.putData(autoSelector);
@@ -249,6 +249,9 @@ public class RobotContainer {
 
     secondaryController.rightTrigger(0.1)
     .onTrue(comboCommands.trapCommand());
+
+    secondaryController.leftTrigger(0.1)
+    .onTrue(intake.runPayload(intake.lowFlipToClimbCommand()));
     
 
     // driverController.y()

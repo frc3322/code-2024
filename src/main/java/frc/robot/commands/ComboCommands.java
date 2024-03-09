@@ -31,7 +31,7 @@ public class ComboCommands{
 
     public ParallelCommandGroup ejectTransferShooter(){
         return new ParallelCommandGroup(
-            intake.startSpin(-IntakeConstants.groundIntakeSpeed),
+            intake.startSpin(-.3),
             transfer.runTransferCommand(false)
         );
     }
@@ -172,6 +172,7 @@ public class ComboCommands{
 
     public Command trapCommand() {
         return new SequentialCommandGroup(
+   
             intake.partialEjectCommand(),
             new ParallelCommandGroup(
                 elevator.elevatorTrapCommand(),
