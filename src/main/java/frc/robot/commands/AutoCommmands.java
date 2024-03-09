@@ -115,6 +115,22 @@ public class AutoCommmands {
             
         }
 
+    public Command intakeCenterMiddleBottomNote(){
+        return new SequentialCommandGroup(
+            new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerMidBottomPose, 3, 0)),
+            autoIntakeToShooter()
+            );
+            
+        }
+
+    public Command intakeCenterBottomNote(){
+        return new SequentialCommandGroup(
+            new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerBottomPose, 3, 0)),
+            autoIntakeToShooter()
+            );
+            
+        }
+
     public Command flipIntakeUp() {
         return combo.stowCommand().withTimeout(.6);
     }
@@ -371,9 +387,9 @@ public class AutoCommmands {
             new ParallelCommandGroup(
                 robotDrive.followAutonPath(path),
                 new SequentialCommandGroup(
-                    intakeBottomNote(),
+                    intakeCenterBottomNote(),
                     shoot(shootPose),
-                    intakeCenterMiddleNote(),
+                    intakeCenterMiddleBottomNote(),
                     shoot(shootPose)
                 )
             ));
