@@ -118,4 +118,12 @@ public class LimeLight {
     public void setLEDPipeline(){
         setTableEntry("pipeline", 0);
     }
+
+    /**
+     * Sets the pipeline of the limelight
+     * @param pipeline The pipeline to set the limelight to (0-9)
+     */
+    public void setPipeline(int pipeline){
+        setTableEntry("pipeline", pipeline);
+    }
 }
