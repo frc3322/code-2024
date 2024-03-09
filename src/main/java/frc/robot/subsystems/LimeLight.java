@@ -94,28 +94,28 @@ public class LimeLight {
     /**
      * Sets the LED of the limelight to on
      */
-    public void setOn(){
+    public void setLEDOn(){
         setTableEntry("ledMode", 3);
     }
 
     /**
      * Sets the LED of the limelight to blink
      */
-    public void setBlink(){
+    public void setLEDBlink(){
         setTableEntry("ledMode", 2);
     }
 
     /**
      * Sets the LED of the limelight to off
      */
-    public void setOff(){
+    public void setLEDOff(){
         setTableEntry("ledMode", 1);
     }
 
     /**
      * Sets the LED of the limelight to pipeline default
      */
-    public void setPipeline(){
+    public void setLEDPipeline(){
         setTableEntry("pipeline", 0);
     }
 }
