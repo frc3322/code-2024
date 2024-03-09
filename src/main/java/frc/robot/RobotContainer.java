@@ -283,14 +283,16 @@ public class RobotContainer {
         () -> {
           if (intake.innerIntakeFull() || transfer.shooterFull()){
             driverController.getHID().setRumble(RumbleType.kBothRumble, 1);
-            //leds.set(true);
+            robotDrive.limeLightRight.setLEDOn();
+            robotDrive.limeLightLeft.setLEDOn();
           }
         }
     ))
     .whileFalse(new InstantCommand(
       () -> {
         driverController.getHID().setRumble(RumbleType.kBothRumble, 0);
-        //leds.set(false);
+        robotDrive.limeLightRight.setLEDOff();
+        robotDrive.limeLightLeft.setLEDOff();
       }
     ));
 
@@ -299,14 +301,16 @@ public class RobotContainer {
         () -> {
           if (intake.innerIntakeFull() || transfer.shooterFull()){
             driverController.getHID().setRumble(RumbleType.kBothRumble, 1);
-            //leds.set(true);
+            robotDrive.limeLightRight.setLEDOn();
+            robotDrive.limeLightLeft.setLEDOn();
           }
         }
       ))
       .whileFalse(new InstantCommand(
         () -> {
           driverController.getHID().setRumble(RumbleType.kBothRumble, 0);
-          //leds.set(false);
+          robotDrive.limeLightRight.setLEDOff();
+          robotDrive.limeLightLeft.setLEDOff();
         }
       ));
   }
