@@ -19,12 +19,21 @@ public class LimeLight {
     }
 
     /**
-     * Gets a network table entry from the specified LimeLight.
+     * Gets a network table entry from LimeLight.
      * @param entryKey The key of the entry to get.
      * @return The network table entry.
      */
     private NetworkTableEntry getTableEntry(String entryKey) {
         return NetworkTableInstance.getDefault().getTable(this.limeLightID).getEntry(entryKey);
+    }
+
+    /**
+     * Set a network table entry to the LimeLight.
+     * @param entryKey The key of the entry to set.
+     * @param value The value to set the entry to.
+     */
+    private void setTableEntry(String entryKey, double value) {
+        NetworkTableInstance.getDefault().getTable(this.limeLightID).getEntry(entryKey).setDouble(value);
     }
 
     /**
@@ -73,5 +82,33 @@ public class LimeLight {
      */
     public double getTotalLatency(){
         return getTableEntry("tl").getDouble(0) + getTableEntry("cl").getDouble(0);
+    }
+
+    /**
+     * Sets the LED of the limelight to on
+     */
+    public void setOn(){
+        setTableEntry("ledMode", 3);
+    }
+
+    /**
+     * Sets the LED of the limelight to blink
+     */
+    public void setBlink(){
+        setTableEntry("ledMode", 2);
+    }
+
+    /**
+     * Sets the LED of the limelight to off
+     */
+    public void setOff(){
+        setTableEntry("ledMode", 1);
+    }
+
+    /**
+     * Sets the LED of the limelight to pipeline default
+     */
+    public void setPipeline(){
+        setTableEntry("pipeline", 0);
     }
 }
