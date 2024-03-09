@@ -68,12 +68,12 @@
         "y": 4.46
       },
       "prevControl": {
-        "x": 0.8301483532661232,
-        "y": 4.406198017246228
+        "x": 0.7691984189463512,
+        "y": 4.439583296429141
       },
       "nextControl": {
-        "x": 0.7365211001898049,
-        "y": 4.902567400849625
+        "x": 0.9178975072711524,
+        "y": 4.499344137423014
       },
       "isLocked": false,
       "linkedName": null
@@ -173,7 +173,30 @@
       "rotateFast": false
     }
   ],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Shoot1",
+      "minWaypointRelativePos": 3.8499999999999996,
+      "maxWaypointRelativePos": 4.3,
+      "constraints": {
+        "maxVelocity": 0.5,
+        "maxAcceleration": 4.8,
+        "maxAngularVelocity": 360.0,
+        "maxAngularAcceleration": 1080.0
+      }
+    },
+    {
+      "name": "Shoot2",
+      "minWaypointRelativePos": 8.95,
+      "maxWaypointRelativePos": 9.0,
+      "constraints": {
+        "maxVelocity": 0.5,
+        "maxAcceleration": 4.8,
+        "maxAngularVelocity": 360.0,
+        "maxAngularAcceleration": 1080.0
+      }
+    }
+  ],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.8,
