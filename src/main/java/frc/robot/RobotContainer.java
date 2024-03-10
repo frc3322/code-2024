@@ -92,6 +92,7 @@ public class RobotContainer {
     autoSelector.addOption("MiddleFourPiece", ()-> autoCommmands.fourPieceMiddleAuto());
     autoSelector.addOption("TopTwoPiece", () -> autoCommmands.twoPieceTopAuto());
     autoSelector.addOption("BottomTwoPiece", () -> autoCommmands.twoPieceBottomAuto());
+    autoSelector.addOption("MidlineThreePieceSource", ()-> autoCommmands.threePieceMidlineAuto());
 
     // Configure default commands
 
