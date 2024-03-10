@@ -76,11 +76,11 @@ public class LimeLight {
     }
 
     /**
-     * Gets the total latency of the system.
-     * @return The total latency of the system.
+     * Gets the total latency of the system. 
+     * @return The total latency of the system in seconds.
      */
     public double getTotalLatency(){
-        return getTableEntry("tl").getDouble(0) + getTableEntry("cl").getDouble(0);
+        return (getTableEntry("tl").getDouble(0) + getTableEntry("cl").getDouble(0)) / 1000;
     }
 
     /**
