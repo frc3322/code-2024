@@ -14,15 +14,11 @@ public class TestCommands{
     
     private final DriveSubsystem robotDrive;
     private final Elevator elevator;
-    private final Intake intake;
     private final Shooter shooter;
-    private final Transfer transfer;
-
+    
     public TestCommands(DriveSubsystem robotDrive, Elevator elevator, Intake intake, Transfer transfer, Shooter shooter){
         this.robotDrive = robotDrive;
-        this.intake = intake;
         this.elevator = elevator;
-        this.transfer = transfer;
         this.shooter = shooter;
       }
 

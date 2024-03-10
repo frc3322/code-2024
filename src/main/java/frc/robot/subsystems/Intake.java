@@ -28,7 +28,6 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.NeoMotorConstants;
-import frc.robot.Constants.TransferConstants;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
 

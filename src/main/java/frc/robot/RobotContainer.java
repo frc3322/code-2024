@@ -6,35 +6,27 @@ package frc.robot;
 
 import java.util.concurrent.Callable;
 
-import com.pathplanner.lib.commands.PathPlannerAuto;
-
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AutoCommmands;
 import frc.robot.commands.ComboCommands;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.LimeLightVision;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Transfer;
 import frc.robot.subsystems.Forks;
 import io.github.oblarg.oblog.Logger;
-import io.github.oblarg.oblog.annotations.Config;
-import io.github.oblarg.oblog.annotations.Log;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -48,7 +40,6 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem robotDrive = new DriveSubsystem();
   private final Elevator elevator = new Elevator();
-  private final LimeLightVision vision = new LimeLightVision();
   private final Transfer transfer = new Transfer();
   private final Intake intake = new Intake();
   private final Shooter shooter = new Shooter();
@@ -98,7 +89,6 @@ public class RobotContainer {
     /*◇─◇──◇─◇
      Drivetrain
     ◇─◇──◇─◇*/
-    robotDrive.setVisionSystem(vision);
 
     robotDrive.setDefaultCommand(
         // The left stick controls translation of the robot.
@@ -296,14 +286,16 @@ public class RobotContainer {
         () -> {
           if (intake.innerIntakeFull() || transfer.shooterFull()){
             driverController.getHID().setRumble(RumbleType.kBothRumble, 1);
-            //leds.set(true);
+            //robotDrive.limeLightRight.setLEDOn();
+            robotDrive.getLeftLimeLight().setLEDOn();
           }
         }
     ))
     .whileFalse(new InstantCommand(
       () -> {
         driverController.getHID().setRumble(RumbleType.kBothRumble, 0);
-        //leds.set(false);
+        //robotDrive.limeLightRight.setLEDOff();
+        robotDrive.getLeftLimeLight().setLEDOff();
       }
     ));
 
@@ -312,14 +304,16 @@ public class RobotContainer {
         () -> {
           if (intake.innerIntakeFull() || transfer.shooterFull()){
             driverController.getHID().setRumble(RumbleType.kBothRumble, 1);
-            //leds.set(true);
+            //robotDrive.limeLightRight.setLEDOn();
+            robotDrive.getLeftLimeLight().setLEDOn();
           }
         }
       ))
       .whileFalse(new InstantCommand(
         () -> {
           driverController.getHID().setRumble(RumbleType.kBothRumble, 0);
-          //leds.set(false);
+          //robotDrive.limeLightRight.setLEDOff();
+          robotDrive.getLeftLimeLight().setLEDOff();
         }
       ));
   }
