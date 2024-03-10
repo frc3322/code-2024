@@ -78,13 +78,10 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
 
   // Used to store the last movment angle to avoid eccessive rotation of the wheels
   private double lastDir = 0;
-  public SwerveDrivePoseEstimator estimatedPose;
-
-  public Pose2d averageVisionMeasurement;
-  public Timer time;
+  private SwerveDrivePoseEstimator estimatedPose;
   
-  public LimeLight limeLightLeft = new LimeLight("limelight-left");
-  public LimeLight limeLightRight = new LimeLight("limelight-right");
+  private LimeLight limeLightLeft = new LimeLight("limelight-left");
+  // private LimeLight limeLightRight = new LimeLight("limelight-right");
 
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
@@ -566,6 +563,14 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     return pose;
   }
 
+  public LimeLight getLeftLimeLight(){
+    return limeLightLeft;
+  }
+
+  //public LimeLight getRightLimelight(){
+  //  return limeLightRight;
+  //}
+
   
   @Override
   public void periodic() {
@@ -590,10 +595,10 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
       SmartDashboard.putString("Limelight-Left in drivetrain", limeLightLeft.poseAsString());
     }
     
-    if (limeLightRight.hasTarget()){
-      estimatedPose.addVisionMeasurement(limeLightRight.getPose(), Timer.getFPGATimestamp() - limeLightRight.getTotalLatency());
-      SmartDashboard.putString("Limelight-Right in drivetrain", limeLightRight.poseAsString());
-    }
+    //if (limeLightRight.hasTarget()){
+    //  estimatedPose.addVisionMeasurement(limeLightRight.getPose(), Timer.getFPGATimestamp() - limeLightRight.getTotalLatency());
+    //  SmartDashboard.putString("Limelight-Right in drivetrain", limeLightRight.poseAsString());
+    //}
 
     SmartDashboard.updateValues();
     
