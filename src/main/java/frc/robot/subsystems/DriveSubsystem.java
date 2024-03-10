@@ -79,6 +79,8 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
   // Used to store the last movment angle to avoid eccessive rotation of the wheels
   private double lastDir = 0;
   private SwerveDrivePoseEstimator estimatedPose;
+
+  private boolean limeLightEnable = true;
   
   private LimeLight limeLightLeft = new LimeLight("limelight-left");
   // private LimeLight limeLightRight = new LimeLight("limelight-right");
@@ -571,6 +573,14 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
   //  return limeLightRight;
   //}
 
+  /**
+   * 
+   * @param enable boolean to enable/disable limelight
+   */
+  public void enableLimeLight(boolean enable){
+    limeLightEnable = enable;
+  }
+
   
   @Override
   public void periodic() {
@@ -590,7 +600,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     estimatedPose.updateWithTime(Timer.getFPGATimestamp(), Rotation2d.fromDegrees(getAngle()), getModulePositions());
 
     // updates pose with Lime Light positions
-    if (limeLightLeft.hasTarget()){
+    if (limeLightLeft.hasTarget() && limeLightEnable){
       estimatedPose.addVisionMeasurement(limeLightLeft.getPose(), Timer.getFPGATimestamp() - limeLightLeft.getTotalLatency());
       SmartDashboard.putString("Limelight-Left in drivetrain", limeLightLeft.poseAsString());
     }
