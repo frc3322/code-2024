@@ -301,6 +301,8 @@ public final class Constants {
     public static final String bottomThreeCenterMiddleString = "BottomThreeCenterMiddle";
     public static final String bottomLeaveString = "BottomLeave";
 
+    public static final String threePieceMidlineString = "MidlineThreePiece";
+
   }
 
   public static final class NeoMotorConstants {
@@ -353,8 +355,8 @@ public final class Constants {
     public static final Pose2d centerTopPose = new Pose2d(8.29, 7.43, new Rotation2d(0));
     public static final Pose2d centerMidTopPose = new Pose2d(8.29, 5.79, new Rotation2d(0));
     public static final Pose2d centerMidPose = new Pose2d(8.29, 4.11, new Rotation2d(0));
-    public static final Pose2d centerMidBottomPose = new Pose2d(8.29, 2.44, new Rotation2d(0));
-    public static final Pose2d centerBottomPose = new Pose2d(8.29, .77, new Rotation2d(0));
+    public static final Pose2d centerMidBottomPose = new Pose2d(8.29, 2.44, new Rotation2d(0)); 
+    public static final Pose2d centerBottomPose = new Pose2d(8.29, .77, new Rotation2d(0)); 
 
   }
 
