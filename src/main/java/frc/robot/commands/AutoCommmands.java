@@ -122,6 +122,18 @@ public class AutoCommmands {
             );
             
         }
+    public Command intakeCenterBottomNote() {
+        return new SequentialCommandGroup(
+            new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerBottomPose, 1.5, 0)),
+            autoIntakeToShooter()
+            );
+    } 
+    public Command intakeCenterMiddleBottomNote() {
+        return new SequentialCommandGroup(
+            new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerMidBottomPose, 1.5, 0)),
+            autoIntakeToShooter()
+            );
+    }      
 
     public Command intakeCenterMiddleBottomNote(){
         return new SequentialCommandGroup(
@@ -476,6 +488,26 @@ public class AutoCommmands {
         return new SequentialCommandGroup(
             shootOnStart(),
             robotDrive.followAutonPath(path)
+        );
+    }
+
+    public Command threePieceMidlineAuto(){
+        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.threePieceMidlineString);
+        Pose2d shootPose = path.getPreviewStartingHolonomicPose();
+        robotDrive.resetEstimatedPose(shootPose);
+        return new SequentialCommandGroup(
+            shootOnStart(),
+            new ParallelCommandGroup(
+                robotDrive.followAutonPath(path),
+                new SequentialCommandGroup(
+                    intakeCenterMiddleBottomNote(),
+                    shoot(shootPose),
+                    intakeBottomNote(),
+                    shoot(shootPose)
+
+                )
+            )
+
         );
     }
 }
