@@ -474,7 +474,7 @@ public class AutoCommmands {
                 new SequentialCommandGroup(
                     intakeCenterMiddleBottomNote(),
                     shoot(shootPose),
-                    intakeBottomNote(),
+                    intakeCenterBottomNote(),
                     shoot(shootPose)
 
                 )
