@@ -79,7 +79,8 @@ public class RobotContainer {
     autoSelector.addOption("TopShootAndLeave", () -> autoCommmands.shootAndLeaveTopAuto());
     autoSelector.addOption("BottomShootAndLeave", () -> autoCommmands.shootAndLeaveBottomAuto());
     autoSelector.addOption("MiddleThreePieceAmpSide", () -> autoCommmands.threePieceMiddleTopAuto());
-    autoSelector.addOption("MiddleThreePieceSourceSide", () -> autoCommmands.bottomThreeCenterMiddleAuto());
+    autoSelector.addOption("MiddleThreePieceSourceSide", () -> autoCommmands.threePieceMiddleBottomAuto());
+    autoSelector.addOption("BottomThreePieceSourceSide", () -> autoCommmands.bottomThreeCenterMiddleAuto());
     autoSelector.addOption("MiddleFourPiece", ()-> autoCommmands.fourPieceMiddleAuto());
     autoSelector.addOption("TopTwoPiece", () -> autoCommmands.twoPieceTopAuto());
     autoSelector.addOption("BottomTwoPiece", () -> autoCommmands.twoPieceBottomAuto());
@@ -127,11 +128,11 @@ public class RobotContainer {
       intake.intakeDefaultCommand(secondaryController::getLeftY, (elevator::elevatorLimitIntake))
     );
   
-    // shooter.setDefaultCommand(
-    //   shooter.autoRevUp(
-    //     () -> transfer.shooterFull() && robotDrive.atShootPose()
-    //   )
-    // );
+    shooter.setDefaultCommand(
+      shooter.autoRevUp(
+        () -> transfer.shooterFull() && robotDrive.atShootPose()
+      )
+    );
 
 
     SmartDashboard.putData(autoSelector);
@@ -173,7 +174,7 @@ public class RobotContainer {
     );
 
     driverController.leftBumper()
-    .onTrue(comboCommands.ampCommands())
+    .onTrue(comboCommands.goToTopAmp())
     .onFalse(comboCommands.stowCommand());
 
 
@@ -182,7 +183,7 @@ public class RobotContainer {
     .onFalse(comboCommands.stowCommand());
 
     driverController.rightBumper()
-    .onTrue(transfer.shootCommand());
+    .onTrue(comboCommands.scoreCommand());
 
     
 
@@ -317,11 +318,19 @@ public class RobotContainer {
         }
       ));
   }
+  
   public void updateLogger() {
     Logger.updateEntries();
   }
 
+  public void setLimelightsEnabled(boolean enabled){
+    robotDrive.enableLimeLight(enabled);
+  }
 
+  public void stopShooter() {
+    shooter.stopShooter();
+    shooter.setShooterSetpoint(0);
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
