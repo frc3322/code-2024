@@ -209,7 +209,7 @@ public final class Constants {
 
     public static final double shooterAutoRPMThreshold = 2000;
 
-    public static final double shooterRevUpDistance = 5;
+    public static final double shooterRevUpDistance = 3;
 
 
   }
@@ -225,7 +225,7 @@ public final class Constants {
 
     public static final double groundPosition = 0.37;
     public static final double stowPosition = 0;
-    public static final double ampPosition = .07;
+    public static final double ampPosition = .03;
     public static final double climbPosition = .1;
     public static final double lowClimbPosition = .12;
     public static final double trapRisePosition = .17;

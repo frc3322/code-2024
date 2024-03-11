@@ -14,18 +14,21 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Transfer;
+import io.github.oblarg.oblog.annotations.Log;
 
 public class AutoCommmands {
     
     private final DriveSubsystem robotDrive;
     private final Shooter shooter;
     private final Transfer transfer;
+    private final Intake intake;
     private final ComboCommands combo;
 
     public AutoCommmands(DriveSubsystem robotDrive, Intake intake, Elevator elevator, Transfer transfer, Shooter shooter, ComboCommands combo) {
         this.robotDrive = robotDrive;
         this.transfer = transfer;
         this.shooter = shooter;
+        this.intake = intake;
         this.combo = combo;
     }
 
@@ -46,6 +49,23 @@ public class AutoCommmands {
         return new SequentialCommandGroup(
             combo.startShooterIntakeCommand()
             .until(transfer::shooterFull)
+            
+        );
+    }
+
+        public Command autoIntakeToMiddle() {
+        return new SequentialCommandGroup(
+            new ParallelDeadlineGroup(
+                intake.intakeToMiddle(),
+                intake.runPayload(intake.flipToGroundCommand()),
+                transfer.runTransferCommand(true)
+            ),
+            new ParallelCommandGroup(
+                transfer.intakeToShooterCommand(),
+                intake.runPayload(intake.flipToStowCommand())
+                .until(intake::atSetpoint)
+                
+            )
             
         );
     }
@@ -105,7 +125,7 @@ public class AutoCommmands {
 
     public Command intakeCenterMiddleBottomNote(){
         return new SequentialCommandGroup(
-            new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerMidBottomPose, 3, 0)),
+            new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerMidBottomPose, 4, 0)),
             autoIntakeToShooter()
             );
             
@@ -113,8 +133,8 @@ public class AutoCommmands {
 
     public Command intakeCenterBottomNote(){
         return new SequentialCommandGroup(
-            new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerBottomPose, 3, 0)),
-            autoIntakeToShooter()
+            new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerBottomPose, 4, 0)),
+            autoIntakeToMiddle()
             );
             
         }
@@ -263,8 +283,10 @@ public class AutoCommmands {
 
     public Command threePieceMiddleBottomAuto() {
         PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.threePieceMiddleBottomString);
-        Pose2d shootPose = path.getPreviewStartingHolonomicPose();
+        Pose2d shootPose = robotDrive.flipPoseIfRed(path.getPreviewStartingHolonomicPose());
         robotDrive.resetEstimatedPose(shootPose);
+        robotDrive.enableLimeLight(false);
+
 
         //robotDrive.setYawToAngle(-path.getPreviewStartingHolonomicPose().getRotation().getDegrees());
         return new SequentialCommandGroup(
@@ -305,6 +327,7 @@ public class AutoCommmands {
         PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.fourPieceMiddleString);
         Pose2d shootPose = robotDrive.flipPoseIfRed(path.getPreviewStartingHolonomicPose());
         robotDrive.resetEstimatedPose(shootPose);
+        robotDrive.enableLimeLight(false);
 
         //robotDrive.setYawToAngle(-path.getPreviewStartingHolonomicPose().getRotation().getDegrees());
         return new SequentialCommandGroup(
@@ -366,8 +389,9 @@ public class AutoCommmands {
 
     public Command bottomThreeCenterMiddleAuto() {
         PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.bottomThreeCenterMiddleString);
-        Pose2d shootPose = path.getPreviewStartingHolonomicPose();
+        Pose2d shootPose = robotDrive.flipPoseIfRed(path.getPreviewStartingHolonomicPose());
         robotDrive.resetEstimatedPose(shootPose);
+        robotDrive.enableLimeLight(true);
 
         //robotDrive.setYawToAngle(-path.getPreviewStartingHolonomicPose().getRotation().getDegrees());
         return new SequentialCommandGroup(
@@ -377,8 +401,8 @@ public class AutoCommmands {
                 new SequentialCommandGroup(
                     intakeCenterBottomNote(),
                     shoot(shootPose),
-                    intakeCenterMiddleBottomNote(),
-                    shoot(shootPose)
+                    combo.startAmpIntakeCommand().until(intake::innerIntakeFull),
+                    combo.stopIntakeCommand()
                 )
             ));
             

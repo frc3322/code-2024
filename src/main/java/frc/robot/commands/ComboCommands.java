@@ -4,9 +4,12 @@
 
 package frc.robot.commands;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.IntakeConstants;
@@ -167,6 +170,20 @@ public class ComboCommands{
                     0
                 )
             )
+        );
+    }
+
+    public Command goToTopAmp() {
+        return new ParallelCommandGroup(
+            elevator.goToTopAmpCommand(),
+            intake.runPayload(intake.flipToAmpCommand())
+        );
+    }
+
+    public Command scoreCommand() {
+        return new ParallelCommandGroup(
+            transfer.shootCommand(),
+            intake.flipToAmpAndRunPayloadCommand(intake.startSpin(IntakeConstants.groundIntakeSpeed), 0, 0)
         );
     }
 
