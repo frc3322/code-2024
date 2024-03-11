@@ -287,12 +287,16 @@ public class RobotContainer {
         () -> {
           if (intake.innerIntakeFull() || transfer.shooterFull()){
             driverController.getHID().setRumble(RumbleType.kBothRumble, 1);
+            //robotDrive.limeLightRight.setLEDOn();
+            robotDrive.getLeftLimeLight().setLEDOn();
           }
         }
     ))
     .whileFalse(new InstantCommand(
       () -> {
         driverController.getHID().setRumble(RumbleType.kBothRumble, 0);
+        //robotDrive.limeLightRight.setLEDOff();
+        robotDrive.getLeftLimeLight().setLEDOff();
       }
     ));
 
@@ -301,12 +305,16 @@ public class RobotContainer {
         () -> {
           if (intake.innerIntakeFull() || transfer.shooterFull()){
             driverController.getHID().setRumble(RumbleType.kBothRumble, 1);
+            //robotDrive.limeLightRight.setLEDOn();
+            robotDrive.getLeftLimeLight().setLEDOn();
           }
         }
       ))
       .whileFalse(new InstantCommand(
         () -> {
           driverController.getHID().setRumble(RumbleType.kBothRumble, 0);
+          //robotDrive.limeLightRight.setLEDOff();
+          robotDrive.getLeftLimeLight().setLEDOff();
         }
       ));
   }
@@ -353,4 +361,13 @@ public class RobotContainer {
   /*◇─◇──◇─◇
       Autos\
   ◇─◇──◇─◇*/
+  
+  private static class Test4And1Auto extends SequentialCommandGroup{
+
+    public Test4And1Auto(){
+      addCommands(
+        //new PathPlannerAuto("Test4+1Auto")
+      );
+    }
+  }
 }
