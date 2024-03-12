@@ -502,9 +502,9 @@ public class AutoCommmands {
             new ParallelCommandGroup(
                 robotDrive.followAutonPath(path),
                 new SequentialCommandGroup(
-                    intakeCenterMiddleTopNote(),
-                    shoot(shootPose),
                     intakeCenterTopNote(),
+                    shoot(shootPose),
+                    intakeCenterMiddleTopNote(),
                     shoot(shootPose)
                 )
             )
