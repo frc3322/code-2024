@@ -255,7 +255,7 @@ public class AutoCommmands {
             
     }
 
-    public Command topThreeCenterMiddleAuto() {
+    public Command ampSideThreeCenterMiddleAuto() {
         PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.topThreeCenterMiddleString);
         Pose2d shootPose = robotDrive.flipPoseIfRed(path.getPreviewStartingHolonomicPose());
         robotDrive.resetEstimatedPose(shootPose);
@@ -267,10 +267,8 @@ public class AutoCommmands {
                 robotDrive.followAutonPath(path),
                 new SequentialCommandGroup(
                     intakeCenterTopNote(),
-                    flipIntakeUp(),
                     shoot(shootPose),
                     intakeCenterMiddleTopNote(),
-                    flipIntakeUp(),
                     shoot(shootPose)
                 )
             ));
@@ -502,9 +500,9 @@ public class AutoCommmands {
             new ParallelCommandGroup(
                 robotDrive.followAutonPath(path),
                 new SequentialCommandGroup(
-                    intakeCenterMiddleTopNote(),
-                    shoot(shootPose),
                     intakeCenterTopNote(),
+                    shoot(shootPose),
+                    intakeCenterMiddleTopNote(),
                     shoot(shootPose)
                 )
             )
