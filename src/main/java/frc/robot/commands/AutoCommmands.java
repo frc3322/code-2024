@@ -327,7 +327,7 @@ public class AutoCommmands {
         PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.fourPieceMiddleString);
         Pose2d shootPose = robotDrive.flipPoseIfRed(path.getPreviewStartingHolonomicPose());
         robotDrive.resetEstimatedPose(shootPose);
-        robotDrive.enableLimeLight(false);
+        robotDrive.enableLimeLight(true);
 
         //robotDrive.setYawToAngle(-path.getPreviewStartingHolonomicPose().getRotation().getDegrees());
         return new SequentialCommandGroup(
