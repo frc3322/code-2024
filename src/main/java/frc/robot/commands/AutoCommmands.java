@@ -135,22 +135,6 @@ public class AutoCommmands {
             );
     }      
 
-    public Command intakeCenterMiddleBottomNote(){
-        return new SequentialCommandGroup(
-            new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerMidBottomPose, 4, 0)),
-            autoIntakeToShooter()
-            );
-            
-        }
-
-    public Command intakeCenterBottomNote(){
-        return new SequentialCommandGroup(
-            new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerBottomPose, 4, 0)),
-            autoIntakeToMiddle()
-            );
-            
-        }
-
     public Command flipIntakeUp() {
         return combo.stowCommand().withTimeout(.6);
     }
