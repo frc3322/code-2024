@@ -301,7 +301,8 @@ public final class Constants {
     public static final String bottomThreeCenterMiddleString = "BottomThreeCenterMiddle";
     public static final String bottomLeaveString = "BottomLeave";
 
-    public static final String threePieceMidlineString = "MidlineThreePiece";
+    public static final String threePieceMidlineSourceString = "MidlineThreePieceSource";
+    public static final String threePieceMidlineAmpString = "MidlineThreePieceAmp";
 
   }
 
