@@ -491,9 +491,9 @@ public class AutoCommmands {
         );
     }
 
-    public Command threePieceMidlineAuto(){
-        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.threePieceMidlineString);
-        Pose2d shootPose = path.getPreviewStartingHolonomicPose();
+    public Command threePieceMidlineSourceAuto(){
+        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.threePieceMidlineSourceString);
+        Pose2d shootPose = robotDrive.flipPoseIfRed(path.getPreviewStartingHolonomicPose());
         robotDrive.resetEstimatedPose(shootPose);
         return new SequentialCommandGroup(
             shootOnStart(),
@@ -504,7 +504,24 @@ public class AutoCommmands {
                     shoot(shootPose),
                     intakeCenterBottomNote(),
                     shoot(shootPose)
+                )
+            )
 
+        );
+    }
+    public Command threePieceMidlineAmpAuto(){
+        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.threePieceMidlineAmpString);
+        Pose2d shootPose = robotDrive.flipPoseIfRed(path.getPreviewStartingHolonomicPose());
+        robotDrive.resetEstimatedPose(shootPose);
+        return new SequentialCommandGroup(
+            shootOnStart(),
+            new ParallelCommandGroup(
+                robotDrive.followAutonPath(path),
+                new SequentialCommandGroup(
+                    intakeCenterMiddleTopNote(),
+                    shoot(shootPose),
+                    intakeCenterTopNote(),
+                    shoot(shootPose)
                 )
             )
 
