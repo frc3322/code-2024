@@ -276,7 +276,7 @@ public class RobotContainer {
     .onTrue(
       forks.spinServosCommand()).onFalse(forks.stopServosCommand());
 
-    driverController.leftBumper()
+    secondaryController.leftBumper()
     .onTrue(comboCommands.goToTopAmp())
     .onFalse(comboCommands.stowCommand());
 
