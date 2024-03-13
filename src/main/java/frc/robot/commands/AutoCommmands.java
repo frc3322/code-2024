@@ -110,27 +110,27 @@ public class AutoCommmands {
 
     public Command intakeCenterMiddleTopNote() {
         return new SequentialCommandGroup(
-            new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerMidTopPose, 1.5, 0)),
+            new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerMidTopPose, 4, 0)),
             autoIntakeToShooter()
             );
     }
 
     public Command intakeCenterTopNote(){
         return new SequentialCommandGroup(
-            new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerTopPose, 1.5, 0)),
+            new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerTopPose, 4, 0)),
             autoIntakeToShooter()
             );
             
         }
     public Command intakeCenterBottomNote() {
         return new SequentialCommandGroup(
-            new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerBottomPose, 1.5, 0)),
+            new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerBottomPose, 4, 0)),
             autoIntakeToShooter()
             );
     } 
     public Command intakeCenterMiddleBottomNote() {
         return new SequentialCommandGroup(
-            new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerMidBottomPose, 1.5, 0)),
+            new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerMidBottomPose, 4, 0)),
             autoIntakeToShooter()
             );
     }      
