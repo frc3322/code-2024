@@ -183,7 +183,7 @@ public class RobotContainer {
     );
 
     driverController.leftBumper()
-    .onTrue(comboCommands.stowCommand());
+    .onTrue(comboCommands.scoreCommand());
 
 
     driverController.rightBumper()
