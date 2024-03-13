@@ -80,10 +80,10 @@ public class RobotContainer {
     autoSelector.addOption("BottomShootAndLeave", () -> autoCommmands.shootAndLeaveBottomAuto());
     autoSelector.addOption("MiddleThreePieceAmpSide", () -> autoCommmands.threePieceMiddleTopAuto());
     autoSelector.addOption("MiddleThreePieceSourceSide", () -> autoCommmands.threePieceMiddleBottomAuto());
-    autoSelector.addOption("BottomThreePieceSourceSide", () -> autoCommmands.bottomThreeCenterMiddleAuto());
-    autoSelector.addOption("MiddleFourPiece", ()-> autoCommmands.fourPieceMiddleAuto());
-    autoSelector.addOption("TopTwoPiece", () -> autoCommmands.twoPieceTopAuto());
-    autoSelector.addOption("BottomTwoPiece", () -> autoCommmands.twoPieceBottomAuto());
+    //autoSelector.addOption("BottomThreePieceSourceSide", () -> autoCommmands.bottomThreeCenterMiddleAuto());
+    autoSelector.setDefaultOption("MiddleFourPiece", ()-> autoCommmands.fourPieceMiddleAuto());
+    //autoSelector.addOption("TopTwoPiece", () -> autoCommmands.twoPieceTopAuto());
+    //autoSelector.addOption("BottomTwoPiece", () -> autoCommmands.twoPieceBottomAuto());
 
     // Configure default commands
 
