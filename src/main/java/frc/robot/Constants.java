@@ -305,6 +305,9 @@ public final class Constants {
     public static final String threePieceMidlineSourceString = "MidlineThreePieceSource";
     public static final String threePieceMidlineAmpString = "MidlineThreePieceAmp";
 
+    public static final String threePieceMidlineAndBottomString = "MidlineAndBottomThreePiece";
+    public static final String threePieceMidlineAndTopString = "MidlineAndTopThreePiece";
+
   }
 
   public static final class NeoMotorConstants {
