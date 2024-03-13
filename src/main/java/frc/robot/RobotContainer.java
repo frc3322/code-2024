@@ -84,8 +84,8 @@ public class RobotContainer {
     autoSelector.addOption("MiddleFourPiece", ()-> autoCommmands.fourPieceMiddleAuto());
     autoSelector.addOption("TopTwoPiece", () -> autoCommmands.twoPieceTopAuto());
     autoSelector.addOption("BottomTwoPiece", () -> autoCommmands.twoPieceBottomAuto());
-    autoSelector.addOption("MidlineThreePieceSource", ()-> autoCommmands.threePieceMidlineSourceAuto());
-    autoSelector.addOption("MidlineThreePieceAmp", ()-> autoCommmands.threePieceMidlineAmpAuto());
+    // autoSelector.addOption("MidlineThreePieceSource", ()-> autoCommmands.threePieceMidlineSourceAuto());
+    // autoSelector.addOption("MidlineThreePieceAmp", ()-> autoCommmands.threePieceMidlineAmpAuto());
     autoSelector.addOption("MidlineAndBottomThreePiece", ()->autoCommmands.threePieceMidlineAndBottomAuto());
     autoSelector.addOption("MidlineAndTopThreePiece", ()->autoCommmands.threePieceMidlineAndTopAuto());
 
