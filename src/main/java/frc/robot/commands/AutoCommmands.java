@@ -523,7 +523,7 @@ public class AutoCommmands {
             new ParallelCommandGroup(
                 robotDrive.followAutonPath(path),
                 new SequentialCommandGroup(
-                    intakeCenterMiddleBottomNote(),
+                    intakeCenterBottomNote(),
                     shoot(shootPose),
                     intakeBottomNote(),
                     shoot(shootPose)
