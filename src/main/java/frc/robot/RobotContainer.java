@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AutoCommmands;
 import frc.robot.commands.ComboCommands;
@@ -181,14 +182,9 @@ public class RobotContainer {
       new InstantCommand(() -> robotDrive.normalDrivetrain())
     );
 
-    // driverController.leftBumper()
-    // .onTrue(comboCommands.goToTopAmp())
-    // .onFalse(comboCommands.stowCommand());
+    driverController.leftBumper()
+    .onTrue(comboCommands.stowCommand());
 
-
-    secondaryController.leftBumper()
-    .toggleOnTrue(comboCommands.goToTopAmp())
-    .toggleOnFalse(comboCommands.stowCommand());
 
     driverController.rightBumper()
     .onTrue(comboCommands.scoreCommand());
@@ -280,6 +276,9 @@ public class RobotContainer {
     .onTrue(
       forks.spinServosCommand()).onFalse(forks.stopServosCommand());
 
+    driverController.leftBumper()
+    .onTrue(comboCommands.goToTopAmp())
+    .onFalse(comboCommands.stowCommand());
 
     secondaryController.povUp().onTrue(shooter.shooterAutoLineRevUpCommand());
     secondaryController.povDown().onTrue(shooter.stopShooterCommand());
