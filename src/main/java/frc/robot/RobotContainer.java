@@ -173,14 +173,22 @@ public class RobotContainer {
             robotDrive)
     );
 
-    driverController.leftBumper()
-    .onTrue(comboCommands.goToTopAmp())
-    .onFalse(comboCommands.stowCommand());
+    driverController.rightStick()
+    .onTrue(
+      new InstantCommand(() -> robotDrive.boostDrivetrain())
+    )
+    .onFalse(
+      new InstantCommand(() -> robotDrive.normalDrivetrain())
+    );
+
+    // driverController.leftBumper()
+    // .onTrue(comboCommands.goToTopAmp())
+    // .onFalse(comboCommands.stowCommand());
 
 
     secondaryController.leftBumper()
-    .onTrue(comboCommands.topAmpCommands())
-    .onFalse(comboCommands.stowCommand());
+    .toggleOnTrue(comboCommands.goToTopAmp())
+    .toggleOnFalse(comboCommands.stowCommand());
 
     driverController.rightBumper()
     .onTrue(comboCommands.scoreCommand());
