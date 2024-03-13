@@ -460,7 +460,7 @@ public class AutoCommmands {
 
     public Command shootAndLeaveTopAuto() {
         PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.topLeaveString);
-        Pose2d shootPose = path.getPreviewStartingHolonomicPose();
+        Pose2d shootPose = robotDrive.flipPoseIfRed(path.getPreviewStartingHolonomicPose());
         robotDrive.resetEstimatedPose(shootPose);
 
         return new SequentialCommandGroup(
@@ -471,7 +471,7 @@ public class AutoCommmands {
     
     public Command shootAndLeaveBottomAuto() {
         PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.bottomLeaveString);
-        Pose2d shootPose = path.getPreviewStartingHolonomicPose();
+        Pose2d shootPose =robotDrive.flipPoseIfRed(path.getPreviewStartingHolonomicPose());
         robotDrive.resetEstimatedPose(shootPose);
 
         return new SequentialCommandGroup(
