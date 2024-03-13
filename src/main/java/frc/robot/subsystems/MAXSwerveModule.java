@@ -16,6 +16,7 @@ import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 
 import frc.robot.Constants.ModuleConstants;
+import frc.robot.Constants.NeoMotorConstants;
 
 public class MAXSwerveModule {
   private final CANSparkMax m_drivingSparkMax;
@@ -161,6 +162,14 @@ public class MAXSwerveModule {
 
   public SwerveModuleState getCurrentDesiredState(){
     return m_desiredState;
+  }
+
+  public void boostSwerve() {
+    m_drivingSparkMax.setSmartCurrentLimit(80);
+  }
+
+  public void normalSwerve() {
+    m_drivingSparkMax.setSmartCurrentLimit(NeoMotorConstants.currentLimit);
   }
 
   /** Zeroes all the SwerveModule encoders. */

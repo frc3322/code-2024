@@ -413,7 +413,19 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
 
   }
   
+  public void boostDrivetrain(){
+    m_frontLeft.boostSwerve();
+    m_frontRight.boostSwerve();
+    m_rearLeft.boostSwerve();
+    m_rearRight.boostSwerve();
+  }
 
+  public void normalDrivetrain(){
+    m_frontLeft.normalSwerve();
+    m_frontRight.normalSwerve();
+    m_rearLeft.normalSwerve();
+    m_rearRight.normalSwerve();
+  }
 
 
   /*◇─◇──◇─◇
@@ -433,6 +445,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
             m_rearRight.getState()
         );
   }
+  
   
   /**
    * Returns the heading of the robot.
