@@ -139,8 +139,8 @@
   "constraintZones": [
     {
       "name": "Shoot1",
-      "minWaypointRelativePos": 3.75,
-      "maxWaypointRelativePos": 4.449999999999999,
+      "minWaypointRelativePos": 3.8500000000000005,
+      "maxWaypointRelativePos": 4.300000000000001,
       "constraints": {
         "maxVelocity": 0.5,
         "maxAcceleration": 4.0,
