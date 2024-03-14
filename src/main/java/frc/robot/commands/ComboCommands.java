@@ -39,7 +39,7 @@ public class ComboCommands{
 
     public ParallelCommandGroup ejectTransferShooter(){
         return new ParallelCommandGroup(
-            intake.startSpin(-.3),
+            intake.runPayload(intake.startSpin(-.3)),
             transfer.runTransferCommand(false)
         );
     }
@@ -53,11 +53,13 @@ public class ComboCommands{
     //     ));
     // }
 
-    public ParallelCommandGroup stopEjectTransferShooter(){
-        return new ParallelCommandGroup(
-            intake.stopSpin(),
-            new InstantCommand(()-> transfer.stopTransfer())
-        );
+    public Command stopEjectTransferShooter(){
+        return new InstantCommand(()->{
+            intake.setWheelSpeed(0);
+            transfer.setTransferSpeeds(0);
+        }
+        ,intake, transfer);
+           
     }
 
     
