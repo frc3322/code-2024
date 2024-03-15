@@ -292,6 +292,9 @@ public final class Constants {
     public static final String bottomTwoPlusOneCenterString = "BottomTwoPlusOneCenter";
     public static final String bottomLeaveString = "BottomLeave";
 
+    public static final String threePieceMidlineAndBottomString = "MidlineAndBottomThreePiece";
+    public static final String threePieceMidlineAndTopString = "MidlineAndTopThreePiece";
+
   }
 
   public static final class NeoMotorConstants {
