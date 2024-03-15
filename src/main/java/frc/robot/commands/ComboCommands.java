@@ -39,7 +39,7 @@ public class ComboCommands{
 
     public ParallelCommandGroup ejectTransferShooter(){
         return new ParallelCommandGroup(
-            intake.runPayload(intake.startSpin(-.3)),
+            intake.runPayload(intake.startSpin(-1)),
             transfer.runTransferCommand(false)
         );
     }
