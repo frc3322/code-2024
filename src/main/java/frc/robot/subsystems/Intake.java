@@ -416,7 +416,7 @@ public class Intake extends SubsystemBase implements Loggable {
     return command;
   }
 
-    public Command flipToTrapRisePositionAndRunPayloadCommand(Command payload, double payloadDelay, double armDelay) {
+    public Command flipToLowClimbPositionAndRunPayloadCommand(Command payload, double payloadDelay, double armDelay) {
     Command command = new ParallelCommandGroup(
       new SequentialCommandGroup(
         new WaitCommand(payloadDelay),
@@ -424,7 +424,7 @@ public class Intake extends SubsystemBase implements Loggable {
       ),
       new SequentialCommandGroup(
         new WaitCommand(armDelay),
-        flipToTrapRisePositionCommand()
+        lowFlipToClimbCommand()
       )
     );
     command.addRequirements(this);
@@ -513,10 +513,17 @@ public class Intake extends SubsystemBase implements Loggable {
       startSpin(-.5),
       IntakeConstants.trapDelay,
       0
-    )).withTimeout(2.5)
-    .andThen(runPayload(lowFlipToClimbCommand())
-    .withTimeout(2)
-    .andThen(runPayload(flipToTrapCommand())));
+    )).withTimeout(3)
+    .andThen(flipToLowClimbPositionAndRunPayloadCommand(
+      startSpin(-.5), 0, 0)
+    .withTimeout(2))
+    .andThen(
+      flipToTrapAndRunPayloadCommand(
+        startSpin(-.5),
+        0,
+        0
+      )
+    );
     
   // }
 
