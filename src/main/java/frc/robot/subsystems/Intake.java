@@ -513,7 +513,7 @@ public class Intake extends SubsystemBase implements Loggable {
       startSpin(-.5),
       IntakeConstants.trapDelay,
       0
-    )).withTimeout(3)
+    ).withTimeout(.85))
     .andThen(flipToLowClimbPositionAndRunPayloadCommand(
       startSpin(-.5), 0, 0)
     .withTimeout(2))
