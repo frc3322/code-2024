@@ -41,7 +41,7 @@ public class ComboCommands{
         return new ParallelCommandGroup(
             intake.runPayload(intake.startSpin(-1)),
             transfer.runTransferCommand(false)
-        );
+        ); 
     }
 
     

@@ -570,7 +570,18 @@ public class Intake extends SubsystemBase implements Loggable {
       runPayload(stopSpin())
     );
   }
+
+  public Command intakeBoostCommand() {
+    return new InstantCommand(
+      () -> wheelsMotor.setSmartCurrentLimit(40)
+    );
+  }
   
+  public Command intakeNormalCommand() {
+    return new InstantCommand(
+      () -> wheelsMotor.setSmartCurrentLimit(NeoMotorConstants.neo550CurrentLimitAmps)
+    );
+  }
 
   //flip stow, flip to ground, flips down and spins untill beam break, flip down and spin without limits, start spin, stop spin
 

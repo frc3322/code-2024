@@ -186,7 +186,7 @@ public final class Constants {
     public static final double transferSpeed = 1;
     public static final double shootWaitTime = 0.1;
 
-    public static final double transferWaitTimeToIntake = .05;
+    public static final double transferWaitTimeToIntake = .2;
   }
 
   public static final class ShooterConstants{

@@ -246,7 +246,8 @@ public class RobotContainer {
     .onTrue(comboCommands.trapCommand());
 
     secondaryController.leftTrigger(0.1)
-    .onTrue(intake.runPayload(intake.lowFlipToClimbCommand()));
+    .whileTrue(intake.intakeBoostCommand())
+    .whileFalse(intake.intakeNormalCommand());
     
 
     // driverController.y()
