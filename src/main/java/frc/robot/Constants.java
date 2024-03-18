@@ -13,6 +13,8 @@ import com.revrobotics.CANSparkBase.IdleMode;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -210,8 +212,18 @@ public final class Constants {
     public static final double shooterAutoRPMThreshold = 2000;
 
     public static final double shooterRevUpDistance = 3;
+  }
 
+  public static final class ShooterPivotConstants {
+    
+    public static final double shooterPivotP = 0;
+    public static final double shooterPivotI = 0;
+    public static final double shooterPivotD = 0;
+    public static final double shooterPivotVelocityConstraint = 0;
+    public static final double shooterPivotAccelerationConstraint = 0;
 
+    public static final double[] setpointList = {0, 1, 2, 3, 4};
+    public static final double[] distanceList = {0, 1, 2, 3, 4};
   }
 
   public static final class IntakeConstants {
