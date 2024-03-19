@@ -4,12 +4,14 @@
 
 package frc.robot.subsystems;
 
+import java.util.List;
 import java.util.function.DoubleSupplier;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.FollowPathHolonomic;
 import com.pathplanner.lib.commands.PathfindThenFollowPathHolonomic;
+import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -581,6 +583,20 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     limeLightEnable = enable;
   }
 
+  public PathPlannerPath getPathToNote() {
+    Pose2d notePose = new Pose2d();
+    Pose2d robotPose = getPose();
+
+    List<Translation2d> pathPoints = PathPlannerPath.bezierFromPoses(
+        robotPose,
+        notePose
+    );
+
+    return new PathPlannerPath(
+        pathPoints,
+        AutoConstants.constraints, 
+        new GoalEndState(0, notePose.getRotation()));
+  }
   
   @Override
   public void periodic() {
