@@ -382,8 +382,8 @@ public class AutoCommmands {
         );
     }
 
-    public Command simpleDisruptor(){
-        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.simpleDisruptorString);
+    public Command simpleDisruptorSource(){
+        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.simpleDisruptorSourceString);
         Pose2d shootPose = robotDrive.flipPoseIfRed(path.getPreviewStartingHolonomicPose());
         robotDrive.resetEstimatedPose(shootPose);
         robotDrive.enableLimeLight(true);
@@ -392,12 +392,12 @@ public class AutoCommmands {
           new ParallelCommandGroup(
             robotDrive.followAutonPath(path),
             intakeCenterTopFromDisruptor(),
-            shoot(new Pose2d(.84, 6.74, new Rotation2d(60)))
+            shoot(FieldConstants.topShootPose)
           )  
         );
     }
-    public Command bumpingDisruptor(){
-        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.bumpingDisruptorString);
+    public Command simpleDisruptorAmp(){
+        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.simpleDisruptorAmpString);
         Pose2d shootPose = robotDrive.flipPoseIfRed(path.getPreviewStartingHolonomicPose());
         robotDrive.resetEstimatedPose(shootPose);
         robotDrive.enableLimeLight(true);
@@ -406,7 +406,37 @@ public class AutoCommmands {
           new ParallelCommandGroup(
             robotDrive.followAutonPath(path),
             intakeCenterBottomFromDisruptor(),
-            shoot(new Pose2d(.84, 4.36, new Rotation2d(-60)))
+            shoot(FieldConstants.bottomShootPose)
+          )  
+        );
+    }
+
+
+    public Command bumpingDisruptorSource(){
+        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.bumpingDisruptorSourceString);
+        Pose2d shootPose = robotDrive.flipPoseIfRed(path.getPreviewStartingHolonomicPose());
+        robotDrive.resetEstimatedPose(shootPose);
+        robotDrive.enableLimeLight(true);
+        return new SequentialCommandGroup(
+          shootOnStart(),
+          new ParallelCommandGroup(
+            robotDrive.followAutonPath(path),
+            intakeCenterTopFromDisruptor(),
+            shoot(FieldConstants.topShootPose)
+          )  
+        );
+    }
+    public Command bumpingDisruptorAmp(){
+        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.bumpingDisruptorAmpString);
+        Pose2d shootPose = robotDrive.flipPoseIfRed(path.getPreviewStartingHolonomicPose());
+        robotDrive.resetEstimatedPose(shootPose);
+        robotDrive.enableLimeLight(true);
+        return new SequentialCommandGroup(
+          shootOnStart(),
+          new ParallelCommandGroup(
+            robotDrive.followAutonPath(path),
+            intakeCenterBottomFromDisruptor(),
+            shoot(FieldConstants.bottomShootPose)
           )  
         );
     }

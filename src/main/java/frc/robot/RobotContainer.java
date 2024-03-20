@@ -87,8 +87,10 @@ public class RobotContainer {
     autoSelector.addOption("MidlineAndBottomThreePiece", ()->autoCommmands.threePieceMidlineAndBottomAuto());
     autoSelector.addOption("MidlineAndTopThreePiece", ()->autoCommmands.threePieceMidlineAndTopAuto());
 
-    autoSelector.addOption("SimpleDisruptorTop", ()->autoCommmands.simpleDisruptor());
-    autoSelector.addOption("BumpingDisruptorBottom", ()->autoCommmands.bumpingDisruptor());
+    autoSelector.addOption("SimpleDisruptorAmp", ()->autoCommmands.simpleDisruptorAmp());
+    autoSelector.addOption("SimpleDisruptorSource", ()->autoCommmands.simpleDisruptorSource());
+    autoSelector.addOption("BumpingDisruptorAmp", ()->autoCommmands.bumpingDisruptorAmp());
+    autoSelector.addOption("BumpingDisruptorSource", ()->autoCommmands.bumpingDisruptorSource());
 
 
     // Configure default commands

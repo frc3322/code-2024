@@ -299,8 +299,12 @@ public final class Constants {
     public static final String threePieceMidlineAndBottomString = "MidlineAndBottomThreePiece";
     public static final String threePieceMidlineAndTopString = "MidlineAndTopThreePiece";
 
-    public static final String simpleDisruptorString = "NoMoreGP";
-    public static final String bumpingDisruptorString = "DisruptorNotesToUs";
+    public static final String simpleDisruptorAmpString = "NoMoreGPAmp";
+    public static final String simpleDisruptorSourceString = "NoMoreGPSource";
+    public static final String bumpingDisruptorAmpString = "DisruptorNotesToUsAmp";
+    public static final String bumpingDisruptorSourceString = "DisruptorNotesToUsSource";
+
+
   }
 
   public static final class NeoMotorConstants {
