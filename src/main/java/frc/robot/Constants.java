@@ -299,6 +299,8 @@ public final class Constants {
     public static final String threePieceMidlineAndBottomString = "MidlineAndBottomThreePiece";
     public static final String threePieceMidlineAndTopString = "MidlineAndTopThreePiece";
 
+    public static final String simpleDisruptorString = "NoMoreGP";
+    public static final String bumpingDisruptorString = "DisruptorNotesToUs";
   }
 
   public static final class NeoMotorConstants {
@@ -353,6 +355,9 @@ public final class Constants {
     public static final Pose2d centerMidPose = new Pose2d(8.29, 4.11, new Rotation2d(0));
     public static final Pose2d centerMidBottomPose = new Pose2d(8.29, 2.44, new Rotation2d(0)); 
     public static final Pose2d centerBottomPose = new Pose2d(8.29, .77, new Rotation2d(0)); 
+
+    public static final Pose2d centerTopPoseFromDisruptor = new Pose2d(8.29, .77, new Rotation2d(90)); //straight-on disruptor
+    public static final Pose2d centerBottomPoseFromDisruptor = new Pose2d(8.29, 7.43, new Rotation2d(-110)); //bumping disruptor
 
   }
 

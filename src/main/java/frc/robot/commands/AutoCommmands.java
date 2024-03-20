@@ -1,16 +1,14 @@
 package frc.robot.commands;
 
 
-import java.util.List;
 
-import com.pathplanner.lib.path.GoalEndState;
+
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.FieldConstants;
@@ -19,7 +17,6 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Transfer;
-import io.github.oblarg.oblog.annotations.Log;
 
 public class AutoCommmands {
     
@@ -140,6 +137,19 @@ public class AutoCommmands {
             autoIntakeToShooter()
             );
     } 
+    public Command intakeCenterBottomFromDisruptor(){
+        return new SequentialCommandGroup(
+          new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerBottomPoseFromDisruptor, 4, 15)), 
+          autoIntakeToShooter()
+        );
+    }
+    public Command intakeCenterTopFromDisruptor(){
+        return new SequentialCommandGroup(
+          new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerTopPoseFromDisruptor, 4, 15)), 
+          autoIntakeToShooter()
+        );
+    }
+    
     public Command intakeCenterMiddleBottomNote() {
         return new SequentialCommandGroup(
             new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerMidBottomPose, 4, 0)),
@@ -369,6 +379,35 @@ public class AutoCommmands {
                 )
             )
 
+        );
+    }
+
+    public Command simpleDisruptor(){
+        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.simpleDisruptorString);
+        Pose2d shootPose = robotDrive.flipPoseIfRed(path.getPreviewStartingHolonomicPose());
+        robotDrive.resetEstimatedPose(shootPose);
+        robotDrive.enableLimeLight(true);
+        return new SequentialCommandGroup(
+          shootOnStart(),
+          new ParallelCommandGroup(
+            robotDrive.followAutonPath(path),
+            intakeCenterTopFromDisruptor(),
+            shoot(new Pose2d(.84, 6.74, new Rotation2d(60)))
+          )  
+        );
+    }
+    public Command bumpingDisruptor(){
+        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.bumpingDisruptorString);
+        Pose2d shootPose = robotDrive.flipPoseIfRed(path.getPreviewStartingHolonomicPose());
+        robotDrive.resetEstimatedPose(shootPose);
+        robotDrive.enableLimeLight(true);
+        return new SequentialCommandGroup(
+          shootOnStart(),
+          new ParallelCommandGroup(
+            robotDrive.followAutonPath(path),
+            intakeCenterBottomFromDisruptor(),
+            shoot(new Pose2d(.84, 4.36, new Rotation2d(-60)))
+          )  
         );
     }
 }
