@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -41,12 +42,21 @@ public class ShooterPivot extends SubsystemBase {
   
   /** Creates a new ShooterPivot. */
   public ShooterPivot() {
+    
     for(int i = 0; i < ShooterPivotConstants.setpointList.length; i++){
       PIVOT_DOUBLE_TREE_MAP.put(
         ShooterPivotConstants.distanceList[i], 
         ShooterPivotConstants.setpointList[i]
       );
     }
+
+    pivotMotor.restoreFactoryDefaults();
+    pivotMotor.setIdleMode(IdleMode.kBrake);
+    pivotMotor.setInverted(false);
+    pivotMotor.burnFlash();
+    
+    pivotPIDController.setTolerance(ShooterPivotConstants.kPosToleranceDeg, ShooterPivotConstants.kTurnRateToleranceDegPerS);
+   
   }
 
   /*◇─◇──◇─◇
@@ -59,6 +69,10 @@ public class ShooterPivot extends SubsystemBase {
 
   public double getPivotRelativeEncoderPosition() {
     return pivotRelativeEncoder.getPosition();
+  }
+
+  public boolean atSetpoint() {
+    return pivotPIDController.atGoal();
   }
 
   /*◇─◇──◇─◇

@@ -224,6 +224,9 @@ public final class Constants {
 
     public static final double[] setpointList = {0, 1, 2, 3, 4};
     public static final double[] distanceList = {0, 1, 2, 3, 4};
+
+    public static final double kPosToleranceDeg = 0;
+    public static final double kTurnRateToleranceDegPerS = 0;
   }
 
   public static final class IntakeConstants {
