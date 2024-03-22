@@ -172,6 +172,7 @@ public class AutoCommmands {
         PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.threePieceMiddleTopString);
         Pose2d shootPose = path.getPreviewStartingHolonomicPose();
         robotDrive.resetEstimatedPose(shootPose);
+        robotDrive.enableLimeLight(true);
 
         //robotDrive.setYawToAngle(-path.getPreviewStartingHolonomicPose().getRotation().getDegrees());
         return new SequentialCommandGroup(
@@ -234,7 +235,7 @@ public class AutoCommmands {
         PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.fourPieceMiddleString);
         Pose2d shootPose = robotDrive.flipPoseIfRed(path.getPreviewStartingHolonomicPose());
         robotDrive.resetEstimatedPose(shootPose);
-        robotDrive.enableLimeLight(false);
+        robotDrive.enableLimeLight(true);
 
         //robotDrive.setYawToAngle(-path.getPreviewStartingHolonomicPose().getRotation().getDegrees());
         return new SequentialCommandGroup(
@@ -279,7 +280,7 @@ public class AutoCommmands {
 
     public Command shootAndLeaveTopAuto() {
         PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.topLeaveString);
-        Pose2d shootPose = path.getPreviewStartingHolonomicPose();
+        Pose2d shootPose = robotDrive.flipPoseIfRed(path.getPreviewStartingHolonomicPose());
         robotDrive.resetEstimatedPose(shootPose);
 
         return new SequentialCommandGroup(
@@ -290,7 +291,7 @@ public class AutoCommmands {
     
     public Command shootAndLeaveBottomAuto() {
         PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.bottomLeaveString);
-        Pose2d shootPose = path.getPreviewStartingHolonomicPose();
+        Pose2d shootPose =robotDrive.flipPoseIfRed(path.getPreviewStartingHolonomicPose());
         robotDrive.resetEstimatedPose(shootPose);
 
         return new SequentialCommandGroup(

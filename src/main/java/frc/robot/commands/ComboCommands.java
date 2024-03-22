@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.TransferConstants;
@@ -24,19 +25,23 @@ public class ComboCommands{
     Transfer transfer;
     Shooter shooter;
 
+    boolean atAmp = false;
+
     public ComboCommands(Elevator elevator, Intake groundIntake, Transfer transfer, Shooter shooter){
         this.elevator = elevator;
         this.intake = groundIntake;
         this.transfer = transfer;
         this.shooter = shooter;
+
+        atAmp = false;
     }
 
 
     public ParallelCommandGroup ejectTransferShooter(){
         return new ParallelCommandGroup(
-            intake.startSpin(-.3),
+            intake.runPayload(intake.startSpin(-1)),
             transfer.runTransferCommand(false)
-        );
+        ); 
     }
 
     
@@ -48,11 +53,13 @@ public class ComboCommands{
     //     ));
     // }
 
-    public ParallelCommandGroup stopEjectTransferShooter(){
-        return new ParallelCommandGroup(
-            intake.stopSpin(),
-            new InstantCommand(()-> transfer.stopTransfer())
-        );
+    public Command stopEjectTransferShooter(){
+        return new InstantCommand(()->{
+            intake.setWheelSpeed(0);
+            transfer.setTransferSpeeds(0);
+        }
+        ,intake, transfer);
+           
     }
 
     

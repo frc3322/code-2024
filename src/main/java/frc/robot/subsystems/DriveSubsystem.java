@@ -85,7 +85,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
   private boolean limeLightEnable = true;
   
   private LimeLight limeLightLeft = new LimeLight("limelight-left");
-  // private LimeLight limeLightRight = new LimeLight("limelight-right");
+  private LimeLight limeLightRight = new LimeLight("limelight-right");
 
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
@@ -415,7 +415,19 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
 
   }
   
+  public void boostDrivetrain(){
+    m_frontLeft.boostSwerve();
+    m_frontRight.boostSwerve();
+    m_rearLeft.boostSwerve();
+    m_rearRight.boostSwerve();
+  }
 
+  public void normalDrivetrain(){
+    m_frontLeft.normalSwerve();
+    m_frontRight.normalSwerve();
+    m_rearLeft.normalSwerve();
+    m_rearRight.normalSwerve();
+  }
 
 
   /*◇─◇──◇─◇
@@ -435,6 +447,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
             m_rearRight.getState()
         );
   }
+  
   
   /**
    * Returns the heading of the robot.
@@ -571,9 +584,9 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
     return limeLightLeft;
   }
 
-  //public LimeLight getRightLimelight(){
-  //  return limeLightRight;
-  //}
+  public LimeLight getRightLimelight(){
+    return limeLightRight;
+  }
 
   /**
    * 
@@ -621,10 +634,10 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
       SmartDashboard.putString("Limelight-Left in drivetrain", limeLightLeft.poseAsString());
     }
     
-    //if (limeLightRight.hasTarget()){
-    //  estimatedPose.addVisionMeasurement(limeLightRight.getPose(), Timer.getFPGATimestamp() - limeLightRight.getTotalLatency());
-    //  SmartDashboard.putString("Limelight-Right in drivetrain", limeLightRight.poseAsString());
-    //}
+    // if (limeLightRight.hasTarget()){
+    //   estimatedPose.addVisionMeasurement(limeLightRight.getPose(), Timer.getFPGATimestamp() - limeLightRight.getTotalLatency());
+    //   SmartDashboard.putString("Limelight-Right in drivetrain", limeLightRight.poseAsString());
+    // }
 
     SmartDashboard.updateValues();
     
