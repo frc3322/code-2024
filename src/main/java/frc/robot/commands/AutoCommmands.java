@@ -72,6 +72,13 @@ public class AutoCommmands {
         );
     }
 
+    public Command autoIntakeToAmp() {
+        return new SequentialCommandGroup(
+            combo.startAmpIntakeCommand().until(intake::innerIntakeFull),
+            combo.stowCommand().withTimeout(0.5)
+        );
+    }
+
     public Command seekNoteAndIntake(){
         return new ParallelCommandGroup(
             robotDrive.followAutonPath(robotDrive.getPathToNote()),
@@ -134,7 +141,7 @@ public class AutoCommmands {
     public Command intakeCenterBottomNote() {
         return new SequentialCommandGroup(
             new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerBottomPose, 4, 0)),
-            autoIntakeToShooter()
+            autoIntakeToAmp()
             );
     } 
     public Command intakeCenterBottomFromDisruptor(){
@@ -153,7 +160,7 @@ public class AutoCommmands {
     public Command intakeCenterMiddleBottomNote() {
         return new SequentialCommandGroup(
             new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerMidBottomPose, 4, 0)),
-            autoIntakeToShooter()
+            autoIntakeToAmp()
             );
     }      
 
@@ -165,6 +172,21 @@ public class AutoCommmands {
         return new SequentialCommandGroup(
             new WaitUntilConditionCommand(()->robotDrive.atPose(shootPose, 0.3, 10)),
             transfer.shootCommand()
+        );
+    }
+
+    public Command lowToleranceShoot(Pose2d shootPose) {
+        return new SequentialCommandGroup(
+            new WaitUntilConditionCommand(()->robotDrive.atPose(shootPose, 0.1, 10)),
+            transfer.shootCommand()
+        );
+    }
+
+    public Command transferToShooter(Pose2d shootPose) {
+        return new SequentialCommandGroup(
+            new WaitUntilConditionCommand(()->robotDrive.atPose(shootPose, 3, 0)),
+            combo.noteTransferToShooter().until(transfer::shooterFull),
+            combo.stowCommand().withTimeout(0.5)
         );
     }
 
@@ -311,8 +333,10 @@ public class AutoCommmands {
                 robotDrive.followAutonPath(path),
                 new SequentialCommandGroup(
                     intakeCenterMiddleBottomNote(),
+                    transferToShooter(shootPose),
                     shoot(shootPose),
                     intakeCenterBottomNote(),
+                    transferToShooter(shootPose),
                     shoot(shootPose)
                 )
             )
@@ -351,9 +375,9 @@ public class AutoCommmands {
                 robotDrive.followAutonPath(path),
                 new SequentialCommandGroup(
                     intakeCenterBottomNote(),
-                    shoot(shootPose),
+                    lowToleranceShoot(shootPose),
                     intakeBottomNote(),
-                    shoot(shootPose)
+                    lowToleranceShoot(shootPose)
                 )
             )
 

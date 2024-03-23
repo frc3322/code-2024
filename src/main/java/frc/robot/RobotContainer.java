@@ -182,14 +182,6 @@ public class RobotContainer {
             robotDrive)
     );
 
-    driverController.rightStick()
-    .onTrue(
-      new InstantCommand(() -> robotDrive.boostDrivetrain())
-    )
-    .onFalse(
-      new InstantCommand(() -> robotDrive.normalDrivetrain())
-    );
-
     driverController.leftBumper()
     .onTrue(comboCommands.scoreCommand());
 

@@ -166,7 +166,7 @@ public class MAXSwerveModule {
   }
 
   public void boostSwerve() {
-    m_drivingSparkMax.setSmartCurrentLimit(80);
+    m_drivingSparkMax.setSmartCurrentLimit(50);
   }
 
   public void normalSwerve() {
