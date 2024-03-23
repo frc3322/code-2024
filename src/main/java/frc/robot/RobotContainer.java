@@ -83,8 +83,8 @@ public class RobotContainer {
     autoSelector.addOption("MiddleThreePieceSourceSide", () -> autoCommmands.threePieceMiddleBottomAuto());
     autoSelector.addOption("BottomThreePieceSourceSide", () -> autoCommmands.bottomThreeCenterMiddleAuto());
     autoSelector.addOption("MiddleFourPiece", ()-> autoCommmands.fourPieceMiddleAuto());
-    // autoSelector.addOption("MidlineThreePieceSource", ()-> autoCommmands.threePieceMidlineSourceAuto());
-    // autoSelector.addOption("MidlineThreePieceAmp", ()-> autoCommmands.threePieceMidlineAmpAuto());
+    autoSelector.addOption("MidlineThreePieceSource", ()-> autoCommmands.threePieceMidlineSourceAuto());
+    autoSelector.addOption("MidlineThreePieceAmp", ()-> autoCommmands.threePieceMidlineAmpAuto());
     autoSelector.addOption("MidlineAndBottomThreePiece", ()->autoCommmands.threePieceMidlineAndBottomAuto());
     autoSelector.addOption("MidlineAndTopThreePiece", ()->autoCommmands.threePieceMidlineAndTopAuto());
 
@@ -282,8 +282,8 @@ public class RobotContainer {
     // }, intake));
 
     secondaryController.a()
-    .onTrue(
-      forks.spinServosCommand()).onFalse(forks.stopServosCommand());
+    .whileTrue(
+      forks.servosStartEndCommand());
 
     secondaryController.leftBumper()
     .onTrue(comboCommands.goToTopAmp())
