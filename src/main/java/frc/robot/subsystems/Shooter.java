@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import java.util.function.BooleanSupplier;
 
+import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -31,8 +32,8 @@ import io.github.oblarg.oblog.annotations.Log;
  */
 public class Shooter extends SubsystemBase implements Loggable {
   
-  private final CANSparkMax shooterTopMotor = new CANSparkMax(CANIds.kShooterTopCanId, MotorType.kBrushless);
-  private final CANSparkMax shooterBottomMotor = new CANSparkMax(CANIds.kShooterBottomCanId, MotorType.kBrushless);
+  private final CANSparkFlex shooterTopMotor = new CANSparkFlex(CANIds.kShooterTopCanId, MotorType.kBrushless);
+  private final CANSparkFlex shooterBottomMotor = new CANSparkFlex(CANIds.kShooterBottomCanId, MotorType.kBrushless);
 
   private final RelativeEncoder shooterTopEncoder = shooterTopMotor.getEncoder();
   private final RelativeEncoder shooterBottomEncoder = shooterBottomMotor.getEncoder();
