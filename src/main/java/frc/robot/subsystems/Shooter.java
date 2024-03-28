@@ -59,6 +59,7 @@ public class Shooter extends SubsystemBase implements Loggable {
   private double shooterTopSetpoint = 0;
   @Log
   private double shooterBottomSetpoint = 0;
+
   
   /** Creates a new Shooter. */
   public Shooter() {
@@ -69,7 +70,7 @@ public class Shooter extends SubsystemBase implements Loggable {
     shooterBottomMotor.setIdleMode(IdleMode.kCoast);
 
     shooterTopMotor.setInverted(true);
-    shooterBottomMotor.setInverted(true);
+    shooterBottomMotor.setInverted(false);
 
     shooterTopMotor.setSmartCurrentLimit(NeoMotorConstants.currentLimit);
     shooterBottomMotor.setSmartCurrentLimit(NeoMotorConstants.currentLimit);
@@ -121,6 +122,7 @@ public class Shooter extends SubsystemBase implements Loggable {
    * Returns the calculations of the feedforward controller and the PID controller for the top motor.
    * @return The combined feedfoward and PID controller's output.
    */
+  @Log
   public double getTopCombinedControllers() {
     return getTopMotorFeedforwardOutput() + getTopMotorPIDOutput();
   }
@@ -129,6 +131,7 @@ public class Shooter extends SubsystemBase implements Loggable {
    * Returns the calculations of the feedforward controller and the PID controller for the bottom motor.
    * @return The combined feedfoward and PID controller's output.
    */
+  @Log
   public double getBottomCombinedControllers() {
     return getBottomMotorFeedforwardOutput() + getBottomMotorPIDOutput();
   }

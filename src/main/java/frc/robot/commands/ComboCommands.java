@@ -98,6 +98,18 @@ public class ComboCommands{
         );
     } 
 
+    //     public ParallelCommandGroup startShooterIntakeWithDelayCommand() {
+    //     return new ParallelCommandGroup(
+    //         elevator.goToBottomCommand(),
+    //         intake.flipToGroundAndRunPayloadCommand(
+    //             intake.startSpin(IntakeConstants.groundIntakeSpeed), 
+    //             0, 
+    //             0
+    //         ),
+    //         transfer.intakeToShooterWithDelayCommand()
+    //     );
+    // } 
+
      /**
      * @return Command group to flip, put elevator down, and start intake to middle
      */
