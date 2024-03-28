@@ -275,8 +275,8 @@ public class RobotContainer {
     // }, intake));
 
     secondaryController.a()
-    .onTrue(
-      forks.spinServosCommand()).onFalse(forks.stopServosCommand());
+    .whileTrue(
+      forks.servosStartEndCommand());
 
     secondaryController.leftBumper()
     .onTrue(comboCommands.goToTopAmp())
