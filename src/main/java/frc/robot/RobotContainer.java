@@ -221,6 +221,7 @@ public class RobotContainer {
 
     driverController.rightTrigger(0.1)
     .onTrue(comboCommands.startShooterIntakeCommand())
+    //.onTrue(comboCommands.startShooterIntakeWithDelayCommand())
     .onFalse(comboCommands.stopIntakeWithTransferRunningCommand());
 
     driverController.leftTrigger(0.1)

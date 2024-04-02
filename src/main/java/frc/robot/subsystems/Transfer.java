@@ -14,12 +14,14 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.CANIds;
 import frc.robot.Constants.NeoMotorConstants;
 import frc.robot.Constants.TransferConstants;
+import frc.robot.commands.WaitUntilConditionCommand;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Config;
 import io.github.oblarg.oblog.annotations.Log;
@@ -133,6 +135,8 @@ public class Transfer extends SubsystemBase implements Loggable {
     );
   }
 
+   
+
   /**
    * Returns a command that moves a game piece from the intake to the shooter.
    * @return A start end command.
@@ -142,6 +146,24 @@ public class Transfer extends SubsystemBase implements Loggable {
     command.addRequirements(this);
     return command;
   }
+
+  //   public Command intakeToShooterWithDelayCommand() {
+  //   Command command = new SequentialCommandGroup(
+  //     new InstantCommand(()-> {
+  //       setTransferSpeeds(TransferConstants.transferSpeed);
+  //       setShooterTransferSpeeds(TransferConstants.transferSpeed);
+  //     }),
+  //     new WaitUntilConditionCommand(this::shooterFull),
+  //     new WaitCommand(.05),
+  //     new InstantCommand(()-> {
+  //       setTransferSpeeds(0);
+  //       setShooterTransferSpeeds(0);
+  //     })
+
+  //   );
+  //   command.addRequirements(this);
+  //   return command;
+  // }
 
   /**
    * Returns a command that moves the game piece from the shooter to the intake.

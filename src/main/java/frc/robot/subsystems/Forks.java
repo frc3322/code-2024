@@ -41,12 +41,14 @@ public class Forks extends SubsystemBase {
       this
     );
   }
-  public Command servosStartEndCommand(){
-    return new StartEndCommand(
-      ()->setSpinSpeeds(0), 
-      ()->setSpinSpeeds(.5), 
-      this).withTimeout(1);
-  }
+public Command servosStartEndCommand(){
+  return new StartEndCommand(
+    ()->setSpinSpeeds(0),
+    ()->setSpinSpeeds(.5),
+    this)
+    .withTimeout(1.0);
+}
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

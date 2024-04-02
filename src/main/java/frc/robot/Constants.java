@@ -194,7 +194,7 @@ public final class Constants {
     public static final double shooterTopI = 0;
     public static final double shooterTopD = 0;
 
-    public static final double shooterBottomP = 0.000001;
+    public static final double shooterBottomP = 0.0002;//0.000001;
     public static final double shooterBottomI = 0;
     public static final double shooterBottomD = 0;
 

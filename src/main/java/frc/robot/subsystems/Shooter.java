@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import java.util.function.BooleanSupplier;
 
+import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkBase.IdleMode;
@@ -31,8 +32,8 @@ import io.github.oblarg.oblog.annotations.Log;
  */
 public class Shooter extends SubsystemBase implements Loggable {
   
-  private final CANSparkMax shooterTopMotor = new CANSparkMax(CANIds.kShooterTopCanId, MotorType.kBrushless);
-  private final CANSparkMax shooterBottomMotor = new CANSparkMax(CANIds.kShooterBottomCanId, MotorType.kBrushless);
+  private final CANSparkFlex shooterTopMotor = new CANSparkFlex(CANIds.kShooterTopCanId, MotorType.kBrushless);
+  private final CANSparkFlex shooterBottomMotor = new CANSparkFlex(CANIds.kShooterBottomCanId, MotorType.kBrushless);
 
   private final RelativeEncoder shooterTopEncoder = shooterTopMotor.getEncoder();
   private final RelativeEncoder shooterBottomEncoder = shooterBottomMotor.getEncoder();
@@ -58,6 +59,7 @@ public class Shooter extends SubsystemBase implements Loggable {
   private double shooterTopSetpoint = 0;
   @Log
   private double shooterBottomSetpoint = 0;
+
   
   /** Creates a new Shooter. */
   public Shooter() {
@@ -68,7 +70,7 @@ public class Shooter extends SubsystemBase implements Loggable {
     shooterBottomMotor.setIdleMode(IdleMode.kCoast);
 
     shooterTopMotor.setInverted(true);
-    shooterBottomMotor.setInverted(true);
+    shooterBottomMotor.setInverted(false);
 
     shooterTopMotor.setSmartCurrentLimit(NeoMotorConstants.currentLimit);
     shooterBottomMotor.setSmartCurrentLimit(NeoMotorConstants.currentLimit);
@@ -120,6 +122,7 @@ public class Shooter extends SubsystemBase implements Loggable {
    * Returns the calculations of the feedforward controller and the PID controller for the top motor.
    * @return The combined feedfoward and PID controller's output.
    */
+  @Log
   public double getTopCombinedControllers() {
     return getTopMotorFeedforwardOutput() + getTopMotorPIDOutput();
   }
@@ -128,6 +131,7 @@ public class Shooter extends SubsystemBase implements Loggable {
    * Returns the calculations of the feedforward controller and the PID controller for the bottom motor.
    * @return The combined feedfoward and PID controller's output.
    */
+  @Log
   public double getBottomCombinedControllers() {
     return getBottomMotorFeedforwardOutput() + getBottomMotorPIDOutput();
   }
