@@ -3,8 +3,10 @@
   "robotLength": 0.7112,
   "holonomicMode": true,
   "pathFolders": [
+    "Disruptors",
     "Dynamic trajectories",
     "Final No pivot autos",
+    "Midline 3-piece",
     "No pivot autos fast",
     "No pivot autos realistic",
     "Original Trajectories"
