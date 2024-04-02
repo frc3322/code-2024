@@ -465,5 +465,33 @@ public class AutoCommmands {
           )  
         );
     }
+
+    public Command fivePieceMiddleAuto() {
+        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.fivePieceMiddleString);
+        Pose2d shootPose = robotDrive.flipPoseIfRed(path.getPreviewStartingHolonomicPose());
+        robotDrive.resetEstimatedPose(shootPose);
+        robotDrive.enableLimeLight(true);
+
+        //robotDrive.setYawToAngle(-path.getPreviewStartingHolonomicPose().getRotation().getDegrees());
+        return new SequentialCommandGroup(
+            shootOnStart(),
+            new ParallelCommandGroup(
+                robotDrive.followAutonPath(path),
+                new SequentialCommandGroup(
+                    intakeMiddleNote(),
+                    shoot(shootPose),
+                    intakeCenterMiddleNote(),
+                    shoot(shootPose),
+                    intakeTopNote(),
+                    new SequentialCommandGroup(
+                        new WaitUntilConditionCommand(()->robotDrive.atPose(shootPose, 0.2, 10)),
+                        transfer.shootCommand()
+                    ),
+                    intakeBottomNote(),
+                    shoot(shootPose)
+                )
+            ));
+            
+    }
 }
 
