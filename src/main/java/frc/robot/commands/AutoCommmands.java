@@ -481,7 +481,10 @@ public class AutoCommmands {
                     intakeMiddleNote(),
                     shoot(shootPose),
                     intakeCenterMiddleNote(),
-                    shoot(shootPose),
+                    new SequentialCommandGroup(
+                        new WaitUntilConditionCommand(()->robotDrive.atPose(shootPose, 0.3, 30)),
+                        transfer.shootCommand()
+                    ),
                     intakeTopNote(),
                     new SequentialCommandGroup(
                         new WaitUntilConditionCommand(()->robotDrive.atPose(shootPose, 0.2, 10)),
