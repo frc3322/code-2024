@@ -79,13 +79,6 @@ public class AutoCommmands {
         );
     }
 
-    public Command seekNoteAndIntake(){
-        return new ParallelCommandGroup(
-            robotDrive.followAutonPath(robotDrive.getPathToNote()),
-            autoIntakeToShooter()
-        );
-    }
-
     public Command intakeTopNote() {
         Pose2d notePose = robotDrive.flipPoseIfRed(FieldConstants.blueTopNotePose);
 
@@ -179,6 +172,16 @@ public class AutoCommmands {
         return new SequentialCommandGroup(
             new WaitUntilConditionCommand(()->robotDrive.atPose(shootPose, 0.1, 10)),
             transfer.shootCommand()
+        );
+    }
+
+    public Command shootAndStow(Pose2d shootPose) {
+        return new ParallelCommandGroup(
+            new SequentialCommandGroup(
+                new WaitUntilConditionCommand(()->robotDrive.atPose(shootPose, 0.3, 10)),
+                transfer.shootCommand()
+            ),
+            combo.stowCommand()
         );
     }
 
