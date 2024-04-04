@@ -102,7 +102,7 @@ public class AutoCommmands {
 
     public Command intakeCenterMiddleNote(){
         return new SequentialCommandGroup(
-            new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerMidPose, 1.5, 0)),
+            new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerMidPose, 4, 0)),
             autoIntakeToShooter()
             );
             
@@ -147,6 +147,16 @@ public class AutoCommmands {
         return new SequentialCommandGroup(
             new WaitUntilConditionCommand(()->robotDrive.atPose(shootPose, 0.3, 10)),
             transfer.shootCommand()
+        );
+    }
+
+    public Command shootAndStow(Pose2d shootPose) {
+        return new ParallelCommandGroup(
+            new SequentialCommandGroup(
+                new WaitUntilConditionCommand(()->robotDrive.atPose(shootPose, 0.3, 10)),
+                transfer.shootCommand()
+            ),
+            combo.stowCommand().withTimeout(0.5)
         );
     }
 
@@ -466,7 +476,7 @@ public class AutoCommmands {
                 robotDrive.followAutonPath(path),
                 new SequentialCommandGroup(
                     intakeMiddleNote(),
-                    shoot(shootPose),
+                    shootAndStow(shootPose),
                     intakeCenterMiddleNote(),
                     new SequentialCommandGroup(
                         new WaitUntilConditionCommand(()->robotDrive.atPose(shootPose, 0.3, 30)),
@@ -497,7 +507,7 @@ public class AutoCommmands {
                 robotDrive.followAutonPath(path),
                 new SequentialCommandGroup(
                     intakeMiddleNote(),
-                    shoot(shootPose),
+                    shootAndStow(shootPose),
                     intakeCenterMiddleNote(),
                     new SequentialCommandGroup(
                         new WaitUntilConditionCommand(()->robotDrive.atPose(shootPose, 0.3, 30)),
