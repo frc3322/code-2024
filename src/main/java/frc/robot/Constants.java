@@ -289,13 +289,17 @@ public final class Constants {
     public static final String threePieceMiddleTopString = "ThreePieceMiddleTop";
     public static final String threePieceMiddleBottomString = "ThreePieceMiddleBottom";
     public static final String fourPieceMiddleString = "FourPieceMiddle";
-    public static final String fivePieceMiddleString = "FivePieceFaster";
+    public static final String fivePieceMiddleString = "FivePieceMiddle";
+        public static final String fivePieceFasterString = "FivePieceFaster";
 
     public static final String bottomThreeCenterMiddleString = "BottomThreeCenterMiddle";
     public static final String bottomLeaveString = "BottomLeave";
 
     public static final String threePieceMidlineSourceString = "MidlineThreePieceSource";
     public static final String threePieceMidlineAmpString = "MidlineThreePieceAmp";
+
+    public static final String threePieceMidlineAmpTestString = "MidlineAmp";
+    public static final String threePieceMidlineSourceTestString = "MidlineSource";
 
     public static final String threePieceMidlineAndBottomString = "MidlineAndBottomThreePiece";
     public static final String threePieceMidlineAndTopString = "MidlineAndTopThreePiece";

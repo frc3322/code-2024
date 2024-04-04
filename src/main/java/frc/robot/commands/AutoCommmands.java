@@ -111,7 +111,7 @@ public class AutoCommmands {
 
     public Command intakeCenterMiddleNote(){
         return new SequentialCommandGroup(
-            new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerMidPose, 1.5, 0)),
+            new WaitUntilConditionCommand(()->robotDrive.atPose(robotDrive.flipPoseIfRed(FieldConstants.centerMidPose), 1.5, 0)),
             autoIntakeToShooter()
             );
             
@@ -119,21 +119,21 @@ public class AutoCommmands {
 
     public Command intakeCenterMiddleTopNote() {
         return new SequentialCommandGroup(
-            new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerMidTopPose, 4, 0)),
+            new WaitUntilConditionCommand(()->robotDrive.atPose(robotDrive.flipPoseIfRed(FieldConstants.centerMidTopPose), 4, 0)),
             autoIntakeToShooter()
             );
     }
 
     public Command intakeCenterTopNote(){
         return new SequentialCommandGroup(
-            new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerTopPose, 4, 0)),
+            new WaitUntilConditionCommand(()->robotDrive.atPose(robotDrive.flipPoseIfRed(FieldConstants.centerTopPose), 4, 0)),
             autoIntakeToShooter()
             );
             
         }
     public Command intakeCenterBottomNote() {
         return new SequentialCommandGroup(
-            new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerBottomPose, 4, 0)),
+            new WaitUntilConditionCommand(()->robotDrive.atPose(robotDrive.flipPoseIfRed(FieldConstants.centerBottomPose), 4, 0)),
             autoIntakeToAmp()
             );
     } 
@@ -152,7 +152,7 @@ public class AutoCommmands {
     
     public Command intakeCenterMiddleBottomNote() {
         return new SequentialCommandGroup(
-            new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerMidBottomPose, 4, 0)),
+            new WaitUntilConditionCommand(()->robotDrive.atPose(robotDrive.flipPoseIfRed(FieldConstants.centerMidBottomPose), 4, 0)),
             autoIntakeToAmp()
             );
     }      
@@ -187,7 +187,7 @@ public class AutoCommmands {
 
     public Command transferToShooter(Pose2d shootPose) {
         return new SequentialCommandGroup(
-            new WaitUntilConditionCommand(()->robotDrive.atPose(shootPose, 3, 0)),
+            new WaitUntilConditionCommand(()->robotDrive.atPose(shootPose, 4, 0)),
             combo.noteTransferToShooter().until(transfer::shooterFull),
             combo.stowCommand().withTimeout(0.5)
         );
@@ -326,7 +326,7 @@ public class AutoCommmands {
     }
 
     public Command threePieceMidlineSourceAuto(){
-        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.threePieceMidlineSourceString);
+        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.threePieceMidlineSourceTestString);
         Pose2d shootPose = robotDrive.flipPoseIfRed(path.getPreviewStartingHolonomicPose());
         robotDrive.resetEstimatedPose(shootPose);
         robotDrive.enableLimeLight(true);
@@ -391,7 +391,7 @@ public class AutoCommmands {
 
 
     public Command threePieceMidlineAmpAuto(){
-        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.threePieceMidlineAmpString);
+        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.threePieceMidlineAmpTestString);
         Pose2d shootPose = robotDrive.flipPoseIfRed(path.getPreviewStartingHolonomicPose());
         robotDrive.resetEstimatedPose(shootPose);
         robotDrive.enableLimeLight(true);

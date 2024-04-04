@@ -634,7 +634,7 @@ public class DriveSubsystem extends SubsystemBase implements Loggable{
       SmartDashboard.putString("Limelight-Left in drivetrain", limeLightLeft.poseAsString());
     }
     
-    if (limeLightRight.hasTarget()){
+    if (limeLightRight.hasTarget() && limeLightEnable){
       estimatedPose.addVisionMeasurement(limeLightRight.getPose(), Timer.getFPGATimestamp() - limeLightRight.getTotalLatency());
       SmartDashboard.putString("Limelight-Right in drivetrain", limeLightRight.poseAsString());
     }
