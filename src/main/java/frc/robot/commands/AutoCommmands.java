@@ -431,33 +431,6 @@ public class AutoCommmands {
             
     }
 
-    public Command fivePieceMiddleAuto(){
-        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.fivePieceMiddleString);
-        Pose2d shootPose = path.getPreviewStartingHolonomicPose();
-        robotDrive.resetEstimatedPose(shootPose);
-
-        //robotDrive.setYawToAngle(-path.getPreviewStartingHolonomicPose().getRotation().getDegrees());
-        return new SequentialCommandGroup(
-            shootOnStart(),
-            new ParallelCommandGroup(
-                robotDrive.followAutonPath(path),
-                new SequentialCommandGroup(
-                    intakeMiddleNote(),
-                    shoot(shootPose),
-                    intakeCenterMiddleNote(),
-                    shoot(shootPose),
-                    intakeTopNote(),
-                    new SequentialCommandGroup(
-                        new WaitUntilConditionCommand(()->robotDrive.atPose(shootPose, 0.1, 10)),
-                        transfer.shootCommand()
-                    ),
-                    intakeBottomNote(),
-                    shoot(shootPose)
-                )
-            )
-        );
-    }
-
     public Command shootAndLeaveTopAuto() {
         PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.topLeaveString);
         Pose2d shootPose = robotDrive.flipPoseIfRed(path.getPreviewStartingHolonomicPose());
@@ -478,6 +451,62 @@ public class AutoCommmands {
             shootOnStart(),
             robotDrive.followAutonPath(path)
         );
+    }
+
+    public Command fivePieceMiddleAuto() {
+        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.fivePieceMiddleString);
+        Pose2d shootPose = robotDrive.flipPoseIfRed(path.getPreviewStartingHolonomicPose());
+        robotDrive.resetEstimatedPose(shootPose);
+        robotDrive.enableLimeLight(true);
+
+        //robotDrive.setYawToAngle(-path.getPreviewStartingHolonomicPose().getRotation().getDegrees());
+        return new SequentialCommandGroup(
+            shootOnStart(),
+            new ParallelCommandGroup(
+                robotDrive.followAutonPath(path),
+                new SequentialCommandGroup(
+                    intakeMiddleNote(),
+                    shoot(shootPose),
+                    intakeCenterMiddleNote(),
+                    new SequentialCommandGroup(
+                        new WaitUntilConditionCommand(()->robotDrive.atPose(shootPose, 0.3, 30)),
+                        transfer.shootCommand()
+                    ),
+                    intakeTopNote(),
+                    new SequentialCommandGroup(
+                        new WaitUntilConditionCommand(()->robotDrive.atPose(shootPose, 0.2, 10)),
+                        transfer.shootCommand()
+                    ),
+                    intakeBottomNote(),
+                    shoot(shootPose)
+                )
+            ));
+            
+    }
+
+    public Command fourPieceCenterMiddleAuto() {
+        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.fourPieceCenterMiddleString);
+        Pose2d shootPose = robotDrive.flipPoseIfRed(path.getPreviewStartingHolonomicPose());
+        robotDrive.resetEstimatedPose(shootPose);
+        robotDrive.enableLimeLight(true);
+
+        //robotDrive.setYawToAngle(-path.getPreviewStartingHolonomicPose().getRotation().getDegrees());
+        return new SequentialCommandGroup(
+            shootOnStart(),
+            new ParallelCommandGroup(
+                robotDrive.followAutonPath(path),
+                new SequentialCommandGroup(
+                    intakeMiddleNote(),
+                    shoot(shootPose),
+                    intakeCenterMiddleNote(),
+                    new SequentialCommandGroup(
+                        new WaitUntilConditionCommand(()->robotDrive.atPose(shootPose, 0.3, 30)),
+                        transfer.shootCommand()
+                    ),
+                    intakeBottomNote(),
+                    shoot(shootPose)
+                )
+            ));
     }
 }
 
