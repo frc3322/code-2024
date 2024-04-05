@@ -241,7 +241,7 @@
   ],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.0,
+    "maxVelocity": 5.0,
     "maxAcceleration": 4.0,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 1080.0
@@ -252,7 +252,7 @@
     "rotateFast": true
   },
   "reversed": false,
-  "folder": "Midline 3-piece",
+  "folder": null,
   "previewStartingState": {
     "rotation": 60.0,
     "velocity": 0

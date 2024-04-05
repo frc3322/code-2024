@@ -70,6 +70,13 @@ public class AutoCommmands {
         );
     }
 
+    public Command autoIntakeToAmp() {
+        return new SequentialCommandGroup(
+            combo.startAmpIntakeCommand().until(intake::innerIntakeFull),
+            combo.stowCommand().withTimeout(0.5)
+        );
+    }
+
     public Command intakeTopNote() {
         Pose2d notePose = robotDrive.flipPoseIfRed(FieldConstants.blueTopNotePose);
 
@@ -110,34 +117,32 @@ public class AutoCommmands {
 
     public Command intakeCenterMiddleTopNote() {
         return new SequentialCommandGroup(
-            new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerMidTopPose, 1.5, 0)),
-            autoIntakeToShooter()
+            new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerMidTopPose, 4, 0)),
+            autoIntakeToAmp()
             );
     }
 
     public Command intakeCenterTopNote(){
         return new SequentialCommandGroup(
-            new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerTopPose, 1.5, 0)),
-            autoIntakeToShooter()
+            new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerTopPose, 4, 0)),
+            autoIntakeToAmp()
             );
             
-        }
+    }
 
-    public Command intakeCenterMiddleBottomNote(){
-        return new SequentialCommandGroup(
-            new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerMidBottomPose, 4, 0)),
-            autoIntakeToShooter()
-            );
-            
-        }
-
-    public Command intakeCenterBottomNote(){
+    public Command intakeCenterBottomNote() {
         return new SequentialCommandGroup(
             new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerBottomPose, 4, 0)),
-            autoIntakeToMiddle()
+            autoIntakeToAmp()
             );
-            
-        }
+    } 
+
+    public Command intakeCenterMiddleBottomNote() {
+        return new SequentialCommandGroup(
+            new WaitUntilConditionCommand(()->robotDrive.atPose(FieldConstants.centerMidBottomPose, 4, 0)),
+            autoIntakeToAmp()
+            );
+    }  
 
     public Command flipIntakeUp() {
         return combo.stowCommand().withTimeout(.6);
@@ -156,6 +161,14 @@ public class AutoCommmands {
                 new WaitUntilConditionCommand(()->robotDrive.atPose(shootPose, 0.3, 10)),
                 transfer.shootCommand()
             ),
+            combo.stowCommand().withTimeout(0.5)
+        );
+    }
+
+    public Command transferToShooter(Pose2d shootPose) {
+        return new SequentialCommandGroup(
+            new WaitUntilConditionCommand(()->robotDrive.atPose(shootPose, 3, 0)),
+            combo.noteTransferToShooter().until(transfer::shooterFull),
             combo.stowCommand().withTimeout(0.5)
         );
     }
@@ -517,6 +530,50 @@ public class AutoCommmands {
                     shoot(shootPose)
                 )
             ));
+    }
+
+    public Command threePieceMidlineSourceAuto(){
+        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.threePieceMidlineSourceString);
+        Pose2d shootPose = robotDrive.flipPoseIfRed(path.getPreviewStartingHolonomicPose());
+        robotDrive.resetEstimatedPose(shootPose);
+        robotDrive.enableLimeLight(true);
+        return new SequentialCommandGroup(
+            shootOnStart(),
+            new ParallelCommandGroup(
+                robotDrive.followAutonPath(path),
+                new SequentialCommandGroup(
+                    intakeCenterMiddleBottomNote(),
+                    transferToShooter(shootPose),
+                    shoot(shootPose),
+                    intakeCenterBottomNote(),
+                    transferToShooter(shootPose),
+                    shoot(shootPose)
+                )
+            )
+
+        );
+    }
+
+    public Command threePieceMidlineAmpAuto(){
+        PathPlannerPath path = PathPlannerPath.fromPathFile(AutoConstants.threePieceMidlineAmpString);
+        Pose2d shootPose = robotDrive.flipPoseIfRed(path.getPreviewStartingHolonomicPose());
+        robotDrive.resetEstimatedPose(shootPose);
+        robotDrive.enableLimeLight(true);
+        return new SequentialCommandGroup(
+            shootOnStart(),
+            new ParallelCommandGroup(
+                robotDrive.followAutonPath(path),
+                new SequentialCommandGroup(
+                    intakeCenterTopNote(),
+                    transferToShooter(shootPose),
+                    shoot(shootPose),
+                    intakeCenterMiddleTopNote(),
+                    transferToShooter(shootPose),
+                    shoot(shootPose)
+                )
+            )
+
+        );
     }
 }
 

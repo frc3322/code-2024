@@ -85,6 +85,8 @@ public class RobotContainer {
     autoSelector.setDefaultOption("MiddleFourPiece", ()-> autoCommmands.fourPieceMiddleAuto());
     autoSelector.addOption("MiddleFivePiece", () -> autoCommmands.fivePieceMiddleAuto());
     autoSelector.addOption("! MIDLINE ! MiddleFourPiece", () -> autoCommmands.fourPieceCenterMiddleAuto());
+    autoSelector.addOption("MidlineThreePieceSource", ()-> autoCommmands.threePieceMidlineSourceAuto());
+    autoSelector.addOption("MidlineThreePieceAmp", ()-> autoCommmands.threePieceMidlineAmpAuto());
     //autoSelector.addOption("TopTwoPiece", () -> autoCommmands.twoPieceTopAuto());
     //autoSelector.addOption("BottomTwoPiece", () -> autoCommmands.twoPieceBottomAuto());
 
@@ -101,7 +103,7 @@ public class RobotContainer {
             () -> robotDrive.drive(
                 -MathUtil.applyDeadband(driverController.getLeftY(), OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(driverController.getLeftX(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(driverController.getRightX() / 1.5, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(driverController.getRightX() / 1.1, OIConstants.kDriveDeadband),
                 true, true),
             robotDrive));
 
