@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.AutoCommmands;
 import frc.robot.commands.ComboCommands;
 import frc.robot.subsystems.DriveSubsystem;
@@ -103,7 +104,7 @@ public class RobotContainer {
             () -> robotDrive.drive(
                 -MathUtil.applyDeadband(driverController.getLeftY(), OIConstants.kDriveDeadband),
                 -MathUtil.applyDeadband(driverController.getLeftX(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(driverController.getRightX() / 1.1, OIConstants.kDriveDeadband),
+                -MathUtil.applyDeadband(driverController.getRightX() / 1.2, OIConstants.kDriveDeadband),
                 true, true),
             robotDrive));
 
@@ -286,7 +287,7 @@ public class RobotContainer {
     .onTrue(comboCommands.goToTopAmp())
     .onFalse(comboCommands.stowCommand());
 
-    secondaryController.povUp().onTrue(shooter.shooterAutoLineRevUpCommand());
+    secondaryController.povUp().onTrue(shooter.shooterRevUpCommand(ShooterConstants.shuttleRPM));
     secondaryController.povDown().onTrue(shooter.stopShooterCommand());
 
     // secondaryController.leftStick().onTrue(intake.stopIntakeArmCommand());
